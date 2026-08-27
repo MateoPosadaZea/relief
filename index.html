@@ -119,6 +119,11 @@
     *,*::before,*::after{ transition:none !important; animation:none !important; }
   }
 
+  /* Guarda contra el desborde horizontal. Va `clip`, NO `hidden`:
+     overflow-x:hidden convierte al elemento en contenedor de scroll y eso
+     rompe el position:sticky de la escena 3D — probado, la escena se iba
+     con el scroll. `clip` recorta sin crear contenedor de scroll. */
+  body{ overflow-x:clip; max-width:100%; }
   html{ -webkit-text-size-adjust:100%; }
 
   body{
@@ -230,10 +235,17 @@
   }
 
   /* ---------- La historia: escena fija, paneles encima ---------- */
-  .historia{ position:relative; }
+  /* La escena y los paneles ocupan la MISMA celda de grid. Antes los paneles
+     se subían con margin-top:-100vh, y bastaba que la altura del viewport
+     cambiara (la barra de URL del móvil al aparecer y desaparecer) para que
+     las dos alturas dejaran de coincidir y el contenido quedara desfasado. */
+  .historia{ position:relative; display:grid; }
   .historia-escena{
-    position:sticky; top:0; height:100vh; height:100svh;
+    grid-area:1 / 1; align-self:start;
+    position:sticky; top:0;
+    height:100vh; height:100dvh;
     z-index:0; pointer-events:none; overflow:hidden;
+    max-width:100%;
   }
   #gafas3d{
     position:absolute; inset:0; width:100%; height:100%; display:block;
@@ -252,8 +264,7 @@
     transition:background-color .45s ease;
   }
 
-  /* Los paneles se suben una pantalla para pasar sobre la escena fija. */
-  .historia-paneles{ position:relative; z-index:1; margin-top:-100vh; margin-top:-100svh; }
+  .historia-paneles{ grid-area:1 / 1; position:relative; z-index:1; min-width:0; }
   .panel{
     min-height:100vh; min-height:100svh;
     display:flex; align-items:flex-end;
@@ -363,7 +374,9 @@
     display:flex; flex-direction:column;
   }
   .ficha-img{
-    aspect-ratio:16 / 10;
+    /* El producto es muy apaisado: en móvil un marco 16:10 a ancho completo
+       se come media pantalla sin aportar nada. */
+    aspect-ratio:2 / 1;
     background:var(--noche);
     border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
@@ -407,7 +420,7 @@
   .combo .precio-fila{ align-items:flex-end; gap:24px; }
   .precio-col{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
   .combo-img{
-    aspect-ratio:16 / 10; background:var(--noche); border:1px solid var(--linea);
+    aspect-ratio:2 / 1; background:var(--noche); border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
   }
   .aviso{ font-size:13px; color:var(--texto-tenue); margin:12px 0 0; min-height:1.4em; }
@@ -482,12 +495,13 @@
   /* Galería */
   .producto-grid{ display:grid; gap:32px; }
   .galeria-principal{
-    aspect-ratio:16 / 10; background:var(--noche);
+    aspect-ratio:2 / 1; background:var(--noche);
     border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
   }
   .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
   .galeria-tiras{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:8px; }
+  .tira{ aspect-ratio:3 / 2; }
   .tira{
     aspect-ratio:1; background:var(--noche); border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
@@ -578,6 +592,8 @@
 
   /* ---------- Dos columnas desde 768px ---------- */
   @media (min-width:760px){
+    .ficha-img, .combo-img, .galeria-principal{ aspect-ratio:16 / 10; }
+    .tira{ aspect-ratio:1; }
     .dos-columnas{ grid-template-columns:1fr 1fr; gap:56px; }
     .producto-grid{ grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
   }
