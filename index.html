@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>RELIEF — Gafas con lente protector para trabajar y dormir</title>
+<meta name="description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="canonical" href="https://mateoposadazea.github.io/relief/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RELIEF">
+<meta property="og:title" content="RELIEF — Gafas con lente protector">
+<meta property="og:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta property="og:image" content="assets/img/og.png">
+<meta property="og:url" content="https://mateoposadazea.github.io/relief/">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RELIEF — Gafas con lente protector">
+<meta name="twitter:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta name="twitter:image" content="assets/img/og.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='11' font-weight='500' letter-spacing='0.5' text-anchor='middle' fill='%23fff'%3ERLF%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@200;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* Paleta — tokens exactos de CLAUDE.md § Marca */
+    --noche:       #0B0B0C;
+    --superficie:  #16161A;
+    --hueso:       #EDEBE6;
+    --ambar:       #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #26262B;
+    --texto-tenue: #8A8A90;
+    /* Único color fuera de la tabla: la sigla del isotipo va en blanco
+       sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
+    --blanco:      #FFFFFF;
+
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    --ancho: 1080px;
+    --gutter: 20px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    margin:0;
+    background:var(--noche);
+    color:var(--hueso);
+    font-family:var(--sans);
+    font-weight:300;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img{ max-width:100%; display:block; }
+
+  a{ color:inherit; }
+
+  .wrap{
+    width:100%;
+    max-width:var(--ancho);
+    margin:0 auto;
+    padding:0 var(--gutter);
+  }
+
+  .mono{ font-family:var(--mono); }
+
+  /* Label mono en mayúsculas con tracking abierto */
+  .label{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--texto-tenue);
+  }
+
+  .tbd{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--texto-tenue);
+    border:1px solid var(--linea);
+    padding:1px 6px;
+  }
+
+  .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
+  .seccion h2{
+    font-family:var(--mono);
+    font-weight:200;
+    font-size:26px;
+    letter-spacing:.02em;
+    margin:0 0 8px;
+  }
+  .seccion .bajada{ color:var(--texto-tenue); margin:0 0 32px; max-width:52ch; }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--noche);
+    border-bottom:1px solid var(--linea);
+  }
+  /* > directo: no debe alcanzar al .wrap del panel de carrito */
+  .nav > .wrap{
+    height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .isotipo{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:32px; height:32px;
+    background:var(--rojo-rlf);
+    border-radius:4px;
+    color:var(--blanco);
+    font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.06em;
+    text-decoration:none;
+  }
+  .carrito-btn{
+    background:none; border:1px solid var(--linea); color:var(--hueso);
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:7px 12px; cursor:pointer;
+  }
+  .carrito-btn:hover{ border-color:var(--texto-tenue); }
+
+  /* Panel de carrito */
+  .carrito-panel{
+    display:none;
+    border-top:1px solid var(--linea);
+    background:var(--superficie);
+  }
+  .carrito-panel[data-abierto="true"]{ display:block; }
+  .carrito-panel .wrap{ padding-top:16px; padding-bottom:16px; }
+  .carrito-linea{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px;
+    padding:8px 0; border-bottom:1px solid var(--linea);
+    font-size:14px;
+  }
+  .carrito-linea:last-of-type{ border-bottom:0; }
+  .carrito-vacio{ color:var(--texto-tenue); font-size:14px; margin:0; }
+  .carrito-pie{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; margin-top:12px; }
+  .link-tenue{
+    background:none; border:0; padding:0; cursor:pointer;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--texto-tenue); text-decoration:underline;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:72px 0 64px; }
+  .wordmark{
+    font-family:var(--mono);
+    font-weight:200;
+    font-size:clamp(44px, 16vw, 128px);
+    letter-spacing:.16em;
+    line-height:1;
+    margin:0 0 24px;
+    /* el tracking abre a la derecha; se compensa para alinear a la izquierda */
+    text-indent:0;
+  }
+  .hero .posicionamiento{
+    font-size:18px;
+    max-width:34ch;
+    margin:0 0 24px;
+    color:var(--hueso);
+  }
+  .badge{
+    display:inline-block;
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--hueso);
+    border:1px solid var(--linea);
+    padding:6px 10px;
+    margin:0 0 32px;
+  }
+  .badge b{ color:var(--ambar); font-weight:500; }
+
+  /* ---------- Botones ---------- */
+  .btn{
+    display:inline-block;
+    font-family:var(--mono); font-weight:500; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:14px 22px;
+    border:1px solid var(--rojo-rlf);
+    background:var(--rojo-rlf);
+    color:var(--blanco);
+    text-decoration:none;
+    cursor:pointer;
+    text-align:center;
+  }
+  .btn:hover{ background:transparent; color:var(--hueso); }
+  .btn--ghost{
+    background:transparent; color:var(--hueso); border-color:var(--linea);
+  }
+  .btn--ghost:hover{ background:transparent; border-color:var(--hueso); }
+  .btn--block{ display:block; width:100%; }
+
+  /* ---------- Fichas de producto ---------- */
+  .fichas{ display:grid; gap:20px; }
+  .ficha{
+    background:var(--superficie);
+    border-left:3px solid var(--acento, var(--linea));
+    padding:20px;
+    display:flex; flex-direction:column;
+  }
+  .ficha-img{
+    aspect-ratio:16 / 10;
+    background:var(--noche);
+    border:1px solid var(--linea);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+  }
+  .ficha h3{
+    font-family:var(--mono); font-weight:500; font-size:16px;
+    letter-spacing:.06em; text-transform:uppercase;
+    margin:0 0 4px;
+  }
+  .ficha .momento{ margin:0 0 12px; }
+  .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
+  .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
+  .precio{ font-family:var(--mono); font-weight:500; font-size:22px; letter-spacing:.02em; }
+  .precio--tachado{
+    font-weight:200; font-size:16px; color:var(--texto-tenue);
+    text-decoration:line-through;
+  }
+  .acciones{ display:grid; gap:8px; }
+
+  /* ---------- Combo ---------- */
+  .combo{ background:var(--superficie); border-left:3px solid var(--rojo-rlf); padding:24px 20px; }
+  .combo .combo-grid{ display:grid; gap:24px; }
+  .combo h3{
+    font-family:var(--mono); font-weight:200; font-size:24px;
+    letter-spacing:.06em; text-transform:uppercase; margin:0 0 8px;
+  }
+  .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
+  .combo .precio-fila{ align-items:flex-end; gap:24px; }
+  .precio-col{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+  .combo-img{
+    aspect-ratio:16 / 10; background:var(--noche); border:1px solid var(--linea);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .aviso{ font-size:13px; color:var(--texto-tenue); margin:12px 0 0; min-height:1.4em; }
+
+  /* ---------- Ficha técnica ---------- */
+  table{ width:100%; border-collapse:collapse; }
+  th,td{ text-align:left; padding:12px 0; border-bottom:1px solid var(--linea); vertical-align:top; }
+  th{
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--texto-tenue);
+  }
+  td{ font-size:15px; }
+  /* Móvil: etiqueta arriba, valor abajo */
+  @media (max-width:767px){
+    table, tbody, tr, th, td{ display:block; width:auto; }
+    tr{ border-bottom:1px solid var(--linea); padding:12px 0; }
+    th, td{ border-bottom:0; padding:0; }
+    th{ margin-bottom:6px; }
+  }
+  @media (min-width:768px){
+    th{ width:45%; }
+  }
+
+  /* ---------- FAQ ---------- */
+  details{ border-bottom:1px solid var(--linea); }
+  summary{
+    cursor:pointer; list-style:none;
+    padding:18px 0;
+    font-family:var(--mono); font-weight:500; font-size:13px;
+    letter-spacing:.06em;
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  summary::-webkit-details-marker{ display:none; }
+  summary::after{ content:"+"; color:var(--texto-tenue); font-weight:200; }
+  details[open] summary::after{ content:"−"; }
+  details .respuesta{ padding:0 0 18px; color:var(--texto-tenue); font-size:15px; margin:0; max-width:64ch; }
+
+  /* ---------- Footer ---------- */
+  .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
+  .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
+  .footer a{
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+    color:var(--hueso);
+  }
+  .footer a:hover{ color:var(--texto-tenue); }
+  .footer small{ color:var(--texto-tenue); font-size:12px; display:block; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+
+  /* ---------- Dos columnas desde 768px ---------- */
+  @media (min-width:768px){
+    :root{ --gutter:32px; }
+    .seccion{ padding:88px 0; }
+    .hero{ padding:112px 0 96px; }
+    .fichas{ grid-template-columns:1fr 1fr; gap:24px; }
+    .combo .combo-grid{ grid-template-columns:1fr 1fr; align-items:center; gap:40px; }
+    .combo{ padding:40px; }
+    .acciones{ grid-template-columns:1fr 1fr; }
+    .btn--block{ display:inline-block; width:auto; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 1. NAV -->
+<header class="nav">
+  <div class="wrap">
+    <a class="isotipo" href="#top" aria-label="RELIEF — inicio">RLF</a>
+    <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel">
+      Carrito (<span id="carritoCount">0</span>)
+    </button>
+  </div>
+  <div class="carrito-panel" id="carritoPanel" data-abierto="false">
+    <div class="wrap">
+      <div id="carritoItems"></div>
+      <div class="carrito-pie">
+        <span class="label">Total</span>
+        <span class="precio" id="carritoTotal">—</span>
+      </div>
+      <div class="carrito-pie">
+        <button class="link-tenue" id="carritoVaciar" type="button">Vaciar carrito</button>
+        <span class="tbd">[TBD] Checkout: link de pago Wompi</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 2. HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="wordmark">RELIEF</h1>
+      <p class="posicionamiento">Lentes con filtro para las horas en que la pantalla te sigue acompañando.</p>
+      <p class="badge"><b>Stock en Bogotá.</b> &nbsp;Entrega en 2-3 días.</p>
+      <div>
+        <a class="btn" href="#combo">Ver el combo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LOS DOS LENTES -->
+  <section class="seccion" id="lentes">
+    <div class="wrap">
+      <p class="label">Los dos lentes</p>
+      <h2>Uno para trabajar. Uno para apagar.</h2>
+      <p class="bajada">La rutina nocturna tiene dos momentos y cada uno pide un filtro distinto.</p>
+      <div class="fichas" id="fichasLentes"></div>
+    </div>
+  </section>
+
+  <!-- 4. EL COMBO -->
+  <section class="seccion" id="combo">
+    <div class="wrap">
+      <p class="label">El combo</p>
+      <h2>La rutina completa</h2>
+      <p class="bajada">Los dos lentes juntos, con descuento. Es la forma en que están pensados para usarse.</p>
+      <div class="combo" id="comboCard"></div>
+    </div>
+  </section>
+
+  <!-- 5. FICHA TÉCNICA -->
+  <section class="seccion" id="ficha-tecnica">
+    <div class="wrap">
+      <p class="label">Ficha técnica</p>
+      <h2>Lo que estás comprando</h2>
+      <p class="bajada">Especificaciones pendientes de confirmar con el proveedor.</p>
+      <table>
+        <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
+        <tbody>
+          <tr><th scope="row">Material de la montura</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Material del lente</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Peso</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Incluye estuche</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Incluye paño de limpieza</th><td><span class="tbd">[TBD]</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. FAQ -->
+  <section class="seccion" id="faq">
+    <div class="wrap">
+      <p class="label">Preguntas</p>
+      <h2>Antes de comprar</h2>
+
+      <details>
+        <summary>¿Cuánto demora el envío?</summary>
+        <p class="respuesta">Despachamos desde Bogotá con stock propio. <span class="tbd">[TBD]</span> Confirmar transportadora, cobertura y costo de envío.</p>
+      </details>
+
+      <details>
+        <summary>¿Puedo devolverlos?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Definir política de devoluciones: plazo, condiciones y quién asume el flete de retorno.</p>
+      </details>
+
+      <details>
+        <summary>¿Sirven si uso gafas con fórmula?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Confirmar con el proveedor si la montura permite uso sobre gafas formuladas.</p>
+      </details>
+
+      <details>
+        <summary>¿Los puedo usar de día?</summary>
+        <p class="respuesta">El lente ámbar está pensado para las horas de trabajo frente a pantalla. El lente rojo es para la última hora antes de dormir: no es para trabajar ni para conducir. <span class="tbd">[TBD]</span> Ampliar recomendación de uso.</p>
+      </details>
+
+      <details>
+        <summary>¿Tienen garantía?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Definir cobertura y plazo de garantía.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<!-- 7. FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#" id="linkWhatsapp" rel="noopener">WhatsApp <span class="tbd">[TBD]</span></a>
+      <a href="#" id="linkInstagram" rel="noopener">Instagram <span class="tbd">[TBD]</span></a>
+      <a href="#" id="linkCorreo">Correo <span class="tbd">[TBD]</span></a>
+    </div>
+    <small>RELIEF · Bogotá, Colombia · <span class="tbd">[TBD] Razón social y NIT</span></small>
+  </div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------
+   Catálogo — Fase 1. Sin backend: el catálogo vive acá.
+   precio: null mientras no haya costo landed ni precio de venta
+   definido (ver PENDIENTE en CLAUDE.md). Se renderiza como [TBD].
+   linkWompi: "#" hasta crear los links de pago en el dashboard.
+------------------------------------------------------------------ */
+const PRODUCTOS = [
+  {
+    id: "rlf-ambar",
+    nombre: "RLF Ámbar",
+    momento: "Para trabajar",
+    descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
+    precio: null,
+    acento: "var(--ambar)",
+    linkWompi: "#"
+  },
+  {
+    id: "rlf-rojo",
+    nombre: "RLF Rojo",
+    momento: "Para dormir",
+    descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
+    precio: null,
+    acento: "var(--rojo-rlf)",
+    linkWompi: "#"
+  },
+  {
+    id: "rlf-combo",
+    nombre: "Combo rutina nocturna",
+    momento: "Trabaja, transiciona, duerme",
+    descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
+    precio: null,
+    precioAntes: null,
+    acento: "var(--rojo-rlf)",
+    linkWompi: "#"
+  }
+];
+
+const COP = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+  maximumFractionDigits: 0
+});
+
+/* Formatea un precio; si aún no está definido devuelve el marcador visible. */
+function precioHTML(valor, clase){
+  const cls = clase ? ' ' + clase : '';
+  if (typeof valor !== 'number' || Number.isNaN(valor)) {
+    return '<span class="tbd">[TBD] Precio</span>';
+  }
+  return '<span class="precio' + cls + '">' + COP.format(valor) + '</span>';
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+
+function porId(id){ return PRODUCTOS.find(p => p.id === id); }
+
+/* ---------------- Render: los dos lentes ---------------- */
+const fichasLentes = document.getElementById('fichasLentes');
+fichasLentes.innerHTML = PRODUCTOS
+  .filter(p => p.id !== 'rlf-combo')
+  .map(p => `
+    <article class="ficha" style="--acento:${p.acento}">
+      <div class="ficha-img"><span class="tbd">[TBD] Foto 16:10</span></div>
+      <h3>${esc(p.nombre)}</h3>
+      <p class="momento label">${esc(p.momento)}</p>
+      <p class="descripcion">${esc(p.descripcion)}</p>
+      <div class="precio-fila">${precioHTML(p.precio)}</div>
+      <div class="acciones">
+        <button class="btn btn--block" data-comprar="${p.id}">Comprar</button>
+        <button class="btn btn--ghost btn--block" data-agregar="${p.id}">Agregar al carrito</button>
+      </div>
+      <p class="aviso" data-aviso="${p.id}"></p>
+    </article>
+  `).join('');
+
+/* ---------------- Render: el combo ---------------- */
+const combo = porId('rlf-combo');
+document.getElementById('comboCard').innerHTML = `
+  <div class="combo-grid">
+    <div class="combo-img"><span class="tbd">[TBD] Foto 16:10</span></div>
+    <div>
+      <h3>${esc(combo.nombre)}</h3>
+      <p class="label">${esc(combo.momento)}</p>
+      <p class="descripcion">${esc(combo.descripcion)}</p>
+      <div class="precio-fila">
+        <span class="precio-col">
+          <span class="label">Por separado</span>
+          ${precioHTML(combo.precioAntes, 'precio--tachado')}
+        </span>
+        <span class="precio-col">
+          <span class="label">Combo</span>
+          ${precioHTML(combo.precio)}
+        </span>
+      </div>
+      <div class="acciones">
+        <button class="btn btn--block" data-comprar="${combo.id}">Comprar el combo</button>
+        <button class="btn btn--ghost btn--block" data-agregar="${combo.id}">Agregar al carrito</button>
+      </div>
+      <p class="aviso" data-aviso="${combo.id}"></p>
+    </div>
+  </div>
+`;
+
+/* ---------------- Carrito (localStorage) ---------------- */
+const CLAVE_CARRITO = 'relief.carrito.v1';
+
+function leerCarrito(){
+  try {
+    const crudo = JSON.parse(localStorage.getItem(CLAVE_CARRITO));
+    if (!Array.isArray(crudo)) return [];
+    return crudo.filter(l => l && porId(l.id) && Number(l.cantidad) > 0)
+                .map(l => ({ id: l.id, cantidad: Math.floor(Number(l.cantidad)) }));
+  } catch (e) {
+    return [];
+  }
+}
+
+function guardarCarrito(carrito){
+  try { localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito)); } catch (e) {}
+}
+
+function agregar(id){
+  const carrito = leerCarrito();
+  const linea = carrito.find(l => l.id === id);
+  if (linea) linea.cantidad += 1; else carrito.push({ id, cantidad: 1 });
+  guardarCarrito(carrito);
+  pintarCarrito();
+}
+
+function quitar(id){
+  guardarCarrito(leerCarrito().filter(l => l.id !== id));
+  pintarCarrito();
+}
+
+function pintarCarrito(){
+  const carrito = leerCarrito();
+  const unidades = carrito.reduce((n, l) => n + l.cantidad, 0);
+  document.getElementById('carritoCount').textContent = unidades;
+
+  const cont = document.getElementById('carritoItems');
+  if (!carrito.length) {
+    cont.innerHTML = '<p class="carrito-vacio">El carrito está vacío.</p>';
+  } else {
+    cont.innerHTML = carrito.map(l => {
+      const p = porId(l.id);
+      return `
+        <div class="carrito-linea">
+          <span>${esc(p.nombre)} × ${l.cantidad}</span>
+          <span>
+            ${precioHTML(typeof p.precio === 'number' ? p.precio * l.cantidad : null)}
+            <button class="link-tenue" data-quitar="${p.id}" type="button">Quitar</button>
+          </span>
+        </div>`;
+    }).join('');
+  }
+
+  const definidos = carrito.every(l => typeof porId(l.id).precio === 'number');
+  const total = carrito.reduce((s, l) => s + (porId(l.id).precio || 0) * l.cantidad, 0);
+  document.getElementById('carritoTotal').innerHTML =
+    (carrito.length && definidos) ? COP.format(total) : '<span class="tbd">[TBD]</span>';
+}
+
+/* ---------------- Compra: por ahora abre el link de Wompi ---------------- */
+function comprar(id){
+  const p = porId(id);
+  const aviso = document.querySelector(`[data-aviso="${id}"]`);
+  if (p.linkWompi && p.linkWompi !== '#') {
+    window.open(p.linkWompi, '_blank', 'noopener');
+  } else if (aviso) {
+    aviso.innerHTML = '<span class="tbd">[TBD] Link de pago de Wompi pendiente</span>';
+  }
+}
+
+/* ---------------- Eventos ---------------- */
+document.addEventListener('click', ev => {
+  const btn = ev.target.closest('[data-agregar],[data-comprar],[data-quitar]');
+  if (!btn) return;
+  if (btn.dataset.agregar) agregar(btn.dataset.agregar);
+  else if (btn.dataset.comprar) comprar(btn.dataset.comprar);
+  else if (btn.dataset.quitar) quitar(btn.dataset.quitar);
+});
+
+const carritoBtn = document.getElementById('carritoBtn');
+const carritoPanel = document.getElementById('carritoPanel');
+carritoBtn.addEventListener('click', () => {
+  const abierto = carritoPanel.dataset.abierto === 'true';
+  carritoPanel.dataset.abierto = String(!abierto);
+  carritoBtn.setAttribute('aria-expanded', String(!abierto));
+});
+
+pintarCarrito();
+</script>
+
+</body>
+</html>
