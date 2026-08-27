@@ -160,8 +160,8 @@ export function iniciarGafas(canvas, contenedorProgreso) {
          vertical: el modelo tiene que ser bastante más pequeño para no
          cortarse, y sube para dejarle la mitad de abajo al texto. */
       gafas.position.x = -0.02;
-      baseY = 1.20;
-      gafas.scale.setScalar(0.40);
+      baseY = 1.42;
+      gafas.scale.setScalar(0.36);
       camara.position.z = 5.8;
     }
   }

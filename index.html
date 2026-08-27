@@ -276,21 +276,14 @@
     padding:0 0 64px;
   }
 
-  .wordmark{
-    font-family:var(--mono);
-    font-weight:200;
-    font-size:clamp(40px, 13vw, 104px);
-    letter-spacing:.16em;
-    line-height:1;
-    margin:0 0 20px;
-  }
   .titular{
     font-family:var(--mono);
     font-weight:200;
-    font-size:clamp(22px, 5.2vw, 40px);
-    line-height:1.15;
+    font-size:clamp(28px, 6.2vw, 48px);
+    line-height:1.14;
     letter-spacing:.01em;
-    margin:0 0 16px;
+    margin:0 0 20px;
+    max-width:20ch;
     text-wrap:balance;
   }
   .posicionamiento{
@@ -385,7 +378,6 @@
        se come media pantalla sin aportar nada. */
     aspect-ratio:2 / 1;
     background:var(--noche);
-    border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
     margin-bottom:20px;
   }
@@ -398,8 +390,8 @@
     padding:8%;
   }
   .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
-  .ficha-enlace:hover .ficha-img,
-  .ficha-enlace:hover .combo-img{ border-color:var(--texto-tenue); }
+  .ficha-enlace:hover .ficha-img img,
+  .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
     font-family:var(--mono); font-weight:500; font-size:16px;
@@ -428,7 +420,7 @@
   .precio-col{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
   .combo-img{
     min-width:0; overflow:hidden;
-    aspect-ratio:2 / 1; background:var(--noche); border:1px solid var(--linea);
+    aspect-ratio:2 / 1; background:var(--noche);
     display:flex; align-items:center; justify-content:center;
   }
   .aviso{ font-size:13px; color:var(--texto-tenue); margin:12px 0 0; min-height:1.4em; }
@@ -505,20 +497,20 @@
   .galeria-principal{
     min-width:0; overflow:hidden;
     aspect-ratio:2 / 1; background:var(--noche);
-    border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
   }
   .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
   .galeria-tiras{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; margin-top:8px; }
   .tira{ aspect-ratio:3 / 2; }
   .tira{
-    aspect-ratio:1; background:var(--noche); border:1px solid var(--linea);
+    aspect-ratio:1; background:var(--noche);
+    border:1px solid transparent;
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; padding:0;
     min-width:0; overflow:hidden;
   }
   .tira img{ width:100%; height:100%; object-fit:contain; padding:8%; }
-  .tira[aria-pressed="true"]{ border-color:var(--hueso); }
+  .tira[aria-pressed="true"]{ border-color:var(--texto-tenue); }
   .tira:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
   .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
 
@@ -610,7 +602,7 @@
 
   @media (min-width:900px){
     /* El modelo 3D ocupa la derecha: el texto no lo invade. */
-    .panel .wrap > *{ max-width:min(52%, 620px); }
+    .panel .wrap > *{ max-width:min(48%, 560px); }
     .panel-texto{ max-width:min(52%, 16ch); }
     .panel{ align-items:center; }
   }
@@ -665,24 +657,14 @@
 
       <section class="panel panel--hero">
         <div class="wrap">
-          <h1 class="wordmark">RELIEF</h1>
-          <p class="titular">Trabajas de noche.<br>Tus ojos también.</p>
-          <p class="posicionamiento">Dos lentes para las horas en que la pantalla no se apaga.</p>
+          <h1 class="titular">Le pasas horas a la pantalla. Los ojos te lo cobran.</h1>
+          <p class="posicionamiento">Dos lentes con filtro para las horas en que la pantalla
+            no se apaga: uno para trabajar, uno para parar.</p>
           <p class="badge"><b>Stock en Bogotá.</b> &nbsp;Entrega en 2-3 días.</p>
           <div>
             <a class="btn" href="#combo">Ver el combo</a>
           </div>
 
-          <div class="modos">
-            <span class="label" id="modosLabel">Vista</span>
-            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
-              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
-              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
-              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
-              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
-            </div>
-            <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
-          </div>
         </div>
       </section>
 
@@ -700,6 +682,17 @@
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
           <p class="panel-apoyo">Nada más. Sin catálogo de cien referencias, sin monturas de colores.
             Esto es para ti si trabajas, juegas o estudias de noche.</p>
+
+          <div class="modos">
+            <span class="label" id="modosLabel">Ver el sitio con cada lente</span>
+            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
+              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
+              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
+              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
+              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
+            </div>
+            <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
+          </div>
         </div>
       </section>
 
