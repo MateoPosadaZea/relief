@@ -219,6 +219,9 @@
     display:flex; align-items:center; justify-content:center;
     margin-bottom:20px;
   }
+  .ficha-img img, .combo-img img{
+    width:100%; height:100%; object-fit:cover;
+  }
   .ficha h3{
     font-family:var(--mono); font-weight:500; font-size:16px;
     letter-spacing:.06em; text-transform:uppercase;
@@ -444,6 +447,8 @@
    precio: null mientras no haya costo landed ni precio de venta
    definido (ver PENDIENTE en CLAUDE.md). Se renderiza como [TBD].
    linkWompi: "#" hasta crear los links de pago en el dashboard.
+   imagen: ruta al .webp 16:10. Si el archivo no existe todavía, la
+   ficha cae al placeholder [TBD] sola: basta con soltar el archivo.
 ------------------------------------------------------------------ */
 const PRODUCTOS = [
   {
@@ -452,6 +457,7 @@ const PRODUCTOS = [
     momento: "Para trabajar",
     descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
     precio: null,
+    imagen: "assets/img/ambar.webp",
     acento: "var(--ambar)",
     linkWompi: "#"
   },
@@ -461,6 +467,7 @@ const PRODUCTOS = [
     momento: "Para dormir",
     descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
     precio: null,
+    imagen: "assets/img/rojo.webp",
     acento: "var(--rojo-rlf)",
     linkWompi: "#"
   },
@@ -471,6 +478,7 @@ const PRODUCTOS = [
     descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
     precio: null,
     precioAntes: null,
+    imagen: "assets/img/combo.webp",
     acento: "var(--rojo-rlf)",
     linkWompi: "#"
   }
@@ -499,13 +507,35 @@ function esc(s){
 
 function porId(id){ return PRODUCTOS.find(p => p.id === id); }
 
+/* Foto del producto. Mientras el archivo no exista, el listener de error
+   la retira y deja el placeholder visible: no hay que tocar el catálogo. */
+function imagenHTML(p){
+  const marcador = '<span class="tbd">[TBD] Foto 16:10</span>';
+  if (!p.imagen) return marcador;
+  return '<img src="' + esc(p.imagen) + '" alt="' + esc(p.nombre) + '" hidden>'
+       + marcador;
+}
+
+/* La foto solo se muestra si carga; si falla, se queda el [TBD]. */
+function activarImagenes(raiz){
+  raiz.querySelectorAll('img[hidden]').forEach(img => {
+    const mostrar = () => {
+      img.hidden = false;
+      const marcador = img.nextElementSibling;
+      if (marcador) marcador.remove();
+    };
+    if (img.complete && img.naturalWidth > 0) mostrar();
+    else img.addEventListener('load', mostrar, { once: true });
+  });
+}
+
 /* ---------------- Render: los dos lentes ---------------- */
 const fichasLentes = document.getElementById('fichasLentes');
 fichasLentes.innerHTML = PRODUCTOS
   .filter(p => p.id !== 'rlf-combo')
   .map(p => `
     <article class="ficha" style="--acento:${p.acento}">
-      <div class="ficha-img"><span class="tbd">[TBD] Foto 16:10</span></div>
+      <div class="ficha-img">${imagenHTML(p)}</div>
       <h3>${esc(p.nombre)}</h3>
       <p class="momento label">${esc(p.momento)}</p>
       <p class="descripcion">${esc(p.descripcion)}</p>
@@ -518,11 +548,13 @@ fichasLentes.innerHTML = PRODUCTOS
     </article>
   `).join('');
 
+activarImagenes(fichasLentes);
+
 /* ---------------- Render: el combo ---------------- */
 const combo = porId('rlf-combo');
 document.getElementById('comboCard').innerHTML = `
   <div class="combo-grid">
-    <div class="combo-img"><span class="tbd">[TBD] Foto 16:10</span></div>
+    <div class="combo-img">${imagenHTML(combo)}</div>
     <div>
       <h3>${esc(combo.nombre)}</h3>
       <p class="label">${esc(combo.momento)}</p>
@@ -545,6 +577,8 @@ document.getElementById('comboCard').innerHTML = `
     </div>
   </div>
 `;
+
+activarImagenes(document.getElementById('comboCard'));
 
 /* ---------------- Carrito (localStorage) ---------------- */
 const CLAVE_CARRITO = 'relief.carrito.v1';
