@@ -23,7 +23,9 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
 ## Principios (no negociables)
 - **Costo fijo cero.** GitHub Pages + Wompi. Nada de Shopify, nada de mensualidades.
 - **Radical simplicidad.** Un producto, pocas variantes. Nada de features especulativos.
-- **Vanilla HTML/CSS/JS.** Sin frameworks, sin build step. Un solo `index.html` en Fase 1.
+- **Vanilla HTML/CSS/JS.** Sin frameworks, sin build step. El HTML, el CSS y la
+  lógica viven en `index.html`; three.js y el modelo 3D son módulos aparte porque
+  se cargan en diferido. Sin CDN: todo vendorizado en el repo.
 - **Sin backend en Fase 1.** Catálogo = objeto JS en el propio archivo. Carrito = localStorage.
 - **Claims de producto conservadoras.** Lenguaje de confort ("reduce fatiga visual", "filtra
   luz azul"). NUNCA promesas de salud o sueño (riesgo regulatorio, no somos ROKA/Huberman).
@@ -31,6 +33,28 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
   reporte de transmitancia espectral del lote exacto que vendemos. Warblue publica
   84/97/99% — no copiar esos números.
 - **Modo oscuro por defecto.** La marca vive de noche; el cliente navega de noche.
+- **Todo lo inmersivo es una capa encima, nunca un requisito.** El 3D se carga solo
+  si el navegador puede; sin WebGL, sin JS o con el módulo caído, la página vende
+  igual. Nada de la compra depende de la escena.
+
+## La historia (estructura de la home)
+La home es un recorrido de una noche, con el modelo 3D fijo detrás y los paneles
+pasando por encima. El lente del modelo va de ámbar a rojo según el scroll: el
+arco visual *es* el arco del catálogo.
+
+| Panel | Qué dice |
+|---|---|
+| Hero | Wordmark + "Trabajas de noche. Tus ojos también." |
+| 11:47 PM | El problema, sin prometer nada: llevas seis horas y te faltan dos. |
+| Somos RELIEF | Dos lentes, uno para trabajar, uno para parar. Nada más. |
+| 12:30 AM | El ámbar: el del turno. |
+| 2:10 AM | El rojo: el del final. |
+| Mañana, 9:00 AM | Sale de Bogotá, no de Shenzhen. La tesis del negocio. |
+
+- El reloj no es decoración: encierra la noche del cliente y aterriza en la entrega,
+  que es la única ventaja competitiva real.
+- **El copy describe el problema, nunca promete la cura.** "Llevas seis horas frente
+  a la pantalla" es seguro y pega más fuerte que cualquier claim de salud.
 
 ## Posicionamiento (la tesis del negocio)
 Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot está destruido:
@@ -95,10 +119,12 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 ## Arquitectura Fase 1
 ```
 relief/
-├── index.html      # landing + producto + carrito + checkout (todo en uno)
+├── index.html      # landing + historia + producto + carrito (todo en uno)
 ├── assets/
-│   ├── img/        # fotos de producto (webp), logo, isotipo
-│   └── icons.svg   # sprite SVG si hace falta (sin emoji, patrón Jueves Santo)
+│   ├── img/        # fotos de producto y de marca (webp)
+│   └── js/
+│       ├── gafas.js            # modelo 3D paramétrico, carga diferida
+│       └── vendor/three.*.js   # three.js vendorizado, sin CDN
 ├── CLAUDE.md
 └── deploy.sh       # git add . && git commit && git push (Pages publica solo)
 ```
@@ -134,6 +160,16 @@ relief/
       exige fotos recortadas o de fondo limpio.
 - [ ] Dominio (~$50.000 COP/año). Único gasto fijo aprobado.
 - [ ] Nombre legal / quién factura (persona natural sirve para arrancar con Wompi).
+
+## Reseñas y estudios (reglas duras)
+- **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
+  Estatuto del Consumidor (Ley 1480). La sección existe vacía y dice que estamos
+  empezando, hasta que haya clientes reales que hayan recibido el pedido.
+- **Cero estudios citados sin leer el estudio.** Si algún día se citan, se cita la
+  fuente completa y jamás se traduce a una promesa ("dormirás mejor").
+- La sección **"Lo que no vamos a decirte"** convierte esa restricción en
+  posicionamiento: Warblue publica 84/97/99% sin respaldo; nosotros decimos por qué
+  no publicamos nada todavía. La honestidad es el diferenciador, no un costo.
 
 ## Descartado
 - Shopify, WooCommerce, Tiendanube o cualquier plataforma con mensualidad.

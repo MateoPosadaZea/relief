@@ -190,15 +190,15 @@
     height:56px;
     display:flex; align-items:center; justify-content:space-between;
   }
-  .isotipo{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:32px; height:32px;
-    background:var(--rojo-rlf);
-    border-radius:4px;
-    color:var(--blanco);
-    font-family:var(--mono); font-weight:500; font-size:11px; letter-spacing:.06em;
-    text-decoration:none;
+  .marca{
+    font-family:var(--mono); font-weight:500; font-size:14px;
+    letter-spacing:.32em; text-transform:uppercase;
+    color:var(--hueso); text-decoration:none;
+    /* el tracking abre a la derecha; se compensa para que el bloque
+       óptico quede alineado con el borde del gutter */
+    margin-right:-.32em;
   }
+  .marca:hover{ color:var(--texto-tenue); }
   .carrito-btn{
     background:none; border:1px solid var(--linea); color:var(--hueso);
     font-family:var(--mono); font-weight:500; font-size:11px;
@@ -229,32 +229,56 @@
     color:var(--texto-tenue); text-decoration:underline;
   }
 
-  /* ---------- Hero ---------- */
-  .hero{ padding:72px 0 64px; position:relative; isolation:isolate; }
-  /* Fondo opcional: si el .webp del modo no existe, el hero queda plano. */
+  /* ---------- La historia: escena fija, paneles encima ---------- */
+  .historia{ position:relative; }
+  .historia-escena{
+    position:sticky; top:0; height:100vh; height:100svh;
+    z-index:0; pointer-events:none; overflow:hidden;
+  }
+  #gafas3d{
+    position:absolute; inset:0; width:100%; height:100%; display:block;
+    opacity:0; transition:opacity .8s ease;
+  }
+  #gafas3d[data-listo="true"]{ opacity:1; }
+
+  /* Fondo fotografico opcional detras de la escena. Si el .webp del modo
+     no existe, queda plano y no pasa nada. */
   .hero-fondo{ position:absolute; inset:0; z-index:-1; overflow:hidden; }
   .hero-fondo img{ width:100%; height:100%; object-fit:cover; }
-  /* Velo de color sólido, no gradiente (CLAUDE.md: bloques planos). */
+  /* Velo de color solido, no gradiente (CLAUDE.md: bloques planos). */
   .hero-fondo::after{
     content:""; position:absolute; inset:0;
     background:var(--noche); opacity:.74;
     transition:background-color .45s ease;
   }
+
+  /* Los paneles se suben una pantalla para pasar sobre la escena fija. */
+  .historia-paneles{ position:relative; z-index:1; margin-top:-100vh; margin-top:-100svh; }
+  .panel{
+    min-height:100vh; min-height:100svh;
+    display:flex; align-items:flex-end;
+    padding:0 0 64px;
+  }
+
   .wordmark{
     font-family:var(--mono);
     font-weight:200;
-    font-size:clamp(44px, 16vw, 128px);
+    font-size:clamp(40px, 13vw, 104px);
     letter-spacing:.16em;
     line-height:1;
-    margin:0 0 24px;
-    /* el tracking abre a la derecha; se compensa para alinear a la izquierda */
-    text-indent:0;
+    margin:0 0 20px;
   }
-  .hero .posicionamiento{
-    font-size:18px;
-    max-width:34ch;
-    margin:0 0 24px;
-    color:var(--hueso);
+  .titular{
+    font-family:var(--mono);
+    font-weight:200;
+    font-size:clamp(22px, 5.2vw, 40px);
+    line-height:1.15;
+    letter-spacing:.01em;
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .posicionamiento{
+    font-size:17px; max-width:38ch; margin:0 0 24px; color:var(--texto-tenue);
   }
   .badge{
     display:inline-block;
@@ -264,15 +288,38 @@
     border:1px solid var(--linea);
     padding:6px 10px;
     margin:0 0 32px;
+    background:var(--noche);
   }
   .badge b{ color:var(--ambar-texto); font-weight:500; }
 
+  /* Paneles narrativos */
+  .hora{
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.24em; text-transform:uppercase;
+    color:var(--texto-tenue);
+    margin:0 0 20px;
+  }
+  .hora--ambar{ color:var(--ambar-texto); }
+  .hora--rojo{ color:var(--rojo-rlf); }
+  .panel-texto{
+    font-family:var(--mono); font-weight:200;
+    font-size:clamp(24px, 5.6vw, 44px);
+    line-height:1.2; letter-spacing:.01em;
+    margin:0 0 16px; max-width:20ch;
+    text-wrap:balance;
+  }
+  .panel-apoyo{
+    font-size:16px; line-height:1.65; color:var(--texto-tenue);
+    max-width:44ch; margin:0;
+  }
+
   /* ---------- Control de modos ---------- */
-  .modos{ margin-top:40px; }
+  .modos{ margin-top:36px; }
   .modos-opciones{
     display:flex; flex-wrap:wrap; gap:0;
     border:1px solid var(--linea); width:max-content; max-width:100%;
     margin:10px 0 10px;
+    background:var(--noche);
   }
   .modo-btn{
     background:none; border:0; border-right:1px solid var(--linea);
@@ -375,6 +422,11 @@
     th{ width:45%; }
   }
 
+  /* ---------- Honestidad ---------- */
+  .honestidad{ display:grid; gap:16px; max-width:56ch; }
+  .honestidad p{ margin:0; color:var(--texto-tenue); font-size:16px; line-height:1.65; }
+  .honestidad p:first-child{ color:var(--hueso); }
+
   /* ---------- FAQ ---------- */
   details{ border-bottom:1px solid var(--linea); }
   summary{
@@ -406,6 +458,13 @@
   }
 
   /* ---------- Dos columnas desde 768px ---------- */
+  @media (min-width:900px){
+    /* El modelo 3D ocupa la derecha: el texto no lo invade. */
+    .panel .wrap > *{ max-width:min(52%, 620px); }
+    .panel-texto{ max-width:min(52%, 16ch); }
+    .panel{ align-items:center; }
+  }
+
   @media (min-width:768px){
     :root{ --gutter:32px; }
     .seccion{ padding:88px 0; }
@@ -424,7 +483,7 @@
 <!-- 1. NAV -->
 <header class="nav">
   <div class="wrap">
-    <a class="isotipo" href="#top" aria-label="RELIEF — inicio">RLF</a>
+    <a class="marca" href="#top" aria-label="RELIEF — inicio">RELIEF</a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel">
       Carrito (<span id="carritoCount">0</span>)
     </button>
@@ -446,29 +505,84 @@
 
 <main id="top">
 
-  <!-- 2. HERO -->
-  <section class="hero">
-    <div class="hero-fondo" aria-hidden="true"><img id="heroImg" alt="" hidden></div>
-    <div class="wrap">
-      <h1 class="wordmark">RELIEF</h1>
-      <p class="posicionamiento">Lentes con filtro para las horas en que la pantalla te sigue acompañando.</p>
-      <p class="badge"><b>Stock en Bogotá.</b> &nbsp;Entrega en 2-3 días.</p>
-      <div>
-        <a class="btn" href="#combo">Ver el combo</a>
-      </div>
-
-      <div class="modos">
-        <span class="label" id="modosLabel">Vista</span>
-        <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
-          <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
-          <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
-          <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
-          <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
-        </div>
-        <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
-      </div>
+  <!-- 2. LA HISTORIA — escena 3D fija, paneles que pasan por encima -->
+  <div class="historia" id="historia">
+    <div class="historia-escena" aria-hidden="true">
+      <div class="hero-fondo"><img id="heroImg" alt=""></div>
+      <canvas id="gafas3d"></canvas>
     </div>
-  </section>
+
+    <div class="historia-paneles">
+
+      <section class="panel panel--hero">
+        <div class="wrap">
+          <h1 class="wordmark">RELIEF</h1>
+          <p class="titular">Trabajas de noche.<br>Tus ojos también.</p>
+          <p class="posicionamiento">Dos lentes para las horas en que la pantalla no se apaga.</p>
+          <p class="badge"><b>Stock en Bogotá.</b> &nbsp;Entrega en 2-3 días.</p>
+          <div>
+            <a class="btn" href="#combo">Ver el combo</a>
+          </div>
+
+          <div class="modos">
+            <span class="label" id="modosLabel">Vista</span>
+            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
+              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
+              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
+              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
+              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
+            </div>
+            <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="wrap">
+          <p class="hora">11:47 PM</p>
+          <p class="panel-texto">Llevas seis horas frente a la pantalla y todavía te faltan dos.</p>
+          <p class="panel-apoyo">No vas a apagar el computador. Nadie te lo está pidiendo.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="wrap">
+          <p class="hora">Somos RELIEF</p>
+          <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
+          <p class="panel-apoyo">Nada más. Sin catálogo de cien referencias, sin monturas de colores.
+            Esto es para ti si trabajas, juegas o estudias de noche.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="wrap">
+          <p class="hora hora--ambar">12:30 AM</p>
+          <p class="panel-texto">El ámbar es el del turno.</p>
+          <p class="panel-apoyo">Filtra parte de la luz azul de la pantalla y deja el color utilizable:
+            puedes seguir viendo lo que estás haciendo.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="wrap">
+          <p class="hora hora--rojo">2:10 AM</p>
+          <p class="panel-texto">El rojo es el del final.</p>
+          <p class="panel-apoyo">Para la última hora, cuando ya vas a cerrar. Filtra el rango corto
+            del espectro. No es para trabajar ni para conducir.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="wrap">
+          <p class="hora">Mañana, 9:00 AM</p>
+          <p class="panel-texto">Tu pedido sale de Bogotá, no de Shenzhen.</p>
+          <p class="panel-apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
+            Esa es toda la diferencia, y es la única que importa.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
 
   <!-- 3. LOS DOS LENTES -->
   <section class="seccion" id="lentes">
@@ -509,7 +623,36 @@
     </div>
   </section>
 
-  <!-- 6. FAQ -->
+  <!-- 6. LO QUE NO DECIMOS -->
+  <section class="seccion" id="honestidad">
+    <div class="wrap">
+      <p class="label">Transparencia</p>
+      <h2>Lo que no vamos a decirte</h2>
+      <div class="honestidad">
+        <p>No vamos a publicar que estos lentes bloquean 97% de la luz azul. Todavía
+          no tenemos el reporte de transmitancia espectral del lote que estamos
+          vendiendo, y sin ese papel el número sería inventado.</p>
+        <p>Cuando lo tengamos, lo publicamos completo: el reporte entero, no la
+          cifra que mejor nos quede.</p>
+        <p>Tampoco vamos a decirte que vas a dormir mejor. Vendemos lentes con
+          filtro, no promesas de salud.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. RESEÑAS -->
+  <section class="seccion" id="resenas">
+    <div class="wrap">
+      <p class="label">Reseñas</p>
+      <h2>Todavía no tenemos</h2>
+      <p class="bajada">Acabamos de empezar. Cuando haya clientes que hayan recibido
+        el pedido, sus reseñas van acá — con nombre y fecha, sin filtrar las malas.</p>
+      <p><span class="tbd">[TBD] Estructura de reseñas pendiente de decidir: formulario
+        propio o pedido por WhatsApp tras la entrega.</span></p>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
   <section class="seccion" id="faq">
     <div class="wrap">
       <p class="label">Preguntas</p>
@@ -544,7 +687,7 @@
 
 </main>
 
-<!-- 7. FOOTER -->
+<!-- 9. FOOTER -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -694,6 +837,27 @@ document.getElementById('comboCard').innerHTML = `
 `;
 
 activarImagenes(document.getElementById('comboCard'));
+
+/* ---------------- Escena 3D ----------------
+   Se carga en diferido y solo si el navegador puede. Sin WebGL, o si el
+   módulo falla, la historia se queda con su fondo y sigue funcionando:
+   el 3D es una capa encima, nunca un requisito.
+------------------------------------------------- */
+(function(){
+  const canvas = document.getElementById('gafas3d');
+  if (!canvas) return;
+
+  let hayWebGL = false;
+  try {
+    const prueba = document.createElement('canvas');
+    hayWebGL = !!(prueba.getContext('webgl2') || prueba.getContext('webgl'));
+  } catch (e) {}
+  if (!hayWebGL) return;
+
+  import('./assets/js/gafas.js')
+    .then(m => m.iniciarGafas(canvas, document.getElementById('historia')))
+    .catch(() => {});
+})();
 
 /* ---------------- Modos de visualización ----------------
    El catálogo son dos lentes y el sitio son los mismos dos modos: el
