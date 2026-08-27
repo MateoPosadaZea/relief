@@ -33,11 +33,13 @@ function formaLente(ancho, alto, radio) {
 function construirGafas() {
   const gafas = new THREE.Group();
 
-  const ANCHO = 1.02, ALTO = 0.60, RADIO = 0.16, GROSOR = 0.055;
-  const SEPARACION = 0.60;
+  /* Proporciones medidas sobre las fotos del producto: el aro es bastante
+     más rectangular y delgado de lo que asumí al construirlo a ciegas. */
+  const ANCHO = 1.06, ALTO = 0.54, RADIO = 0.07, GROSOR = 0.040;
+  const SEPARACION = 0.585;
 
   const montura = new THREE.MeshPhysicalMaterial({
-    color: 0x2A2A2E, roughness: 0.42, metalness: 0.25, clearcoat: 0.5
+    color: 0x35353A, roughness: 0.48, metalness: 0.18, clearcoat: 0.45
   });
 
   /* El material del lente es compartido: cambiarle el color mueve los dos
@@ -57,8 +59,8 @@ function construirGafas() {
     aro.holes.push(formaLente(ANCHO - GROSOR * 2, ALTO - GROSOR * 2, RADIO - GROSOR));
     const mallaAro = new THREE.Mesh(
       new THREE.ExtrudeGeometry(aro, {
-        depth: 0.10, bevelEnabled: true,
-        bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 2, curveSegments: 24
+        depth: 0.085, bevelEnabled: true,
+        bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 2, curveSegments: 20
       }),
       montura
     );
@@ -83,7 +85,7 @@ function construirGafas() {
         new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 + 0.02), 0.15, -1.05),
         new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 - 0.04), 0.02, -1.42)
       ]),
-      42, 0.028, 12, false
+      42, 0.022, 12, false
     );
     gafas.add(new THREE.Mesh(varilla, montura));
   }
@@ -95,7 +97,7 @@ function construirGafas() {
       new THREE.Vector3(0, 0.15, 0.01),
       new THREE.Vector3(SEPARACION - ANCHO / 2 + 0.03, 0.02, 0)
     ]),
-    28, 0.030, 12, false
+    28, 0.024, 12, false
   );
   gafas.add(new THREE.Mesh(puente, montura));
 
