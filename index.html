@@ -141,7 +141,7 @@
   /* display:block es regla de autor y pisaría el display:none que el
      navegador da a [hidden]; sin el :not(), las fotos que aún no existen
      se renderizan como imagen rota a tamaño completo. */
-  img{ max-width:100%; }
+  img{ max-width:100%; height:auto; }
   img:not([hidden]){ display:block; }
 
   a{ color:inherit; }
@@ -173,6 +173,11 @@
     border:1px solid var(--linea);
     padding:1px 6px;
   }
+
+  /* El nav es sticky: sin esto un salto a #combo o #faq deja el título
+     debajo de la barra. --alto-nav lo mide el JS, porque el aviso de
+     precios provisionales cambia la altura. */
+  [id]{ scroll-margin-top:calc(var(--alto-nav, 60px) + 20px); }
 
   .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
   .seccion h2{
@@ -372,8 +377,10 @@
   .ficha{
     background:var(--noche);
     display:flex; flex-direction:column;
+    min-width:0;
   }
   .ficha-img{
+    min-width:0; overflow:hidden;
     /* El producto es muy apaisado: en móvil un marco 16:10 a ancho completo
        se come media pantalla sin aportar nada. */
     aspect-ratio:2 / 1;
@@ -387,7 +394,7 @@
      transparente, así que se muestra completo y el vacío se funde con la
      tarjeta. Con cover se le cortarían las varillas. */
   .ficha-img img, .combo-img img{
-    width:100%; height:100%; object-fit:contain;
+    width:100%; height:100%; max-width:100%; object-fit:contain;
     padding:8%;
   }
   .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
@@ -420,6 +427,7 @@
   .combo .precio-fila{ align-items:flex-end; gap:24px; }
   .precio-col{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
   .combo-img{
+    min-width:0; overflow:hidden;
     aspect-ratio:2 / 1; background:var(--noche); border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
   }
@@ -470,7 +478,7 @@
     letter-spacing:.18em; text-transform:uppercase;
     color:var(--texto-tenue); margin:0 0 16px;
   }
-  .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto 1fr; gap:0; }
+  .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:0; }
   .datos dt{
     font-family:var(--mono); font-size:11px; letter-spacing:.12em;
     text-transform:uppercase; color:var(--texto-tenue);
@@ -495,17 +503,19 @@
   /* Galería */
   .producto-grid{ display:grid; gap:32px; }
   .galeria-principal{
+    min-width:0; overflow:hidden;
     aspect-ratio:2 / 1; background:var(--noche);
     border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
   }
   .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
-  .galeria-tiras{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:8px; }
+  .galeria-tiras{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; margin-top:8px; }
   .tira{ aspect-ratio:3 / 2; }
   .tira{
     aspect-ratio:1; background:var(--noche); border:1px solid var(--linea);
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; padding:0;
+    min-width:0; overflow:hidden;
   }
   .tira img{ width:100%; height:100%; object-fit:contain; padding:8%; }
   .tira[aria-pressed="true"]{ border-color:var(--hueso); }
@@ -517,7 +527,7 @@
     letter-spacing:.02em; margin:0 0 6px; text-wrap:balance;
   }
   .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
-  .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; }
+  .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; max-width:100%; }
   .cantidad button{
     background:none; border:0; color:var(--hueso); cursor:pointer;
     font-family:var(--mono); font-size:15px; padding:10px 14px;
@@ -594,8 +604,8 @@
   @media (min-width:760px){
     .ficha-img, .combo-img, .galeria-principal{ aspect-ratio:16 / 10; }
     .tira{ aspect-ratio:1; }
-    .dos-columnas{ grid-template-columns:1fr 1fr; gap:56px; }
-    .producto-grid{ grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+    .dos-columnas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:56px; }
+    .producto-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; align-items:start; }
   }
 
   @media (min-width:900px){
@@ -609,9 +619,9 @@
     :root{ --gutter:32px; }
     .seccion{ padding:88px 0; }
     .hero{ padding:112px 0 96px; }
-    .fichas{ grid-template-columns:1fr 1fr; gap:24px; }
-    .combo .combo-grid{ grid-template-columns:1fr 1fr; align-items:center; gap:40px; }
-    .acciones{ grid-template-columns:1fr 1fr; }
+    .fichas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; }
+    .combo .combo-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:40px; }
+    .acciones{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
     .btn--block{ display:inline-block; width:auto; }
   }
 </style>
@@ -1213,6 +1223,18 @@ if (PRECIOS_PROVISIONALES) {
    hay número: los botones de WhatsApp lo dicen en vez de romperse. */
 const WHATSAPP = '';
 
+/* La altura del nav alimenta el scroll-margin de las anclas. Se remide al
+   cambiar el tamaño porque el aviso pasa de una línea a dos. */
+function medirNav() {
+  const nav = document.querySelector('.nav');
+  const aviso = document.querySelector('.aviso-precios');
+  const alto = (nav ? nav.getBoundingClientRect().height : 0)
+             + (aviso ? aviso.getBoundingClientRect().height : 0);
+  document.documentElement.style.setProperty('--alto-nav', Math.round(alto) + 'px');
+}
+window.addEventListener('resize', medirNav);
+medirNav();
+
 /* ---------------- Router ----------------
    Tres vistas sobre el mismo archivo, sin build step ni servidor:
      #/producto/<id>  ficha completa con galería
@@ -1224,6 +1246,8 @@ const home          = document.getElementById('top');
 const vistaProducto = document.getElementById('vistaProducto');
 const vistaCheckout = document.getElementById('vistaCheckout');
 
+let vistaActual = null;
+
 function navegar() {
   const ruta = location.hash.replace(/^#\/?/, '');
   const partes = ruta.split('/');
@@ -1234,17 +1258,34 @@ function navegar() {
      encima de la vista nueva y el botón del nav aparenta no responder. */
   cerrarCarrito();
 
+  let nueva;
   if (partes[0] === 'producto' && porId(partes[1])) {
     pintarProducto(porId(partes[1]));
     vistaProducto.hidden = false;
+    nueva = 'producto:' + partes[1];
   } else if (partes[0] === 'checkout') {
     pintarCheckout();
     vistaCheckout.hidden = false;
+    nueva = 'checkout';
   } else {
     home.hidden = false;
+    nueva = 'home';
   }
-  /* Cada vista empieza arriba; si no, se entra a mitad de página. */
-  window.scrollTo(0, 0);
+
+  const cambioVista = nueva !== vistaActual;
+  vistaActual = nueva;
+
+  /* Un hash como #combo o #faq es un ancla de la home, no una vista. Sin
+     esto el router lo trataba como "volver a la home" y hacía scroll a cero,
+     cancelando el salto: el único CTA del hero no llevaba a ninguna parte. */
+  if (nueva === 'home') {
+    const id = location.hash.replace(/^#/, '');
+    const destino = id ? document.getElementById(id) : null;
+    if (destino) { destino.scrollIntoView(); return; }
+  }
+
+  /* Solo se sube al entrar a una vista distinta. */
+  if (cambioVista) window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', navegar);
 
