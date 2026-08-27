@@ -23,17 +23,37 @@
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='11' font-weight='500' letter-spacing='0.5' text-anchor='middle' fill='%23fff'%3ERLF%3C/text%3E%3C/svg%3E">
 
+<script>
+/* Antes del primer paint: sin esto la página parpadea en noche y luego
+   salta al modo guardado. Es el único JS que no vive al final. */
+(function(){
+  var MODOS = ['noche','dia','trabajo','descanso'];
+  var m;
+  try { m = localStorage.getItem('relief.modo.v1'); } catch (e) {}
+  document.documentElement.dataset.modo = MODOS.indexOf(m) > -1 ? m : 'noche';
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@200;400;500&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    /* Paleta — tokens exactos de CLAUDE.md § Marca */
+  /* ------------------------------------------------------------------
+     MODOS. El catálogo son dos lentes; el sitio son los mismos dos modos.
+     Los nombres de token vienen de CLAUDE.md § Marca y describen el rol
+     (--noche = fondo, --hueso = texto), no el color literal: en cada modo
+     el token guarda el color que cumple ese rol.
+     Todas las combinaciones texto/fondo verificadas contra WCAG AA (4.5:1).
+  ------------------------------------------------------------------ */
+  :root,
+  :root[data-modo="noche"]{
+    /* NOCHE — por defecto. Tokens exactos de la tabla de CLAUDE.md. */
     --noche:       #0B0B0C;
     --superficie:  #16161A;
     --hueso:       #EDEBE6;
     --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
     --rojo-rlf:    #D91F26;
     --linea:       #26262B;
     --texto-tenue: #8A8A90;
@@ -48,13 +68,63 @@
     --gutter: 20px;
   }
 
+  /* DÍA — para quien entra a las 2pm. Fondo hueso, nunca blanco puro.
+     El ámbar de la tabla no alcanza contraste como texto sobre claro:
+     --ambar-texto lo oscurece manteniendo el tono. */
+  :root[data-modo="dia"]{
+    --noche:       #EDEBE6;
+    --superficie:  #E2DED6;
+    --hueso:       #16161A;
+    --ambar:       #F2A93B;
+    --ambar-texto: #8A5A0B;
+    --rojo-rlf:    #C41A20;
+    --linea:       #D2CEC5;
+    --texto-tenue: #5F5F66;
+  }
+
+  /* TRABAJO — aproximación del lente ámbar: azules fuera, todo cálido. */
+  :root[data-modo="trabajo"]{
+    --noche:       #100C07;
+    --superficie:  #1C1610;
+    --hueso:       #F2E6D2;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #2E2519;
+    --texto-tenue: #A08F73;
+  }
+
+  /* DESCANSO — aproximación del lente rojo: el rango corto del espectro
+     fuera, la página entera baja de intensidad. */
+  :root[data-modo="descanso"]{
+    --noche:       #0D0708;
+    --superficie:  #1A0F10;
+    --hueso:       #EDD5D2;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #2F1B1C;
+    --texto-tenue: #A47F7C;
+  }
+
   *,*::before,*::after{ box-sizing:border-box; }
+
+  /* El cambio de modo se siente, no se salta. */
+  .nav, .ficha, .combo, .ficha-img, .combo-img, .btn, .badge, .tbd,
+  .carrito-panel, .carrito-btn, details, th, td, .carrito-linea{
+    transition:background-color .45s ease, color .45s ease,
+               border-color .45s ease;
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{ transition:none !important; animation:none !important; }
+  }
 
   html{ -webkit-text-size-adjust:100%; }
 
   body{
     margin:0;
     background:var(--noche);
+    transition:background-color .45s ease, color .45s ease;
     color:var(--hueso);
     font-family:var(--sans);
     font-weight:300;
@@ -63,7 +133,11 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  img{ max-width:100%; display:block; }
+  /* display:block es regla de autor y pisaría el display:none que el
+     navegador da a [hidden]; sin el :not(), las fotos que aún no existen
+     se renderizan como imagen rota a tamaño completo. */
+  img{ max-width:100%; }
+  img:not([hidden]){ display:block; }
 
   a{ color:inherit; }
 
@@ -156,7 +230,16 @@
   }
 
   /* ---------- Hero ---------- */
-  .hero{ padding:72px 0 64px; }
+  .hero{ padding:72px 0 64px; position:relative; isolation:isolate; }
+  /* Fondo opcional: si el .webp del modo no existe, el hero queda plano. */
+  .hero-fondo{ position:absolute; inset:0; z-index:-1; overflow:hidden; }
+  .hero-fondo img{ width:100%; height:100%; object-fit:cover; }
+  /* Velo de color sólido, no gradiente (CLAUDE.md: bloques planos). */
+  .hero-fondo::after{
+    content:""; position:absolute; inset:0;
+    background:var(--noche); opacity:.74;
+    transition:background-color .45s ease;
+  }
   .wordmark{
     font-family:var(--mono);
     font-weight:200;
@@ -182,7 +265,27 @@
     padding:6px 10px;
     margin:0 0 32px;
   }
-  .badge b{ color:var(--ambar); font-weight:500; }
+  .badge b{ color:var(--ambar-texto); font-weight:500; }
+
+  /* ---------- Control de modos ---------- */
+  .modos{ margin-top:40px; }
+  .modos-opciones{
+    display:flex; flex-wrap:wrap; gap:0;
+    border:1px solid var(--linea); width:max-content; max-width:100%;
+    margin:10px 0 10px;
+  }
+  .modo-btn{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:10px 14px;
+  }
+  .modo-btn:last-child{ border-right:0; }
+  .modo-btn:hover{ color:var(--hueso); }
+  .modo-btn[aria-pressed="true"]{ background:var(--superficie); color:var(--hueso); }
+  .modo-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
+  .modos-nota{ color:var(--texto-tenue); font-size:13px; margin:0; max-width:44ch; }
 
   /* ---------- Botones ---------- */
   .btn{
@@ -345,12 +448,24 @@
 
   <!-- 2. HERO -->
   <section class="hero">
+    <div class="hero-fondo" aria-hidden="true"><img id="heroImg" alt="" hidden></div>
     <div class="wrap">
       <h1 class="wordmark">RELIEF</h1>
       <p class="posicionamiento">Lentes con filtro para las horas en que la pantalla te sigue acompañando.</p>
       <p class="badge"><b>Stock en Bogotá.</b> &nbsp;Entrega en 2-3 días.</p>
       <div>
         <a class="btn" href="#combo">Ver el combo</a>
+      </div>
+
+      <div class="modos">
+        <span class="label" id="modosLabel">Vista</span>
+        <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
+          <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
+          <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
+          <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
+          <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
+        </div>
+        <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
       </div>
     </div>
   </section>
@@ -579,6 +694,53 @@ document.getElementById('comboCard').innerHTML = `
 `;
 
 activarImagenes(document.getElementById('comboCard'));
+
+/* ---------------- Modos de visualización ----------------
+   El catálogo son dos lentes y el sitio son los mismos dos modos: el
+   producto se demuestra solo. Día y noche son temas; trabajo y descanso
+   aproximan cada lente.
+   Cada modo trae su propia foto de hero; si el archivo no existe, el
+   hero se queda plano (que es el estado de hoy).
+--------------------------------------------------------- */
+const CLAVE_MODO = 'relief.modo.v1';
+
+const MODOS = {
+  dia:      { fondoBarra: '#EDEBE6', imagen: 'assets/img/hero.webp' },
+  noche:    { fondoBarra: '#0B0B0C', imagen: 'assets/img/hero.webp' },
+  trabajo:  { fondoBarra: '#100C07', imagen: 'assets/img/trabajo.webp' },
+  descanso: { fondoBarra: '#0D0708', imagen: 'assets/img/dormir.webp' }
+};
+
+const heroImg = document.getElementById('heroImg');
+const botonesModo = [...document.querySelectorAll('[data-modo-set]')];
+
+function aplicarModo(modo, persistir){
+  if (!MODOS[modo]) modo = 'noche';
+  document.documentElement.dataset.modo = modo;
+
+  botonesModo.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modoSet === modo)));
+
+  const barra = document.querySelector('meta[name="theme-color"]');
+  if (barra) barra.setAttribute('content', MODOS[modo].fondoBarra);
+
+  /* La foto solo aparece si carga; si no existe, el hero sigue plano. */
+  heroImg.hidden = true;
+  heroImg.src = MODOS[modo].imagen;
+
+  if (persistir) {
+    try { localStorage.setItem(CLAVE_MODO, modo); } catch (e) {}
+  }
+}
+
+heroImg.addEventListener('load', () => { heroImg.hidden = false; });
+heroImg.addEventListener('error', () => { heroImg.hidden = true; });
+
+botonesModo.forEach(b => {
+  b.addEventListener('click', () => aplicarModo(b.dataset.modoSet, true));
+});
+
+/* El modo ya lo fijó el script del <head>; acá solo se sincroniza la UI. */
+aplicarModo(document.documentElement.dataset.modo, false);
 
 /* ---------------- Carrito (localStorage) ---------------- */
 const CLAVE_CARRITO = 'relief.carrito.v1';

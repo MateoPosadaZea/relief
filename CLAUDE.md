@@ -66,6 +66,32 @@ Es el único riesgo de capital aprobado del proyecto.
 - Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
 - Favicon / app icon: isotipo RLF rojo.
 
+### Modos de visualización
+El catálogo son dos lentes; el sitio son los mismos dos modos. **El producto se
+demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
+
+| Modo | Qué es | Fondo |
+|---|---|---|
+| **Noche** | Por defecto. Tokens exactos de la tabla de arriba. | `#0B0B0C` |
+| **Día** | Para quien entra a las 2pm. Fondo hueso, nunca blanco puro. | `#EDEBE6` |
+| **Trabajo** | Aproximación del lente ámbar: azules fuera, todo cálido. | `#100C07` |
+| **Descanso** | Aproximación del lente rojo: la página baja de intensidad. | `#0D0708` |
+
+- Se implementan como `:root[data-modo="..."]` redefiniendo los mismos siete
+  tokens. Ninguna regla CSS conoce un hex.
+- Los nombres de token describen el **rol**, no el color literal: en modo día,
+  `--noche` guarda el color de fondo claro y `--hueso` el texto oscuro.
+- `--ambar-texto` es un token derivado: el ámbar de la tabla no alcanza 4.5:1
+  como texto sobre fondo claro, así que en modo día se oscurece conservando el
+  tono. En los tres modos oscuros es idéntico a `--ambar`.
+- El rojo del botón de compra **no cambia** entre modos: el CTA tiene que seguir
+  siendo reconocible.
+- Toda combinación texto/fondo verificada contra WCAG AA (4.5:1) en los 4 modos.
+- El modo se guarda en `localStorage` y se aplica en un script inline del
+  `<head>`, antes del primer paint. Es el único JS que no vive al final.
+- ⚠ El copy de los modos es **descriptivo, nunca clínico**. "Aproximación visual
+  de cada lente", jamás "reduce la fatiga" ni "te ayuda a dormir".
+
 ## Arquitectura Fase 1
 ```
 relief/
@@ -102,7 +128,10 @@ relief/
 - [ ] Cotización del proveedor: precio unitario por volumen y MOQ.
 - [ ] Precio de venta y costo landed (producto + flete + arancel + IVA).
 - [ ] Reporte de transmitancia espectral del proveedor (habilita o no las claims técnicas).
-- [ ] Fotos de producto. Ojo: fondo negro exige fotos recortadas o de fondo limpio.
+- [ ] Fotos de producto (`ambar.webp`, `rojo.webp`, `combo.webp`) y de marca
+      (`hero.webp`, `trabajo.webp`, `dormir.webp`, `og.png`). Los slots ya
+      existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
+      exige fotos recortadas o de fondo limpio.
 - [ ] Dominio (~$50.000 COP/año). Único gasto fijo aprobado.
 - [ ] Nombre legal / quién factura (persona natural sirve para arrancar con Wompi).
 
