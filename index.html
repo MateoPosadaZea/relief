@@ -377,6 +377,10 @@
     width:100%; height:100%; object-fit:contain;
     padding:8%;
   }
+  .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
+  .ficha-enlace:hover .ficha-img,
+  .ficha-enlace:hover .combo-img{ border-color:var(--texto-tenue); }
+  .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
     font-family:var(--mono); font-weight:500; font-size:16px;
     letter-spacing:.06em; text-transform:uppercase;
@@ -446,6 +450,116 @@
   details[open] summary::after{ content:"−"; }
   details .respuesta{ padding:0 0 18px; color:var(--texto-tenue); font-size:15px; margin:0; max-width:64ch; }
 
+  /* ---------- Envíos y pagos ---------- */
+  .dos-columnas{ display:grid; gap:40px; }
+  .sub{
+    font-family:var(--mono); font-weight:500; font-size:12px;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--texto-tenue); margin:0 0 16px;
+  }
+  .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto 1fr; gap:0; }
+  .datos dt{
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--texto-tenue);
+    padding:10px 20px 10px 0; border-bottom:1px solid var(--linea);
+  }
+  .datos dd{
+    margin:0; font-size:15px; padding:10px 0;
+    border-bottom:1px solid var(--linea); text-align:right;
+  }
+  .nota{ font-size:14px; color:var(--texto-tenue); margin:0; max-width:44ch; }
+
+  /* ---------- Vistas (producto y checkout) ---------- */
+  .vista{ padding:40px 0 80px; }
+  .volver{
+    display:inline-block; margin-bottom:32px;
+    font-family:var(--mono); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--texto-tenue); text-decoration:none;
+  }
+  .volver:hover{ color:var(--hueso); }
+
+  /* Galería */
+  .producto-grid{ display:grid; gap:32px; }
+  .galeria-principal{
+    aspect-ratio:16 / 10; background:var(--noche);
+    border:1px solid var(--linea);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
+  .galeria-tiras{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:8px; }
+  .tira{
+    aspect-ratio:1; background:var(--noche); border:1px solid var(--linea);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding:0;
+  }
+  .tira img{ width:100%; height:100%; object-fit:contain; padding:8%; }
+  .tira[aria-pressed="true"]{ border-color:var(--hueso); }
+  .tira:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
+  .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
+
+  .producto-titulo{
+    font-family:var(--mono); font-weight:200; font-size:clamp(26px, 6vw, 40px);
+    letter-spacing:.02em; margin:0 0 6px; text-wrap:balance;
+  }
+  .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
+  .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; }
+  .cantidad button{
+    background:none; border:0; color:var(--hueso); cursor:pointer;
+    font-family:var(--mono); font-size:15px; padding:10px 14px;
+  }
+  .cantidad button:hover{ background:var(--superficie); }
+  .cantidad span{
+    font-family:var(--mono); font-size:14px; min-width:40px; text-align:center;
+    border-left:1px solid var(--linea); border-right:1px solid var(--linea); padding:10px 0;
+  }
+
+  /* Checkout */
+  .pasos{ display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--linea); margin-bottom:36px; width:max-content; max-width:100%; }
+  .paso-chip{
+    font-family:var(--mono); font-weight:500; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    color:var(--texto-tenue); padding:9px 12px;
+    border-right:1px solid var(--linea);
+  }
+  .paso-chip:last-child{ border-right:0; }
+  .paso-chip[data-estado="activo"]{ background:var(--superficie); color:var(--hueso); }
+  .paso-chip[data-estado="hecho"]{ color:var(--ambar-texto); }
+
+  .campo{ display:grid; gap:6px; margin-bottom:18px; max-width:420px; }
+  .campo label{
+    font-family:var(--mono); font-weight:500; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--texto-tenue);
+  }
+  .campo input, .campo textarea, .campo select{
+    background:var(--noche); border:1px solid var(--linea); color:var(--hueso);
+    font-family:var(--sans); font-size:15px; padding:11px 12px; width:100%;
+  }
+  .campo input:focus, .campo textarea:focus, .campo select:focus{
+    outline:none; border-color:var(--hueso);
+  }
+  .campo .error{ color:var(--rojo-rlf); font-size:12px; min-height:1em; }
+  .campo input[aria-invalid="true"]{ border-color:var(--rojo-rlf); }
+
+  .resumen{ border:1px solid var(--linea); padding:20px; margin-bottom:28px; max-width:520px; }
+  .resumen-linea{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px;
+    padding:10px 0; border-bottom:1px solid var(--linea); font-size:15px;
+  }
+  .resumen-linea:last-of-type{ border-bottom:0; }
+  .resumen-total{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:16px; padding-top:14px; margin-top:6px; border-top:1px solid var(--linea);
+  }
+  .acciones-paso{ display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+
+  .aviso-precios{
+    background:var(--superficie); border-bottom:1px solid var(--linea);
+    font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--texto-tenue);
+    padding:8px 0; text-align:center;
+  }
+
   /* ---------- Footer ---------- */
   .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
   .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
@@ -463,6 +577,11 @@
   }
 
   /* ---------- Dos columnas desde 768px ---------- */
+  @media (min-width:760px){
+    .dos-columnas{ grid-template-columns:1fr 1fr; gap:56px; }
+    .producto-grid{ grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+  }
+
   @media (min-width:900px){
     /* El modelo 3D ocupa la derecha: el texto no lo invade. */
     .panel .wrap > *{ max-width:min(52%, 620px); }
@@ -501,7 +620,7 @@
       </div>
       <div class="carrito-pie">
         <button class="link-tenue" id="carritoVaciar" type="button">Vaciar carrito</button>
-        <span class="tbd">[TBD] Checkout: link de pago Wompi</span>
+        <a class="btn" href="#/checkout" id="irCheckout">Finalizar compra</a>
       </div>
     </div>
   </div>
@@ -656,7 +775,40 @@
     </div>
   </section>
 
-  <!-- 8. FAQ -->
+  <!-- 8. ENVÍOS Y PAGOS -->
+  <section class="seccion" id="envios">
+    <div class="wrap">
+      <p class="label">Envíos y pagos</p>
+      <h2>Cómo llega y cómo se paga</h2>
+      <div class="dos-columnas">
+        <div>
+          <h3 class="sub">Envíos</h3>
+          <dl class="datos">
+            <dt>Bogotá</dt><dd>1-2 días hábiles</dd>
+            <dt>Resto del país</dt><dd>2-3 días hábiles</dd>
+            <dt>Transportadora</dt><dd>Interrapidísimo o Servientrega</dd>
+            <dt>Costo</dt><dd><span class="tbd">[TBD]</span></dd>
+            <dt>Despacho</dt><dd>Desde Bogotá, con stock propio</dd>
+          </dl>
+          <p class="nota">Te enviamos la guía por WhatsApp apenas sale el paquete.</p>
+        </div>
+        <div>
+          <h3 class="sub">Pagos</h3>
+          <dl class="datos">
+            <dt>Tarjeta</dt><dd>Crédito y débito</dd>
+            <dt>PSE</dt><dd>Débito desde tu banco</dd>
+            <dt>Nequi</dt><dd>Sí</dd>
+            <dt>Bancolombia</dt><dd>Botón Bancolombia</dd>
+            <dt>Contraentrega</dt><dd>No, por ahora</dd>
+          </dl>
+          <p class="nota">El pago lo procesa Wompi. Nosotros no vemos ni guardamos
+            los datos de tu tarjeta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FAQ -->
   <section class="seccion" id="faq">
     <div class="wrap">
       <p class="label">Preguntas</p>
@@ -691,7 +843,11 @@
 
 </main>
 
-<!-- 9. FOOTER -->
+<!-- VISTAS: tapan la home cuando la ruta lo pide. Se rellenan desde JS. -->
+<div class="vista" id="vistaProducto" hidden></div>
+<div class="vista" id="vistaCheckout" hidden></div>
+
+<!-- 10. FOOTER -->
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -712,14 +868,26 @@
    imagen: ruta al .webp 16:10. Si el archivo no existe todavía, la
    ficha cae al placeholder [TBD] sola: basta con soltar el archivo.
 ------------------------------------------------------------------ */
+/* ⚠ PRECIOS PROVISIONALES. Son cifras redondas de relleno para poder
+   probar el flujo completo, NO salen de un costo landed. Antes de publicar:
+   poner los precios reales y bajar PRECIOS_PROVISIONALES a false, que apaga
+   el aviso del sitio. */
+const PRECIOS_PROVISIONALES = true;
+
 const PRODUCTOS = [
   {
     id: "rlf-ambar",
     nombre: "RLF Ámbar",
     momento: "Para trabajar",
     descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
-    precio: null,
-    imagen: "assets/img/ambar.webp",
+    detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
+    precio: 129000,
+    imagenes: [
+      "assets/img/ambar.webp",
+      "assets/img/ambar-frente.webp",
+      "assets/img/ambar-lateral.webp",
+      "assets/img/ambar-detalle.webp"
+    ],
     acento: "var(--ambar)",
     linkWompi: "#"
   },
@@ -728,8 +896,14 @@ const PRODUCTOS = [
     nombre: "RLF Rojo",
     momento: "Para dormir",
     descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
-    precio: null,
-    imagen: "assets/img/rojo.webp",
+    detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
+    precio: 129000,
+    imagenes: [
+      "assets/img/rojo.webp",
+      "assets/img/rojo-frente.webp",
+      "assets/img/rojo-lateral.webp",
+      "assets/img/rojo-detalle.webp"
+    ],
     acento: "var(--rojo-rlf)",
     linkWompi: "#"
   },
@@ -738,13 +912,21 @@ const PRODUCTOS = [
     nombre: "Combo rutina nocturna",
     momento: "Trabaja, transiciona, duerme",
     descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
-    precio: null,
-    precioAntes: null,
-    imagen: "assets/img/combo.webp",
+    detalle: "Los dos lentes, que es como están pensados para usarse: el ámbar mientras trabajas y el rojo en la última hora. Sale más barato que comprarlos por separado y llega en el mismo envío.",
+    precio: 199000,
+    precioAntes: 258000,
+    imagenes: [
+      "assets/img/combo.webp",
+      "assets/img/combo-frente.webp",
+      "assets/img/combo-estuches.webp"
+    ],
     acento: "var(--rojo-rlf)",
     linkWompi: "#"
   }
 ];
+
+/* Compatibilidad: el resto del sitio pide `imagen` (la principal). */
+PRODUCTOS.forEach(p => { p.imagen = p.imagenes[0]; });
 
 const COP = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -797,13 +979,15 @@ fichasLentes.innerHTML = PRODUCTOS
   .filter(p => p.id !== 'rlf-combo')
   .map(p => `
     <article class="ficha">
-      <div class="ficha-img">${imagenHTML(p)}</div>
-      <h3>${esc(p.nombre)}</h3>
+      <a class="ficha-enlace" href="#/producto/${p.id}">
+        <div class="ficha-img">${imagenHTML(p)}</div>
+        <h3>${esc(p.nombre)}</h3>
+      </a>
       <p class="momento label">${esc(p.momento)}</p>
       <p class="descripcion">${esc(p.descripcion)}</p>
       <div class="precio-fila">${precioHTML(p.precio)}</div>
       <div class="acciones">
-        <button class="btn btn--block" data-comprar="${p.id}">Comprar</button>
+        <a class="btn btn--block" href="#/producto/${p.id}">Ver detalles</a>
         <button class="btn btn--ghost btn--block" data-agregar="${p.id}">Agregar al carrito</button>
       </div>
       <p class="aviso" data-aviso="${p.id}"></p>
@@ -816,7 +1000,9 @@ activarImagenes(fichasLentes);
 const combo = porId('rlf-combo');
 document.getElementById('comboCard').innerHTML = `
   <div class="combo-grid">
-    <div class="combo-img">${imagenHTML(combo)}</div>
+    <a class="ficha-enlace" href="#/producto/${combo.id}">
+      <div class="combo-img">${imagenHTML(combo)}</div>
+    </a>
     <div>
       <h3>${esc(combo.nombre)}</h3>
       <p class="label">${esc(combo.momento)}</p>
@@ -832,7 +1018,7 @@ document.getElementById('comboCard').innerHTML = `
         </span>
       </div>
       <div class="acciones">
-        <button class="btn btn--block" data-comprar="${combo.id}">Comprar el combo</button>
+        <a class="btn btn--block" href="#/producto/${combo.id}">Ver el combo</a>
         <button class="btn btn--ghost btn--block" data-agregar="${combo.id}">Agregar al carrito</button>
       </div>
       <p class="aviso" data-aviso="${combo.id}"></p>
@@ -969,35 +1155,448 @@ function pintarCarrito(){
     (carrito.length && definidos) ? COP.format(total) : '<span class="tbd">[TBD]</span>';
 }
 
-/* ---------------- Compra: por ahora abre el link de Wompi ---------------- */
-function comprar(id){
-  const p = porId(id);
-  const aviso = document.querySelector(`[data-aviso="${id}"]`);
-  if (p.linkWompi && p.linkWompi !== '#') {
-    window.open(p.linkWompi, '_blank', 'noopener');
-  } else if (aviso) {
-    aviso.innerHTML = '<span class="tbd">[TBD] Link de pago de Wompi pendiente</span>';
-  }
-}
-
 /* ---------------- Eventos ---------------- */
 document.addEventListener('click', ev => {
-  const btn = ev.target.closest('[data-agregar],[data-comprar],[data-quitar]');
+  const btn = ev.target.closest('[data-agregar],[data-quitar]');
   if (!btn) return;
   if (btn.dataset.agregar) agregar(btn.dataset.agregar);
-  else if (btn.dataset.comprar) comprar(btn.dataset.comprar);
   else if (btn.dataset.quitar) quitar(btn.dataset.quitar);
+});
+
+document.getElementById('carritoVaciar').addEventListener('click', () => {
+  guardarCarrito([]);
+  pintarCarrito();
+  if (!vistaCheckout.hidden) { pasoActual = 1; pintarCheckout(); }
 });
 
 const carritoBtn = document.getElementById('carritoBtn');
 const carritoPanel = document.getElementById('carritoPanel');
+
+function abrirCarrito(abierto){
+  carritoPanel.dataset.abierto = String(abierto);
+  carritoBtn.setAttribute('aria-expanded', String(abierto));
+}
+function cerrarCarrito(){ abrirCarrito(false); }
+
 carritoBtn.addEventListener('click', () => {
-  const abierto = carritoPanel.dataset.abierto === 'true';
-  carritoPanel.dataset.abierto = String(!abierto);
-  carritoBtn.setAttribute('aria-expanded', String(!abierto));
+  abrirCarrito(carritoPanel.dataset.abierto !== 'true');
 });
 
 pintarCarrito();
+
+/* ---------------- Aviso de precios provisionales ---------------- */
+if (PRECIOS_PROVISIONALES) {
+  const aviso = document.createElement('div');
+  aviso.className = 'aviso-precios';
+  aviso.textContent = 'Precios provisionales — el sitio todavía no vende';
+  document.body.insertBefore(aviso, document.body.firstChild);
+}
+
+/* ---------------- Contacto ----------------
+   Número en formato internacional sin +, para wa.me. Vacío = todavía no
+   hay número: los botones de WhatsApp lo dicen en vez de romperse. */
+const WHATSAPP = '';
+
+/* ---------------- Router ----------------
+   Tres vistas sobre el mismo archivo, sin build step ni servidor:
+     #/producto/<id>  ficha completa con galería
+     #/checkout       compra paso a paso
+     (nada)           la home
+   El hash funciona en GitHub Pages sin tocar configuración de rutas.
+------------------------------------------- */
+const home          = document.getElementById('top');
+const vistaProducto = document.getElementById('vistaProducto');
+const vistaCheckout = document.getElementById('vistaCheckout');
+
+function navegar() {
+  const ruta = location.hash.replace(/^#\/?/, '');
+  const partes = ruta.split('/');
+
+  home.hidden = vistaProducto.hidden = vistaCheckout.hidden = true;
+
+  /* Al cambiar de vista el panel del carrito se cierra: si no, queda abierto
+     encima de la vista nueva y el botón del nav aparenta no responder. */
+  cerrarCarrito();
+
+  if (partes[0] === 'producto' && porId(partes[1])) {
+    pintarProducto(porId(partes[1]));
+    vistaProducto.hidden = false;
+  } else if (partes[0] === 'checkout') {
+    pintarCheckout();
+    vistaCheckout.hidden = false;
+  } else {
+    home.hidden = false;
+  }
+  /* Cada vista empieza arriba; si no, se entra a mitad de página. */
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', navegar);
+
+/* ---------------- Vista de producto ---------------- */
+let imagenActiva = 0;
+
+function pintarProducto(p) {
+  imagenActiva = 0;
+  vistaProducto.innerHTML = `
+    <div class="wrap">
+      <a class="volver" href="#">← Volver</a>
+      <div class="producto-grid">
+        <div>
+          <div class="galeria-principal" id="galeriaPrincipal"></div>
+          <div class="galeria-tiras" id="galeriaTiras"></div>
+        </div>
+        <div>
+          <p class="label">${esc(p.momento)}</p>
+          <h1 class="producto-titulo">${esc(p.nombre)}</h1>
+          <div class="precio-fila">
+            ${typeof p.precioAntes === 'number' ? precioHTML(p.precioAntes, 'precio--tachado') : ''}
+            ${precioHTML(p.precio)}
+          </div>
+          <p class="producto-detalle">${esc(p.detalle || p.descripcion)}</p>
+
+          <p class="label" style="margin-bottom:8px">Cantidad</p>
+          <div class="cantidad">
+            <button type="button" data-cant="-1" aria-label="Quitar uno">−</button>
+            <span id="cantidadValor">1</span>
+            <button type="button" data-cant="1" aria-label="Agregar uno">+</button>
+          </div>
+
+          <div class="acciones" style="margin-top:20px; max-width:420px">
+            <button class="btn btn--block" data-comprar-ahora="${p.id}">Comprar ahora</button>
+            <button class="btn btn--ghost btn--block" data-agregar-cant="${p.id}">Agregar al carrito</button>
+          </div>
+          <p class="aviso" data-aviso="${p.id}"></p>
+
+          <details style="margin-top:28px">
+            <summary>Especificaciones</summary>
+            <div class="respuesta">
+              <dl class="datos">
+                <dt>Montura</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Lente</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Peso</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Estuche</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Paño</dt><dd><span class="tbd">[TBD]</span></dd>
+              </dl>
+            </div>
+          </details>
+          <details>
+            <summary>Envíos</summary>
+            <p class="respuesta">Despachamos desde Bogotá con stock propio. 1-2 días
+              hábiles en Bogotá, 2-3 en el resto del país, por Interrapidísimo o
+              Servientrega. Costo de envío <span class="tbd">[TBD]</span>. Te mandamos
+              la guía por WhatsApp apenas sale el paquete.</p>
+          </details>
+          <details>
+            <summary>Pagos</summary>
+            <p class="respuesta">Tarjeta de crédito y débito, PSE, Nequi y botón
+              Bancolombia. El pago lo procesa Wompi: nosotros no vemos ni guardamos
+              los datos de tu tarjeta. Contraentrega todavía no.</p>
+          </details>
+          <details>
+            <summary>Devoluciones</summary>
+            <p class="respuesta"><span class="tbd">[TBD]</span> Falta definir plazo,
+              condiciones y quién asume el flete de retorno.</p>
+          </details>
+        </div>
+      </div>
+    </div>`;
+
+  pintarGaleria(p);
+}
+
+function pintarGaleria(p) {
+  const principal = document.getElementById('galeriaPrincipal');
+  const tiras = document.getElementById('galeriaTiras');
+
+  principal.innerHTML = `<img src="${esc(p.imagenes[imagenActiva])}" alt="${esc(p.nombre)}" hidden>
+                         <span class="tbd">[TBD] Foto ${imagenActiva + 1}</span>`;
+  activarImagenes(principal);
+
+  tiras.innerHTML = p.imagenes.map((src, i) => `
+    <button class="tira" type="button" data-tira="${i}"
+            aria-pressed="${i === imagenActiva}" aria-label="Foto ${i + 1}">
+      <img src="${esc(src)}" alt="" hidden>
+      <span class="tbd">${i + 1}</span>
+    </button>`).join('');
+  activarImagenes(tiras);
+}
+
+/* ---------------- Checkout paso a paso ---------------- */
+const CLAVE_ENVIO = 'relief.envio.v1';
+let pasoActual = 1;
+
+const PASOS = ['Carrito', 'Envío', 'Pago', 'Listo'];
+
+const CAMPOS = [
+  { id: 'nombre',    etiqueta: 'Nombre completo', tipo: 'text',  requerido: true },
+  { id: 'whatsapp',  etiqueta: 'WhatsApp',        tipo: 'tel',   requerido: true,
+    ayuda: '10 dígitos', validar: v => /^\d{10}$/.test(v.replace(/\D/g, '')) ,
+    mensaje: 'Debe tener 10 dígitos' },
+  { id: 'documento', etiqueta: 'Cédula',          tipo: 'text',  requerido: true },
+  { id: 'ciudad',    etiqueta: 'Ciudad',          tipo: 'text',  requerido: true },
+  { id: 'direccion', etiqueta: 'Dirección',       tipo: 'text',  requerido: true },
+  { id: 'notas',     etiqueta: 'Indicaciones (opcional)', tipo: 'text', requerido: false }
+];
+
+function leerEnvio() {
+  try { return JSON.parse(localStorage.getItem(CLAVE_ENVIO)) || {}; } catch (e) { return {}; }
+}
+function guardarEnvio(datos) {
+  try { localStorage.setItem(CLAVE_ENVIO, JSON.stringify(datos)); } catch (e) {}
+}
+
+function totalCarrito() {
+  return leerCarrito().reduce((s, l) => s + (porId(l.id).precio || 0) * l.cantidad, 0);
+}
+
+function chipsHTML() {
+  return `<div class="pasos">` + PASOS.map((n, i) => {
+    const num = i + 1;
+    const estado = num === pasoActual ? 'activo' : (num < pasoActual ? 'hecho' : 'pendiente');
+    return `<span class="paso-chip" data-estado="${estado}">${num}. ${n}</span>`;
+  }).join('') + `</div>`;
+}
+
+function resumenHTML() {
+  const carrito = leerCarrito();
+  if (!carrito.length) return '<p class="carrito-vacio">El carrito está vacío.</p>';
+  return `<div class="resumen">
+    ${carrito.map(l => {
+      const p = porId(l.id);
+      return `<div class="resumen-linea">
+        <span>${esc(p.nombre)} × ${l.cantidad}</span>
+        ${precioHTML(p.precio * l.cantidad)}
+      </div>`;
+    }).join('')}
+    <div class="resumen-total">
+      <span class="label">Total</span>
+      ${precioHTML(totalCarrito())}
+    </div>
+    <p class="nota" style="margin-top:12px">Envío <span class="tbd">[TBD]</span>, se suma al confirmar.</p>
+  </div>`;
+}
+
+function mensajeWhatsapp() {
+  const datos = leerEnvio();
+  const lineas = leerCarrito().map(l => {
+    const p = porId(l.id);
+    return `• ${p.nombre} × ${l.cantidad} — ${COP.format(p.precio * l.cantidad)}`;
+  });
+  return [
+    'Hola RELIEF, quiero confirmar este pedido:',
+    '',
+    ...lineas,
+    `Total: ${COP.format(totalCarrito())}`,
+    '',
+    `Nombre: ${datos.nombre || ''}`,
+    `Cédula: ${datos.documento || ''}`,
+    `Ciudad: ${datos.ciudad || ''}`,
+    `Dirección: ${datos.direccion || ''}`,
+    datos.notas ? `Indicaciones: ${datos.notas}` : ''
+  ].filter(Boolean).join('\n');
+}
+
+function pintarCheckout() {
+  const carrito = leerCarrito();
+  if (!carrito.length) pasoActual = 1;
+  const datos = leerEnvio();
+
+  let cuerpo = '';
+
+  if (pasoActual === 1) {
+    cuerpo = `
+      <h1 class="producto-titulo">Tu carrito</h1>
+      ${carrito.length ? carrito.map(l => {
+        const p = porId(l.id);
+        return `<div class="resumen-linea" style="max-width:520px">
+          <span>${esc(p.nombre)}</span>
+          <span style="display:flex; align-items:center; gap:12px">
+            <span class="cantidad">
+              <button type="button" data-carrito-cant="${p.id}" data-delta="-1" aria-label="Quitar uno">−</button>
+              <span>${l.cantidad}</span>
+              <button type="button" data-carrito-cant="${p.id}" data-delta="1" aria-label="Agregar uno">+</button>
+            </span>
+            ${precioHTML(p.precio * l.cantidad)}
+          </span>
+        </div>`;
+      }).join('') : '<p class="carrito-vacio">El carrito está vacío.</p>'}
+      ${carrito.length ? `<div class="resumen-total" style="max-width:520px">
+        <span class="label">Total</span>${precioHTML(totalCarrito())}
+      </div>` : ''}
+      <div class="acciones-paso">
+        ${carrito.length
+          ? '<button class="btn" data-paso="2">Continuar</button>'
+          : '<a class="btn btn--ghost" href="#">Ver los lentes</a>'}
+      </div>`;
+  }
+
+  if (pasoActual === 2) {
+    cuerpo = `
+      <h1 class="producto-titulo">¿A dónde lo mandamos?</h1>
+      <p class="nota" style="margin-bottom:24px">Estos datos viajan contigo por WhatsApp
+        al confirmar. No se guardan en ningún servidor: viven solo en este navegador.</p>
+      <form id="formEnvio" novalidate>
+        ${CAMPOS.map(c => `
+          <div class="campo">
+            <label for="c-${c.id}">${esc(c.etiqueta)}</label>
+            <input id="c-${c.id}" name="${c.id}" type="${c.tipo}"
+                   value="${esc(datos[c.id] || '')}"
+                   ${c.requerido ? 'required' : ''}
+                   ${c.ayuda ? `placeholder="${esc(c.ayuda)}"` : ''}>
+            <span class="error" data-error="${c.id}"></span>
+          </div>`).join('')}
+        <div class="acciones-paso">
+          <button class="btn btn--ghost" type="button" data-paso="1">Atrás</button>
+          <button class="btn" type="submit">Continuar</button>
+        </div>
+      </form>`;
+  }
+
+  if (pasoActual === 3) {
+    const combo = leerCarrito().length === 1 ? porId(leerCarrito()[0].id) : null;
+    cuerpo = `
+      <h1 class="producto-titulo">Pago</h1>
+      ${resumenHTML()}
+      <div class="resumen" style="margin-bottom:28px">
+        <p class="label" style="margin-bottom:10px">Enviamos a</p>
+        <p style="margin:0; font-size:15px; line-height:1.6">
+          ${esc(datos.nombre || '')}<br>
+          ${esc(datos.direccion || '')}, ${esc(datos.ciudad || '')}<br>
+          WhatsApp ${esc(datos.whatsapp || '')}
+        </p>
+      </div>
+      <p class="nota" style="margin-bottom:20px">Pagas con tarjeta, PSE, Nequi o botón
+        Bancolombia. El cobro lo procesa Wompi.</p>
+      <div class="acciones-paso">
+        <button class="btn btn--ghost" type="button" data-paso="2">Atrás</button>
+        <button class="btn" type="button" data-pagar="${combo ? combo.id : ''}">Pagar con Wompi</button>
+      </div>
+      <p class="aviso" data-aviso="pago"></p>`;
+  }
+
+  if (pasoActual === 4) {
+    const texto = encodeURIComponent(mensajeWhatsapp());
+    cuerpo = `
+      <h1 class="producto-titulo">Falta un paso</h1>
+      <p class="producto-detalle">Mándanos el pedido por WhatsApp para que podamos
+        confirmarlo y despacharlo. Va todo prellenado: solo tienes que darle enviar.</p>
+      <div class="acciones-paso">
+        ${WHATSAPP
+          ? `<a class="btn" href="https://wa.me/${WHATSAPP}?text=${texto}" target="_blank" rel="noopener">Enviar por WhatsApp</a>`
+          : `<span class="tbd">[TBD] Falta el número de WhatsApp</span>`}
+        <button class="btn btn--ghost" type="button" data-vaciar-todo>Empezar de nuevo</button>
+      </div>`;
+  }
+
+  vistaCheckout.innerHTML = `<div class="wrap">
+    <a class="volver" href="#">← Seguir viendo</a>
+    ${chipsHTML()}
+    ${cuerpo}
+  </div>`;
+}
+
+/* ---------------- Eventos de las vistas ---------------- */
+let cantidadProducto = 1;
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-tira],[data-cant],[data-agregar-cant],[data-comprar-ahora],'
+    + '[data-paso],[data-carrito-cant],[data-pagar],[data-vaciar-todo]');
+  if (!b) return;
+
+  /* Galería */
+  if (b.dataset.tira !== undefined) {
+    const p = porId(location.hash.split('/')[2]);
+    if (p) { imagenActiva = Number(b.dataset.tira); pintarGaleria(p); }
+    return;
+  }
+
+  /* Cantidad en la ficha de producto */
+  if (b.dataset.cant) {
+    cantidadProducto = Math.max(1, cantidadProducto + Number(b.dataset.cant));
+    document.getElementById('cantidadValor').textContent = cantidadProducto;
+    return;
+  }
+  if (b.dataset.agregarCant || b.dataset.comprarAhora) {
+    const id = b.dataset.agregarCant || b.dataset.comprarAhora;
+    for (let i = 0; i < cantidadProducto; i++) agregar(id);
+    cantidadProducto = 1;
+    if (b.dataset.comprarAhora) { pasoActual = 1; location.hash = '#/checkout'; }
+    else {
+      const v = document.getElementById('cantidadValor');
+      if (v) v.textContent = '1';
+    }
+    return;
+  }
+
+  /* Navegación entre pasos */
+  if (b.dataset.paso) { pasoActual = Number(b.dataset.paso); pintarCheckout(); return; }
+
+  /* Cantidades dentro del checkout */
+  if (b.dataset.carritoCant) {
+    const delta = Number(b.dataset.delta);
+    const carrito = leerCarrito();
+    const linea = carrito.find(l => l.id === b.dataset.carritoCant);
+    if (linea) {
+      linea.cantidad += delta;
+      guardarCarrito(carrito.filter(l => l.cantidad > 0));
+      pintarCarrito();
+      pintarCheckout();
+    }
+    return;
+  }
+
+  /* Pago */
+  if (b.dataset.pagar !== undefined) {
+    const p = b.dataset.pagar ? porId(b.dataset.pagar) : null;
+    const aviso = document.querySelector('[data-aviso="pago"]');
+    if (p && p.linkWompi && p.linkWompi !== '#') {
+      window.open(p.linkWompi, '_blank', 'noopener');
+      pasoActual = 4; pintarCheckout();
+    } else if (aviso) {
+      aviso.innerHTML = '<span class="tbd">[TBD] Falta el link de pago de Wompi. '
+        + 'Puedes seguir al último paso para ver cómo queda.</span>'
+        + ' <button class="link-tenue" type="button" data-paso="4">Continuar igual</button>';
+    }
+    return;
+  }
+
+  if (b.dataset.vaciarTodo !== undefined) {
+    guardarCarrito([]);
+    pintarCarrito();
+    pasoActual = 1;
+    location.hash = '';
+    return;
+  }
+});
+
+/* Validación del formulario de envío */
+document.addEventListener('submit', ev => {
+  if (ev.target.id !== 'formEnvio') return;
+  ev.preventDefault();
+
+  const datos = {};
+  let valido = true;
+
+  CAMPOS.forEach(c => {
+    const input = document.getElementById('c-' + c.id);
+    const error = document.querySelector(`[data-error="${c.id}"]`);
+    const valor = input.value.trim();
+    datos[c.id] = valor;
+
+    let mensaje = '';
+    if (c.requerido && !valor) mensaje = 'Falta este dato';
+    else if (valor && c.validar && !c.validar(valor)) mensaje = c.mensaje;
+
+    error.textContent = mensaje;
+    input.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+    if (mensaje && valido) { valido = false; input.focus(); }
+  });
+
+  guardarEnvio(datos);
+  if (valido) { pasoActual = 3; pintarCheckout(); }
+});
+
+navegar();
 </script>
 
 </body>

@@ -141,19 +141,48 @@ relief/
 - La llave pública de Wompi SÍ puede ir en el front. Llaves privadas/secretos: JAMÁS
   en este repo ni en este chat.
 
-## Pedidos (Fase 1)
-- Sin base de datos. El comprobante de Wompi + un formulario de datos de envío.
-- Datos de envío: Google Form o mensaje de WhatsApp pre-llenado con el pedido
-  (wa.me con texto armado desde el carrito). Decidir cuál — WhatsApp es menos fricción
-  y es como compra Colombia.
+## Pedidos (Fase 1) — DECIDIDO
+- Sin base de datos. **WhatsApp, no Google Form**: menos fricción y es como compra
+  Colombia. El checkout arma el mensaje con `wa.me` desde el carrito y los datos.
+- Los datos de envío viven en `localStorage`, nunca salen a un servidor. Eso hay que
+  decirlo en el formulario, y ya está dicho.
 - Confirmación y seguimiento por WhatsApp. Envíos: Servientrega / Interrapidísimo.
+
+## Vistas (router por hash)
+Tres vistas sobre el mismo `index.html`, sin build step ni configuración de rutas
+—el hash funciona en GitHub Pages tal cual:
+
+| Ruta | Vista |
+|---|---|
+| *(sin hash)* | La home: historia, catálogo, envíos, FAQ |
+| `#/producto/<id>` | Ficha completa: galería, precio, cantidad, acordeones |
+| `#/checkout` | Compra en 4 pasos |
+
+- Una ruta inválida cae a la home, no a una pantalla en blanco.
+- Cambiar de vista cierra el panel del carrito y sube el scroll a cero.
+
+## Checkout (4 pasos)
+1. **Carrito** — líneas con cantidad editable y total.
+2. **Envío** — nombre, WhatsApp, cédula, ciudad, dirección, indicaciones.
+   Validación propia; los datos persisten en `localStorage`.
+3. **Pago** — resumen + dirección + botón que abre el link de Wompi.
+4. **Listo** — botón de WhatsApp con el pedido ya armado.
+
+⚠ Sin link de Wompi el paso 3 avisa y deja seguir, en vez de romperse. Sin número
+de WhatsApp el paso 4 lo marca `[TBD]`.
 
 ## PENDIENTE (no bloquea el scaffold — usar placeholders)
 - [ ] Hex exacto del rojo, desde el SVG/AI del logo.
 - [ ] Nombres finales de los dos lentes (propuesta: Turno / Apagado, o dejar Ámbar / Rojo).
 - [ ] Cotización del proveedor: precio unitario por volumen y MOQ.
 - [ ] Precio de venta y costo landed (producto + flete + arancel + IVA).
+      ⚠ Hay precios **provisionales** puestos para probar el flujo
+      (129.000 / 129.000 / 199.000 desde 258.000). NO salen de ningún costo real.
+      Al ponerlos de verdad, bajar `PRECIOS_PROVISIONALES` a `false`: eso apaga
+      el aviso que hoy corona el sitio.
 - [ ] Reporte de transmitancia espectral del proveedor (habilita o no las claims técnicas).
+- [ ] Fotos extra para la galería de cada producto (`*-frente`, `*-lateral`,
+      `*-detalle`). La galería ya tiene los slots y cae al `[TBD]` sin ellas.
 - [ ] Fotos de producto (`ambar.webp`, `rojo.webp`, `combo.webp`) y de marca
       (`hero.webp`, `trabajo.webp`, `dormir.webp`, `og.png`). Los slots ya
       existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
