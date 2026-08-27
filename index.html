@@ -356,10 +356,10 @@
 
   /* ---------- Fichas de producto ---------- */
   .fichas{ display:grid; gap:20px; }
+  /* Sin panel ni barra de acento: el color lo pone el lente de la foto,
+     que es lo que dice CLAUDE.md ("los lentes SON la paleta"). */
   .ficha{
-    background:var(--superficie);
-    border-left:3px solid var(--acento, var(--linea));
-    padding:20px;
+    background:var(--noche);
     display:flex; flex-direction:column;
   }
   .ficha-img{
@@ -369,6 +369,7 @@
     display:flex; align-items:center; justify-content:center;
     margin-bottom:20px;
   }
+  /* El recuadro respira sin caja: solo la hairline lo delimita. */
   /* contain, no cover: el recorte viene pegado al producto y con fondo
      transparente, así que se muestra completo y el vacío se funde con la
      tarjeta. Con cover se le cortarían las varillas. */
@@ -392,7 +393,7 @@
   .acciones{ display:grid; gap:8px; }
 
   /* ---------- Combo ---------- */
-  .combo{ background:var(--superficie); border-left:3px solid var(--rojo-rlf); padding:24px 20px; }
+  .combo{ background:var(--noche); }
   .combo .combo-grid{ display:grid; gap:24px; }
   .combo h3{
     font-family:var(--mono); font-weight:200; font-size:24px;
@@ -475,7 +476,6 @@
     .hero{ padding:112px 0 96px; }
     .fichas{ grid-template-columns:1fr 1fr; gap:24px; }
     .combo .combo-grid{ grid-template-columns:1fr 1fr; align-items:center; gap:40px; }
-    .combo{ padding:40px; }
     .acciones{ grid-template-columns:1fr 1fr; }
     .btn--block{ display:inline-block; width:auto; }
   }
@@ -796,7 +796,7 @@ const fichasLentes = document.getElementById('fichasLentes');
 fichasLentes.innerHTML = PRODUCTOS
   .filter(p => p.id !== 'rlf-combo')
   .map(p => `
-    <article class="ficha" style="--acento:${p.acento}">
+    <article class="ficha">
       <div class="ficha-img">${imagenHTML(p)}</div>
       <h3>${esc(p.nombre)}</h3>
       <p class="momento label">${esc(p.momento)}</p>
