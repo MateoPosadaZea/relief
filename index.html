@@ -277,6 +277,21 @@
     padding:0 0 64px;
   }
 
+  /* En móvil el contenido del hero no cabe en una pantalla, y forzarlo a
+     100svh con el texto anclado abajo dejaba media pantalla vacía arriba.
+     Acá fluye: una franja para el modelo 3D y debajo el texto. */
+  @media (max-width:619px){
+    .panel--hero{
+      min-height:0;
+      align-items:flex-start;
+      padding-top:132px;
+      padding-bottom:56px;
+    }
+    .panel--hero .titular{ margin-bottom:14px; }
+    .panel--hero .posicionamiento{ margin-bottom:18px; font-size:16px; }
+    .panel--hero .badge{ margin-bottom:24px; }
+  }
+
   .titular{
     font-family:var(--display); font-stretch:112%;
     font-weight:600;

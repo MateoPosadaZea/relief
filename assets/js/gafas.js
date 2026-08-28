@@ -192,9 +192,13 @@ export function iniciarGafas(canvas, contenedorProgreso) {
       /* En vertical el campo horizontal es mucho más estrecho que el
          vertical: el modelo tiene que ser bastante más pequeño para no
          cortarse, y sube para dejarle la mitad de abajo al texto. */
+      /* Ni tan arriba que quede media pantalla vacía entre el modelo y el
+         texto, ni tan abajo que se le encime al titular. */
+      /* Medido sobre la captura: el lente tiene que caer en la franja
+         entre el nav y el titular. A 0.88 se encimaba al texto. */
       gafas.position.x = -0.02;
-      baseY = 1.42;
-      gafas.scale.setScalar(0.36);
+      baseY = 1.50;
+      gafas.scale.setScalar(0.40);
       camara.position.z = 5.8;
     }
   }
