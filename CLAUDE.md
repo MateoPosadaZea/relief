@@ -134,6 +134,29 @@ relief/
 └── deploy.sh       # git add . && git commit && git push (Pages publica solo)
 ```
 
+## Infraestructura (DECIDIDO)
+| Qué | Dónde | Costo |
+|---|---|---|
+| Código | GitHub, en una **Organización**, no en una cuenta personal | $0 |
+| Sitio | Cloudflare Pages, conectado al repo | $0 |
+| DNS + dominio | Cloudflare (Registrar vende a precio de costo) | ~$11-35 USD/año |
+| Worker de la firma Wompi (Fase 2) | Cloudflare Workers | $0 |
+| Correo del dominio | Cloudflare Email Routing (solo recibe) | $0 |
+| Analítica | Cloudflare Web Analytics (sin cookies, sin banner) | $0 |
+
+- **Cloudflare y no GitHub Pages** por tres razones: el Worker de Wompi ya estaba
+  previsto ahí, Pages gratis permite repo **privado** (GitHub Pages gratis obliga a
+  repo público, y este repo tiene precios provisionales y estrategia), y Cloudflare
+  tiene presencia en Bogotá.
+- **Los activos los posee el negocio, no una persona.** Cuenta de Cloudflare con
+  correo neutro que ambos socios controlan; repo en una Organización de GitHub con
+  los dos como Owners. Quién pone la tarjeta es indiferente: pagar no es ser dueño.
+- ⚠ **Crear la cuenta correcta ANTES de comprar el dominio.** Tras registrarlo hay
+  bloqueo de transferencia de 60 días, y mover un dominio entre cuentas después es
+  un dolor de cabeza evitable.
+- ⚠ La cuenta de **Wompi es la excepción**: va a nombre de quien factura legalmente.
+  Esa no se comparte de forma neutra (ver PENDIENTE: nombre legal).
+
 ## Pagos (Wompi)
 - Plan agregador estándar: sin mensualidad, ~2.65% + $700 + IVA por transacción.
   Medios: tarjetas, PSE, Nequi, botón Bancolombia.
