@@ -137,7 +137,7 @@ function construirGafas() {
   return { gafas, cristal };
 }
 
-export function iniciarGafas(canvas, contenedorProgreso) {
+export function iniciarGafas(canvas, contenedorProgreso, paneles) {
   const renderer = new THREE.WebGLRenderer({
     canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
   });
@@ -167,6 +167,26 @@ export function iniciarGafas(canvas, contenedorProgreso) {
 
   const colorAmbar = new THREE.Color(AMBAR);
   const colorRojo  = new THREE.Color(ROJO);
+  /* Color actual del cristal. Persigue al del panel que se esté leyendo. */
+  const colorActual = new THREE.Color(AMBAR);
+
+  /* El color NO se interpola a lo largo de todo el scroll: así, al llegar al
+     panel del ámbar, el cristal ya iba a mitad de camino hacia el rojo. Cada
+     panel declara su lente con data-lente y el cristal se adapta al que se
+     esté leyendo. */
+  function colorDelPanel() {
+    if (!paneles || !paneles.length) return colorAmbar;
+    const medio = window.innerHeight / 2;
+    let elegido = null, cerca = Infinity;
+    for (const p of paneles) {
+      const r = p.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) continue;
+      const d = Math.abs((r.top + r.bottom) / 2 - medio);
+      if (d < cerca) { cerca = d; elegido = p; }
+    }
+    if (!elegido) return colorActual;
+    return elegido.dataset.lente === 'rojo' ? colorRojo : colorAmbar;
+  }
 
   let progreso = 0;      // 0 = arriba de la historia, 1 = al final
   let baseY = 0.05;      // altura del modelo, la fija colocar()
@@ -228,8 +248,8 @@ export function iniciarGafas(canvas, contenedorProgreso) {
     gafas.rotation.x = (0.20 - progreso * 0.16);
     gafas.rotation.z = (0.06 - progreso * 0.06);
     gafas.position.y = baseY + progreso * 0.06;
-    cristal.color.copy(colorAmbar).lerp(colorRojo, progreso);
-    cristal.emissive.copy(colorAmbar).lerp(colorRojo, progreso);
+    cristal.color.copy(colorActual);
+    cristal.emissive.copy(colorActual);
     renderer.render(escena, camara);
   }
 
@@ -238,6 +258,9 @@ export function iniciarGafas(canvas, contenedorProgreso) {
     const objetivo = leerProgreso();
     /* Suavizado: el giro persigue al scroll en vez de pegarse a él. */
     progreso += (objetivo - progreso) * 0.08;
+    /* El cambio de lente también se persigue, para que sea un fundido y no
+       un salto al pasar de un panel al siguiente. */
+    colorActual.lerp(colorDelPanel(), 0.05);
     dibujar();
     requestAnimationFrame(marco);
   }
@@ -262,6 +285,7 @@ export function iniciarGafas(canvas, contenedorProgreso) {
 
   medir();
   progreso = leerProgreso();
+  colorActual.copy(colorDelPanel());
   dibujar();
 
   const quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -269,6 +293,8 @@ export function iniciarGafas(canvas, contenedorProgreso) {
     /* Sin movimiento: se dibuja una vez por scroll, sin bucle. */
     window.addEventListener('scroll', () => {
       progreso = leerProgreso();
+      /* Sin animación: el color salta al del panel, sin fundido. */
+      colorActual.copy(colorDelPanel());
       dibujar();
     }, { passive: true });
   } else {

@@ -675,7 +675,7 @@
 
     <div class="historia-paneles">
 
-      <section class="panel panel--hero">
+      <section data-lente="ambar" class="panel panel--hero">
         <div class="wrap">
           <h1 class="titular">Le pasas horas a la pantalla. Los ojos te lo cobran.</h1>
           <p class="posicionamiento">Dos lentes con filtro para las horas en que la pantalla
@@ -688,7 +688,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section data-lente="ambar" class="panel">
         <div class="wrap">
           <p class="hora">11:47 PM</p>
           <p class="panel-texto">Llevas seis horas frente a la pantalla y todavía te faltan dos.</p>
@@ -696,7 +696,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section data-lente="ambar" class="panel">
         <div class="wrap">
           <p class="hora">Somos RELIEF</p>
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
@@ -716,7 +716,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section data-lente="ambar" class="panel">
         <div class="wrap">
           <p class="hora hora--ambar">12:30 AM</p>
           <p class="panel-texto">El ámbar es el del turno.</p>
@@ -725,7 +725,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section data-lente="rojo" class="panel">
         <div class="wrap">
           <p class="hora hora--rojo">2:10 AM</p>
           <p class="panel-texto">El rojo es el del final.</p>
@@ -734,7 +734,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section data-lente="rojo" class="panel">
         <div class="wrap">
           <p class="hora">Mañana, 9:00 AM</p>
           <p class="panel-texto">Tu pedido sale de Bogotá, no de Shenzhen.</p>
@@ -1084,7 +1084,8 @@ activarImagenes(document.getElementById('comboCard'));
   if (!hayWebGL) return;
 
   import('./assets/js/gafas.js')
-    .then(m => m.iniciarGafas(canvas, document.getElementById('historia')))
+    .then(m => m.iniciarGafas(canvas, document.getElementById('historia'),
+                               document.querySelectorAll('.panel[data-lente]')))
     .catch(() => {});
 })();
 
