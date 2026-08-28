@@ -82,11 +82,16 @@ Es el único riesgo de capital aprobado del proyecto.
 | Texto tenue | `#8A8A90` | Secundario |
 
 - ⚠ El rojo `#D91F26` es aproximado del JPEG. **Confirmar el hex exacto del SVG/AI del logo.**
-- **Tipografía**: Geist Mono (display, títulos, precios, nav — mayúsculas con tracking abierto,
-  pesos 200 y 500) + Geist Sans (body). Ambas SIL OFL, gratis para comercial, Google Fonts.
-  Alternativa con más carácter: Martian Mono.
+- **Tipografía**: dos familias, las dos sans y las dos SIL OFL, desde Google Fonts.
+  - **Archivo** (display): titulares, nav, etiquetas y precios. Tiene eje de ancho:
+    `font-stretch:125%` para las etiquetas en mayúsculas (lee a rotulación técnica)
+    y `112%` con peso 600 para los titulares.
+  - **Instrument Sans** (texto): párrafos, descripciones, formularios.
+  - Los precios llevan `font-variant-numeric: tabular-nums` para que las cifras
+    alineen en columna.
   ⚠ Supply Mono (Pangram Pangram) fue el referente visual pero es **de pago** para uso
-  comercial. NO usar.
+  comercial. NO usar. Geist Mono + Geist Sans fue el par anterior: se descartó por
+  falta de carácter.
 - Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
 - Favicon / app icon: isotipo RLF rojo.
 

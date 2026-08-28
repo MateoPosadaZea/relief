@@ -14,8 +14,8 @@ import * as THREE from './vendor/three.module.min.js';
 const AMBAR = 0xF2A93B;
 const ROJO  = 0xD91F26;
 
-/* Perfil del lente: rectángulo de esquinas redondeadas. */
-function formaLente(ancho, alto, radio) {
+/* Rectángulo de esquinas redondeadas, en el plano XY. */
+function rectangulo(ancho, alto, radio) {
   const s = new THREE.Shape();
   const x = -ancho / 2, y = -alto / 2;
   s.moveTo(x + radio, y);
@@ -30,76 +30,109 @@ function formaLente(ancho, alto, radio) {
   return s;
 }
 
+/* Perfil lateral de la varilla: recta que adelgaza y cae sobre la oreja.
+   Se dibuja de lado (X = hacia atrás, Y = alto) y luego se rota. */
+function perfilVarilla(largo) {
+  const s = new THREE.Shape();
+  const a0 = 0.085;            // alto en la bisagra
+  const a1 = 0.052;            // alto donde empieza la caída
+  const caida = 0.20;          // cuánto baja la punta
+  s.moveTo(0, a0 / 2);
+  s.lineTo(largo * 0.70, a1 / 2);
+  s.quadraticCurveTo(largo * 0.94, a1 / 2 - caida * 0.45, largo, a1 / 2 - caida);
+  s.lineTo(largo - 0.035, a1 / 2 - caida - 0.030);
+  s.quadraticCurveTo(largo * 0.93, a1 / 2 - caida * 0.5 - a1, largo * 0.70, -a1 / 2);
+  s.lineTo(0, -a0 / 2);
+  s.closePath();
+  return s;
+}
+
 function construirGafas() {
   const gafas = new THREE.Group();
 
-  /* Proporciones medidas sobre las fotos del producto: el aro es bastante
-     más rectangular y delgado de lo que asumí al construirlo a ciegas. */
-  const ANCHO = 1.06, ALTO = 0.54, RADIO = 0.07, GROSOR = 0.040;
-  const SEPARACION = 0.585;
+  /* Medidas leídas de las fotos del producto: aro bastante rectangular,
+     barra superior recta que cruza toda la frente, y un canto claro
+     encima — es la laminación de dos capas del acetato real. */
+  const ANCHO = 1.02, ALTO = 0.52, RADIO = 0.055, GROSOR = 0.038;
+  const SEPARACION = 0.575;
+  const FONDO = 0.095;                       // profundidad del frente
+  const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
 
   const montura = new THREE.MeshPhysicalMaterial({
-    color: 0x35353A, roughness: 0.48, metalness: 0.18, clearcoat: 0.45
+    color: 0x2F2F34, roughness: 0.45, metalness: 0.15, clearcoat: 0.5, clearcoatRoughness: 0.3
+  });
+  /* El canto claro del borde superior. No es un color de marca: es una
+     característica física del producto, visible en las cuatro fotos. */
+  const canto = new THREE.MeshPhysicalMaterial({
+    color: 0xB9C9DE, roughness: 0.3, metalness: 0.1, clearcoat: 0.6
   });
 
   /* El material del lente es compartido: cambiarle el color mueve los dos
      lentes a la vez cuando avanza la historia. */
   const cristal = new THREE.MeshPhysicalMaterial({
-    color: AMBAR, roughness: 0.08, metalness: 0,
-    transmission: 0.9, thickness: 0.45, ior: 1.52,
-    transparent: true, opacity: 0.62, side: THREE.DoubleSide,
-    emissive: AMBAR, emissiveIntensity: 0.16, specularIntensity: 1
+    color: AMBAR, roughness: 0.06, metalness: 0,
+    transmission: 0.92, thickness: 0.4, ior: 1.52,
+    transparent: true, opacity: 0.6, side: THREE.DoubleSide,
+    emissive: AMBAR, emissiveIntensity: 0.14, specularIntensity: 1
+  });
+
+  const extruir = (forma, prof, bisel) => new THREE.ExtrudeGeometry(forma, {
+    depth: prof, bevelEnabled: bisel,
+    bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 2, curveSegments: 18
   });
 
   for (const lado of [-1, 1]) {
     const x = lado * SEPARACION;
 
-    /* Aro: la forma exterior con la interior como hueco. */
-    const aro = formaLente(ANCHO, ALTO, RADIO);
-    aro.holes.push(formaLente(ANCHO - GROSOR * 2, ALTO - GROSOR * 2, RADIO - GROSOR));
-    const mallaAro = new THREE.Mesh(
-      new THREE.ExtrudeGeometry(aro, {
-        depth: 0.085, bevelEnabled: true,
-        bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 2, curveSegments: 20
-      }),
-      montura
-    );
-    mallaAro.position.set(x, 0, -0.05);
+    const aro = rectangulo(ANCHO, ALTO, RADIO);
+    aro.holes.push(rectangulo(ANCHO - GROSOR * 2, ALTO - GROSOR * 2, RADIO * 0.55));
+    const mallaAro = new THREE.Mesh(extruir(aro, FONDO, true), montura);
+    mallaAro.position.set(x, 0, -FONDO / 2);
     gafas.add(mallaAro);
 
     const mallaCristal = new THREE.Mesh(
-      new THREE.ExtrudeGeometry(formaLente(ANCHO - GROSOR * 1.6, ALTO - GROSOR * 1.6, RADIO - GROSOR), {
-        depth: 0.02, bevelEnabled: false, curveSegments: 24
-      }),
+      extruir(rectangulo(ANCHO - GROSOR * 1.5, ALTO - GROSOR * 1.5, RADIO * 0.6), 0.018, false),
       cristal
     );
-    mallaCristal.position.set(x, 0, -0.01);
+    mallaCristal.position.set(x, 0, -0.02);
     gafas.add(mallaCristal);
 
-    /* Varilla: curva suave hacia atrás, con la caída final sobre la oreja. */
-    const inicio = new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 - 0.02), 0.16, 0.0);
-    const varilla = new THREE.TubeGeometry(
-      new THREE.CatmullRomCurve3([
-        inicio,
-        new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 + 0.05), 0.17, -0.30),
-        new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 + 0.02), 0.15, -1.05),
-        new THREE.Vector3(lado * (SEPARACION + ANCHO / 2 - 0.04), 0.02, -1.42)
-      ]),
-      42, 0.022, 12, false
-    );
-    gafas.add(new THREE.Mesh(varilla, montura));
+    /* Bisagra: el bloque que se ve en las fotos donde entra la varilla. */
+    const bisagra = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.10, FONDO * 0.9), montura);
+    bisagra.position.set(lado * (MEDIO - 0.02), ALTO / 2 - 0.10, -FONDO * 0.45);
+    gafas.add(bisagra);
+
+    /* Varilla plana, no un tubo: en las fotos es una lámina que adelgaza. */
+    const varilla = new THREE.Mesh(extruir(perfilVarilla(1.42), 0.030, true), montura);
+    /* +90°, no -90°: rotando al otro lado el perfil apuntaba hacia adelante
+       y la varilla cruzaba por encima del lente. */
+    varilla.rotation.y = Math.PI / 2;
+    varilla.position.set(lado * (MEDIO - 0.008), ALTO / 2 - 0.105, -FONDO * 0.55);
+    if (lado === -1) varilla.position.x -= 0.030;   // el grosor se extruye hacia +X
+    gafas.add(varilla);
   }
 
-  /* Puente. */
-  const puente = new THREE.TubeGeometry(
-    new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-SEPARACION + ANCHO / 2 - 0.03, 0.02, 0),
-      new THREE.Vector3(0, 0.15, 0.01),
-      new THREE.Vector3(SEPARACION - ANCHO / 2 + 0.03, 0.02, 0)
-    ]),
-    28, 0.024, 12, false
+  /* Barra superior recta que cruza toda la frente, incluido el puente. */
+  const barra = new THREE.Mesh(
+    extruir(rectangulo(MEDIO * 2, 0.088, 0.022), FONDO, true), montura
   );
-  gafas.add(new THREE.Mesh(puente, montura));
+  barra.position.set(0, ALTO / 2 - 0.016, -FONDO / 2);
+  gafas.add(barra);
+
+  /* El canto claro, encima de la barra. */
+  const filo = new THREE.Mesh(
+    extruir(rectangulo(MEDIO * 2 - 0.01, 0.020, 0.008), FONDO * 0.92, false), canto
+  );
+  filo.position.set(0, ALTO / 2 + 0.030, -FONDO * 0.46);
+  gafas.add(filo);
+
+  /* Puente: el arco corto que baja entre los dos aros. */
+  const puente = new THREE.Mesh(
+    new THREE.TorusGeometry(SEPARACION - ANCHO / 2 - 0.004, 0.020, 10, 24, Math.PI),
+    montura
+  );
+  puente.position.set(0, ALTO / 2 - 0.125, -FONDO * 0.30);
+  gafas.add(puente);
 
   return { gafas, cristal };
 }
@@ -239,5 +272,7 @@ export function iniciarGafas(canvas, contenedorProgreso) {
   }
 
   canvas.dataset.listo = 'true';
+  /* `grupo` se expone para poder inspeccionar el modelo desde un banco de
+     pruebas sin tocar la página. */
   return { medir, dibujar };
 }

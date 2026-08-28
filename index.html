@@ -36,7 +36,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@200;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -61,8 +61,11 @@
        sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
     --blanco:      #FFFFFF;
 
-    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* Dos familias, las dos sans y las dos SIL OFL.
+       Archivo trae eje de ancho: expandida (125%) para las etiquetas en
+       mayúsculas, y algo menos abierta (112%) para los titulares. */
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --texto:   "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
     --ancho: 1080px;
     --gutter: 20px;
@@ -131,7 +134,7 @@
     background:var(--noche);
     transition:background-color .45s ease, color .45s ease;
     color:var(--hueso);
-    font-family:var(--sans);
+    font-family:var(--texto);
     font-weight:300;
     font-size:16px;
     line-height:1.6;
@@ -153,11 +156,9 @@
     padding:0 var(--gutter);
   }
 
-  .mono{ font-family:var(--mono); }
-
   /* Label mono en mayúsculas con tracking abierto */
   .label{
-    font-family:var(--mono);
+    font-family:var(--display); font-stretch:125%;
     font-weight:500;
     font-size:11px;
     letter-spacing:.18em;
@@ -166,7 +167,7 @@
   }
 
   .tbd{
-    font-family:var(--mono);
+    font-family:var(--display); font-stretch:125%;
     font-size:11px;
     letter-spacing:.08em;
     color:var(--texto-tenue);
@@ -181,10 +182,10 @@
 
   .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
   .seccion h2{
-    font-family:var(--mono);
-    font-weight:200;
-    font-size:26px;
-    letter-spacing:.02em;
+    font-family:var(--display); font-stretch:112%;
+    font-weight:600;
+    font-size:clamp(24px, 3.4vw, 32px);
+    letter-spacing:-.01em;
     margin:0 0 8px;
   }
   .seccion .bajada{ color:var(--texto-tenue); margin:0 0 32px; max-width:52ch; }
@@ -201,18 +202,18 @@
     display:flex; align-items:center; justify-content:space-between;
   }
   .marca{
-    font-family:var(--mono); font-weight:500; font-size:14px;
-    letter-spacing:.32em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:14px;
+    letter-spacing:.26em; text-transform:uppercase;
     color:var(--hueso); text-decoration:none;
     /* el tracking abre a la derecha; se compensa para que el bloque
        óptico quede alineado con el borde del gutter */
-    margin-right:-.32em;
+    margin-right:-.26em;
   }
   .marca:hover{ color:var(--texto-tenue); }
   .carrito-btn{
     background:none; border:1px solid var(--linea); color:var(--hueso);
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
     padding:7px 12px; cursor:pointer;
   }
   .carrito-btn:hover{ border-color:var(--texto-tenue); }
@@ -235,7 +236,7 @@
   .carrito-pie{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; margin-top:12px; }
   .link-tenue{
     background:none; border:0; padding:0; cursor:pointer;
-    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
     color:var(--texto-tenue); text-decoration:underline;
   }
 
@@ -277,11 +278,11 @@
   }
 
   .titular{
-    font-family:var(--mono);
-    font-weight:200;
-    font-size:clamp(28px, 6.2vw, 48px);
-    line-height:1.14;
-    letter-spacing:.01em;
+    font-family:var(--display); font-stretch:112%;
+    font-weight:600;
+    font-size:clamp(30px, 6.6vw, 56px);
+    line-height:1.08;
+    letter-spacing:-.02em;
     margin:0 0 20px;
     max-width:20ch;
     text-wrap:balance;
@@ -291,8 +292,8 @@
   }
   .badge{
     display:inline-block;
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
     color:var(--hueso);
     border:1px solid var(--linea);
     padding:6px 10px;
@@ -303,17 +304,17 @@
 
   /* Paneles narrativos */
   .hora{
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.24em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.18em; text-transform:uppercase;
     color:var(--texto-tenue);
     margin:0 0 20px;
   }
   .hora--ambar{ color:var(--ambar-texto); }
   .hora--rojo{ color:var(--rojo-rlf); }
   .panel-texto{
-    font-family:var(--mono); font-weight:200;
-    font-size:clamp(24px, 5.6vw, 44px);
-    line-height:1.2; letter-spacing:.01em;
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:clamp(26px, 5.8vw, 46px);
+    line-height:1.1; letter-spacing:-.02em;
     margin:0 0 16px; max-width:20ch;
     text-wrap:balance;
   }
@@ -333,8 +334,8 @@
   .modo-btn{
     background:none; border:0; border-right:1px solid var(--linea);
     color:var(--texto-tenue); cursor:pointer;
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
     padding:10px 14px;
   }
   .modo-btn:last-child{ border-right:0; }
@@ -346,8 +347,8 @@
   /* ---------- Botones ---------- */
   .btn{
     display:inline-block;
-    font-family:var(--mono); font-weight:500; font-size:12px;
-    letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    letter-spacing:.11em; text-transform:uppercase;
     padding:14px 22px;
     border:1px solid var(--rojo-rlf);
     background:var(--rojo-rlf);
@@ -394,14 +395,18 @@
   .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
-    font-family:var(--mono); font-weight:500; font-size:16px;
-    letter-spacing:.06em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:19px;
+    letter-spacing:-.01em;
     margin:0 0 4px;
   }
   .ficha .momento{ margin:0 0 12px; }
   .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
   .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
-  .precio{ font-family:var(--mono); font-weight:500; font-size:22px; letter-spacing:.02em; }
+  .precio{
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:23px; letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums;
+  }
   .precio--tachado{
     font-weight:200; font-size:16px; color:var(--texto-tenue);
     text-decoration:line-through;
@@ -412,8 +417,8 @@
   .combo{ background:var(--noche); }
   .combo .combo-grid{ display:grid; gap:24px; }
   .combo h3{
-    font-family:var(--mono); font-weight:200; font-size:24px;
-    letter-spacing:.06em; text-transform:uppercase; margin:0 0 8px;
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:26px;
+    letter-spacing:0; margin:0 0 8px;
   }
   .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
   .combo .precio-fila{ align-items:flex-end; gap:24px; }
@@ -429,8 +434,8 @@
   table{ width:100%; border-collapse:collapse; }
   th,td{ text-align:left; padding:12px 0; border-bottom:1px solid var(--linea); vertical-align:top; }
   th{
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--texto-tenue);
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
   }
   td{ font-size:15px; }
   /* Móvil: etiqueta arriba, valor abajo */
@@ -454,7 +459,7 @@
   summary{
     cursor:pointer; list-style:none;
     padding:18px 0;
-    font-family:var(--mono); font-weight:500; font-size:13px;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:13px;
     letter-spacing:.06em;
     display:flex; justify-content:space-between; align-items:center; gap:16px;
   }
@@ -466,13 +471,13 @@
   /* ---------- Envíos y pagos ---------- */
   .dos-columnas{ display:grid; gap:40px; }
   .sub{
-    font-family:var(--mono); font-weight:500; font-size:12px;
-    letter-spacing:.18em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    letter-spacing:.13em; text-transform:uppercase;
     color:var(--texto-tenue); margin:0 0 16px;
   }
   .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:0; }
   .datos dt{
-    font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.12em;
     text-transform:uppercase; color:var(--texto-tenue);
     padding:10px 20px 10px 0; border-bottom:1px solid var(--linea);
   }
@@ -486,8 +491,8 @@
   .vista{ padding:40px 0 80px; }
   .volver{
     display:inline-block; margin-bottom:32px;
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
     color:var(--texto-tenue); text-decoration:none;
   }
   .volver:hover{ color:var(--hueso); }
@@ -515,26 +520,26 @@
   .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
 
   .producto-titulo{
-    font-family:var(--mono); font-weight:200; font-size:clamp(26px, 6vw, 40px);
-    letter-spacing:.02em; margin:0 0 6px; text-wrap:balance;
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:clamp(28px, 6vw, 42px);
+    letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance;
   }
   .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
   .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; max-width:100%; }
   .cantidad button{
     background:none; border:0; color:var(--hueso); cursor:pointer;
-    font-family:var(--mono); font-size:15px; padding:10px 14px;
+    font-family:var(--display); font-stretch:125%; font-size:15px; padding:10px 14px;
   }
   .cantidad button:hover{ background:var(--superficie); }
   .cantidad span{
-    font-family:var(--mono); font-size:14px; min-width:40px; text-align:center;
+    font-family:var(--display); font-stretch:125%; font-size:14px; min-width:40px; text-align:center;
     border-left:1px solid var(--linea); border-right:1px solid var(--linea); padding:10px 0;
   }
 
   /* Checkout */
   .pasos{ display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--linea); margin-bottom:36px; width:max-content; max-width:100%; }
   .paso-chip{
-    font-family:var(--mono); font-weight:500; font-size:10px;
-    letter-spacing:.12em; text-transform:uppercase;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    letter-spacing:.10em; text-transform:uppercase;
     color:var(--texto-tenue); padding:9px 12px;
     border-right:1px solid var(--linea);
   }
@@ -544,12 +549,12 @@
 
   .campo{ display:grid; gap:6px; margin-bottom:18px; max-width:420px; }
   .campo label{
-    font-family:var(--mono); font-weight:500; font-size:10px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--texto-tenue);
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
   }
   .campo input, .campo textarea, .campo select{
     background:var(--noche); border:1px solid var(--linea); color:var(--hueso);
-    font-family:var(--sans); font-size:15px; padding:11px 12px; width:100%;
+    font-family:var(--texto); font-size:15px; padding:11px 12px; width:100%;
   }
   .campo input:focus, .campo textarea:focus, .campo select:focus{
     outline:none; border-color:var(--hueso);
@@ -571,7 +576,7 @@
 
   .aviso-precios{
     background:var(--superficie); border-bottom:1px solid var(--linea);
-    font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.1em;
     text-transform:uppercase; color:var(--texto-tenue);
     padding:8px 0; text-align:center;
   }
@@ -580,8 +585,8 @@
   .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
   .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
   .footer a{
-    font-family:var(--mono); font-weight:500; font-size:11px;
-    letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase; text-decoration:none;
     color:var(--hueso);
   }
   .footer a:hover{ color:var(--texto-tenue); }
