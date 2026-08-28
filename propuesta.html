@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RELIEF — propuesta de hero</title>
+<meta name="description" content="Propuesta: el wordmark ocupa la pantalla y se convierte en el logotipo del nav al hacer scroll, dejándole el protagonismo al modelo 3D.">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="robots" content="noindex">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* Tokens de RELIEF (CLAUDE.md § Marca). La propuesta se queda en modo
+     noche: es donde vive la marca y donde el modelo se ve mejor. */
+  :root{
+    --noche:#0B0B0C; --superficie:#16161A; --hueso:#EDEBE6;
+    --ambar:#F2A93B; --rojo:#D91F26; --linea:#26262B; --tenue:#8A8A90;
+    --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --texto:"Instrument Sans",system-ui,-apple-system,sans-serif;
+    --nav:56px;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--noche); color:var(--hueso);
+    font-family:var(--texto); font-size:16px; line-height:1.65;
+    -webkit-text-size-adjust:100%; overflow-x:clip;
+  }
+  img{ max-width:100%; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; height:var(--nav); z-index:40;
+    border-bottom:1px solid transparent;
+    display:flex; align-items:center; justify-content:flex-end;
+    padding:0 24px;
+    transition:background-color .4s ease, border-color .4s ease;
+  }
+  /* La barra solo se materializa cuando el wordmark ya aterrizó en ella. */
+  .nav[data-posado="true"]{ background:var(--noche); border-bottom-color:var(--linea); }
+  .carrito{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--hueso); text-decoration:none;
+    border:1px solid var(--linea); padding:7px 12px;
+  }
+  .carrito:hover{ border-color:var(--tenue); }
+
+  /* ---------- El wordmark que se encoge ----------
+     Va fijo y a lo ancho, centrado por flex: al escalar sobre su propio
+     centro, el centrado horizontal se mantiene solo y basta con animar
+     la escala y el desplazamiento vertical. Solo se tocan `transform` y
+     `opacity`, que no provocan reflow. */
+  .wordmark{
+    position:fixed; top:0; left:0; right:0; z-index:45;
+    display:flex; justify-content:center;
+    pointer-events:none; will-change:transform;
+  }
+  .wordmark span{
+    display:block;
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:100px; line-height:1; letter-spacing:-.03em;
+    white-space:nowrap; color:var(--hueso);
+    transform-origin:50% 50%;
+    will-change:transform;
+  }
+
+  /* ---------- Escena ---------- */
+  .escena{
+    position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden;
+  }
+  #modelo{
+    position:absolute; inset:0; width:100%; height:100%; display:block;
+    opacity:0; transition:opacity 1s ease; pointer-events:auto;
+  }
+  #modelo[data-listo="true"]{ opacity:1; }
+
+  /* ---------- Recorrido ---------- */
+  .recorrido{ position:relative; z-index:10; }
+  /* El primer tramo es el escenario del wordmark: se deja vacío a propósito,
+     porque ahí la palabra y el modelo son todo el contenido. */
+  .apertura{ height:190vh; display:flex; align-items:flex-end; padding-bottom:12vh; }
+  .apertura .wrap{ width:100%; }
+  .pista{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--tenue); margin:0;
+    display:flex; align-items:center; gap:10px;
+  }
+  .pista::before{ content:""; width:26px; height:1px; background:var(--tenue); }
+
+  .panel{ min-height:100vh; display:flex; align-items:center; padding:14vh 0; }
+  .panel .wrap{ width:100%; }
+  .hora{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--tenue); margin:0 0 18px;
+  }
+  .hora--ambar{ color:var(--ambar); }
+  .hora--rojo{ color:var(--rojo); }
+  h2{
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:clamp(28px,5.4vw,50px); line-height:1.08; letter-spacing:-.025em;
+    margin:0 0 16px; max-width:15ch; text-wrap:balance;
+  }
+  .apoyo{ color:var(--tenue); font-size:16.5px; max-width:40ch; margin:0; }
+
+  /* ---------- Cierre ---------- */
+  .cierre{
+    position:relative; z-index:10; background:var(--noche);
+    border-top:1px solid var(--linea); padding:88px 0 96px;
+  }
+  .cierre h3{
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:clamp(24px,3.6vw,34px); letter-spacing:-.02em; margin:0 0 14px;
+    max-width:20ch;
+  }
+  .cierre p{ color:var(--tenue); max-width:52ch; margin:0 0 28px; }
+  .acciones{ display:flex; flex-wrap:wrap; gap:10px; }
+  .btn{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:11px; letter-spacing:.13em; text-transform:uppercase;
+    padding:14px 20px; text-decoration:none; border:1px solid var(--rojo);
+    background:var(--rojo); color:#fff;
+  }
+  .btn:hover{ background:transparent; color:var(--hueso); }
+  .btn--linea{ background:transparent; border-color:var(--linea); color:var(--hueso); }
+  .btn--linea:hover{ border-color:var(--hueso); }
+  .nota{ color:var(--tenue); font-size:13.5px; margin:26px 0 0; max-width:56ch; }
+
+  @media (min-width:900px){
+    .panel .wrap{ max-width:none; }
+    h2, .apoyo, .hora{ margin-left:0; }
+    .panel--dcha{ justify-content:flex-end; }
+    .panel--dcha .wrap{ text-align:right; }
+    .panel--dcha h2, .panel--dcha .apoyo{ margin-left:auto; }
+    /* El texto se queda en una columna para no taparle el modelo. */
+    .panel .wrap > *{ max-width:min(46%,540px); }
+    .panel--dcha .wrap > *{ margin-left:auto; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="carrito" href="index.html">Ver la tienda</a>
+</header>
+
+<div class="wordmark" id="wordmark" aria-hidden="true"><span id="palabra">RELIEF</span></div>
+<h1 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">RELIEF</h1>
+
+<div class="escena" aria-hidden="true"><canvas id="modelo"></canvas></div>
+
+<div class="recorrido" id="recorrido">
+
+  <section class="apertura" data-lente="ambar">
+    <div class="wrap"><p class="pista">Baja para ver</p></div>
+  </section>
+
+  <section class="panel" data-lente="ambar">
+    <div class="wrap">
+      <p class="hora">11:47 PM</p>
+      <h2>Le pasas horas a la pantalla.</h2>
+      <p class="apoyo">Y todavía te faltan dos. No vas a apagar el computador,
+        y nadie te lo está pidiendo.</p>
+    </div>
+  </section>
+
+  <section class="panel panel--dcha" data-lente="ambar">
+    <div class="wrap">
+      <p class="hora hora--ambar">12:30 AM</p>
+      <h2>El ámbar es el del turno.</h2>
+      <p class="apoyo">Filtra parte de la luz azul y deja el color utilizable:
+        puedes seguir viendo lo que estás haciendo.</p>
+    </div>
+  </section>
+
+  <section class="panel" data-lente="rojo">
+    <div class="wrap">
+      <p class="hora hora--rojo">2:10 AM</p>
+      <h2>El rojo es el del final.</h2>
+      <p class="apoyo">Para la última hora, cuando ya vas a cerrar. Filtra el rango
+        corto del espectro. No es para trabajar ni para conducir.</p>
+    </div>
+  </section>
+
+  <section class="panel panel--dcha" data-lente="rojo">
+    <div class="wrap">
+      <p class="hora">Mañana, 9:00 AM</p>
+      <h2>Sale de Bogotá, no de Shenzhen.</h2>
+      <p class="apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
+        Esa es toda la diferencia, y es la única que importa.</p>
+    </div>
+  </section>
+
+</div>
+
+<section class="cierre">
+  <div class="wrap">
+    <h3>Esto es una propuesta de hero, no la tienda.</h3>
+    <p>El wordmark ocupa la pantalla completa y se convierte en el logotipo del nav
+      a medida que bajas, dejándole el escenario al modelo. Puedes arrastrar las
+      gafas para girarlas en cualquier momento.</p>
+    <div class="acciones">
+      <a class="btn" href="index.html">Ir a la tienda actual</a>
+      <a class="btn btn--linea" href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false;">Volver arriba</a>
+    </div>
+    <p class="nota">La versión que ya está construida —catálogo, ficha de producto con
+      visor 3D y checkout de cuatro pasos— sigue intacta en <code>index.html</code>.
+      Esta página no reemplaza nada.</p>
+  </div>
+</section>
+
+<script>
+/* ------------------------------------------------------------------
+   El wordmark: de ocupar la pantalla a ser el logotipo del nav.
+
+   Se mide el ancho natural de la palabra una sola vez y de ahí salen las
+   dos escalas — la que la lleva de punta a punta y la del nav. El scroll
+   solo interpola entre esas dos, tocando únicamente `transform`.
+------------------------------------------------------------------ */
+(function(){
+  const marco  = document.getElementById('wordmark');
+  const palabra = document.getElementById('palabra');
+  const nav    = document.getElementById('nav');
+  if (!marco || !palabra) return;
+
+  const ANCHO_NAV = 104;            // ancho final del logotipo, en px
+  const MARGEN    = 28;             // aire a cada lado cuando ocupa la pantalla
+
+  let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
+
+  function medir() {
+    /* Se mide sin transformación para tener el tamaño natural. */
+    palabra.style.transform = 'none';
+    const caja = palabra.getBoundingClientRect();
+    const ancho = caja.width || 1;
+    const alto  = caja.height || 1;
+
+    const vw = document.documentElement.clientWidth;
+    const vh = window.innerHeight;
+    const alturaNav = parseFloat(getComputedStyle(document.documentElement)
+                        .getPropertyValue('--nav')) || 56;
+
+    escalaGrande = Math.max(0.2, (vw - MARGEN * 2) / ancho);
+    escalaChica  = ANCHO_NAV / ancho;
+
+    /* El centro visual queda en `y + alto/2`; se despeja para dejarlo donde
+       toca en cada extremo. */
+    yInicio = vh * 0.46 - alto / 2;
+    yFin    = alturaNav / 2 - alto / 2;
+
+    /* El morphing ocurre a lo largo de la primera pantalla y media. */
+    recorrido = Math.max(1, vh * 1.15);
+    aplicar();
+  }
+
+  /* Suavizado: arranca despacio, acelera y frena. Sin esto el encogimiento
+     se siente lineal y mecánico. */
+  const suave = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+
+  function aplicar() {
+    const t = suave(Math.min(1, Math.max(0, window.scrollY / recorrido)));
+    const escala = escalaGrande + (escalaChica - escalaGrande) * t;
+    const y      = yInicio + (yFin - yInicio) * t;
+    palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
+    /* La barra aparece solo cuando la palabra ya casi aterrizó. */
+    nav.dataset.posado = t > 0.92 ? 'true' : 'false';
+  }
+
+  let pedido = false;
+  addEventListener('scroll', () => {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(() => { aplicar(); pedido = false; });
+  }, { passive: true });
+  addEventListener('resize', medir);
+
+  /* Se remide cuando la tipografía real ya cargó: medir con la de respaldo
+     daría un ancho distinto y el wordmark no quedaría de punta a punta. */
+  medir();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
+})();
+
+/* ---------------- Modelo 3D ---------------- */
+(function(){
+  const canvas = document.getElementById('modelo');
+  if (!canvas) return;
+  let puede = false;
+  try {
+    const p = document.createElement('canvas');
+    puede = !!(p.getContext('webgl2') || p.getContext('webgl'));
+  } catch (e) {}
+  if (!puede) return;
+  import('./assets/js/propuesta.js')
+    .then(m => m.iniciarEscena(canvas, document.getElementById('recorrido'),
+                               document.querySelectorAll('[data-lente]')))
+    .catch(() => {});
+})();
+</script>
+</body>
+</html>

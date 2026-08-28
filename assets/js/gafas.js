@@ -47,7 +47,7 @@ function perfilVarilla(largo) {
   return s;
 }
 
-function construirGafas() {
+export function construirGafas() {
   const gafas = new THREE.Group();
 
   /* Medidas leídas de las fotos del producto: aro bastante rectangular,
