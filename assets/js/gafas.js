@@ -306,3 +306,119 @@ export function iniciarGafas(canvas, contenedorProgreso, paneles) {
      pruebas sin tocar la página. */
   return { medir, dibujar };
 }
+
+/* ------------------------------------------------------------------
+   Visor de producto.
+
+   El mismo modelo, pero al servicio de la decisión de compra: centrado,
+   con el color del lente de ESE producto y girable con el dedo. No hay
+   scroll de por medio — acá el usuario manda.
+------------------------------------------------------------------ */
+export function iniciarVisor(canvas, opciones = {}) {
+  const renderer = new THREE.WebGLRenderer({
+    canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+
+  const escena = new THREE.Scene();
+  const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camara.position.set(0, 0, 4.35);
+
+  const { gafas, cristal } = construirGafas();
+  escena.add(gafas);
+
+  escena.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const key = new THREE.DirectionalLight(0xfff2e0, 2.6);
+  key.position.set(-2.2, 3.0, 2.6); escena.add(key);
+  const rim = new THREE.DirectionalLight(0xbcd4ff, 3.4);
+  rim.position.set(1.8, 1.4, -2.6); escena.add(rim);
+  const relleno = new THREE.DirectionalLight(0xffffff, 0.5);
+  relleno.position.set(2.4, -1.2, 1.8); escena.add(relleno);
+
+  /* Recibe el nombre del lente, no el hex: así el visor habla el mismo
+     vocabulario que el catálogo ('ambar' | 'rojo') y quien lo llama no
+     tiene que conocer los colores. Pasarle un hex directo haría que
+     THREE.Color.set() no reconociera el valor y solo avisara por consola. */
+  function pintarLente(cual) {
+    const hex = cual === 'rojo' ? ROJO : AMBAR;
+    cristal.color.set(hex);
+    cristal.emissive.set(hex);
+  }
+  pintarLente(opciones.color);
+
+  /* Estado del giro. `objetivo` es a dónde va; `actual` lo persigue, para
+     que soltar el dedo no corte el movimiento en seco. */
+  const objetivo = { x: 0.16, y: -0.55 };
+  const actual   = { x: 0.16, y: -0.55 };
+  let arrastrando = false, ultimoX = 0, ultimoY = 0, tocado = false;
+
+  const quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let visible = true, animando = false;
+
+  function medir() {
+    const r = canvas.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width));
+    const h = Math.max(1, Math.round(r.height));
+    renderer.setSize(w, h, false);
+    camara.aspect = w / h;
+    /* En vertical el campo horizontal se estrecha: el modelo encoge para
+       no salirse por los lados. */
+    gafas.scale.setScalar(w / h < 1.25 ? 0.74 : 0.92);
+    camara.updateProjectionMatrix();
+  }
+
+  function dibujar() {
+    actual.x += (objetivo.x - actual.x) * 0.12;
+    actual.y += (objetivo.y - actual.y) * 0.12;
+    gafas.rotation.x = actual.x;
+    gafas.rotation.y = actual.y;
+    renderer.render(escena, camara);
+  }
+
+  function marco() {
+    if (!animando) return;
+    /* Giro lento mientras nadie lo ha tocado: invita a agarrarlo. Se apaga
+       apenas el usuario interviene, y nunca corre con reduced-motion. */
+    if (!arrastrando && !tocado && !quietud.matches) objetivo.y += 0.0035;
+    dibujar();
+    requestAnimationFrame(marco);
+  }
+  function arrancar(){ if (!animando && visible) { animando = true; requestAnimationFrame(marco); } }
+  function parar(){ animando = false; }
+
+  canvas.addEventListener('pointerdown', ev => {
+    arrastrando = true; tocado = true;
+    ultimoX = ev.clientX; ultimoY = ev.clientY;
+    canvas.setPointerCapture(ev.pointerId);
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', ev => {
+    if (!arrastrando) return;
+    objetivo.y += (ev.clientX - ultimoX) * 0.009;
+    objetivo.x += (ev.clientY - ultimoY) * 0.006;
+    /* Tope vertical: sin esto el modelo se puede voltear boca abajo. */
+    objetivo.x = Math.min(0.75, Math.max(-0.55, objetivo.x));
+    ultimoX = ev.clientX; ultimoY = ev.clientY;
+    if (quietud.matches) dibujar();
+  });
+  const soltar = () => { arrastrando = false; canvas.style.cursor = 'grab'; };
+  canvas.addEventListener('pointerup', soltar);
+  canvas.addEventListener('pointercancel', soltar);
+  canvas.style.cursor = 'grab';
+  canvas.style.touchAction = 'pan-y';   // el scroll vertical sigue funcionando
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(e => { visible = e[0].isIntersecting; visible ? arrancar() : parar(); },
+      { threshold: 0 }).observe(canvas);
+  }
+  window.addEventListener('resize', () => { medir(); dibujar(); });
+
+  medir();
+  dibujar();
+  if (!quietud.matches) arrancar();
+  canvas.dataset.listo = 'true';
+
+  return { pintarLente, medir, dibujar };
+}

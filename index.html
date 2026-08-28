@@ -519,7 +519,42 @@
     aspect-ratio:2 / 1; background:var(--noche);
     display:flex; align-items:center; justify-content:center;
   }
+  .galeria-principal{ position:relative; }
   .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
+
+  /* ---------- Visor 3D de la ficha ---------- */
+  #visor3d{
+    width:100%; height:100%; display:block;
+    opacity:0; transition:opacity .5s ease;
+  }
+  #visor3d[data-listo="true"]{ opacity:1; }
+  .visor-pista{
+    position:absolute; left:0; right:0; bottom:10px; margin:0; text-align:center;
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--texto-tenue); pointer-events:none;
+  }
+  .visor-lentes{
+    position:absolute; left:50%; transform:translateX(-50%); bottom:34px;
+    display:flex; border:1px solid var(--linea); background:var(--noche);
+  }
+  .visor-lentes button{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    padding:7px 12px;
+  }
+  .visor-lentes button:last-child{ border-right:0; }
+  .visor-lentes button[aria-pressed="true"]{ background:var(--superficie); color:var(--hueso); }
+  .visor-lentes button:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
+
+  .tira--3d span{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:11px; letter-spacing:.12em; color:var(--texto-tenue);
+    border:0; padding:0;
+  }
+  .tira--3d[aria-pressed="true"] span{ color:var(--hueso); }
   .galeria-tiras{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; margin-top:8px; }
   .tira{ aspect-ratio:3 / 2; }
   .tira{
@@ -921,6 +956,7 @@ const PRODUCTOS = [
     descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
     detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
     precio: 129000,
+    lente: "ambar",
     imagenes: [
       "assets/img/ambar.webp",
       "assets/img/ambar-frente.webp",
@@ -937,6 +973,7 @@ const PRODUCTOS = [
     descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
     detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
     precio: 129000,
+    lente: "rojo",
     imagenes: [
       "assets/img/rojo.webp",
       "assets/img/rojo-frente.webp",
@@ -954,6 +991,10 @@ const PRODUCTOS = [
     detalle: "Los dos lentes, que es como están pensados para usarse: el ámbar mientras trabajas y el rojo en la última hora. Sale más barato que comprarlos por separado y llega en el mismo envío.",
     precio: 199000,
     precioAntes: 258000,
+    /* El combo son los dos: el visor deja alternarlos, que es exactamente
+       lo que el combo vende. */
+    lente: "ambar",
+    lentes: ["ambar", "rojo"],
     imagenes: [
       "assets/img/combo.webp",
       "assets/img/combo-frente.webp",
@@ -1067,6 +1108,23 @@ document.getElementById('comboCard').innerHTML = `
 
 activarImagenes(document.getElementById('comboCard'));
 
+/* ¿Puede este navegador con 3D? Lo decide una sola vez y lo usan tanto la
+   historia de la home como el visor de la ficha de producto. */
+const HAY_WEBGL = (() => {
+  try {
+    const p = document.createElement('canvas');
+    return !!(p.getContext('webgl2') || p.getContext('webgl'));
+  } catch (e) { return false; }
+})();
+
+/* Módulo del modelo. Se pide una sola vez y se reparte entre quien lo use. */
+let modulo3D = null;
+function cargar3D() {
+  if (!HAY_WEBGL) return Promise.reject();
+  if (!modulo3D) modulo3D = import('./assets/js/gafas.js');
+  return modulo3D;
+}
+
 /* ---------------- Escena 3D ----------------
    Se carga en diferido y solo si el navegador puede. Sin WebGL, o si el
    módulo falla, la historia se queda con su fondo y sigue funcionando:
@@ -1076,14 +1134,7 @@ activarImagenes(document.getElementById('comboCard'));
   const canvas = document.getElementById('gafas3d');
   if (!canvas) return;
 
-  let hayWebGL = false;
-  try {
-    const prueba = document.createElement('canvas');
-    hayWebGL = !!(prueba.getContext('webgl2') || prueba.getContext('webgl'));
-  } catch (e) {}
-  if (!hayWebGL) return;
-
-  import('./assets/js/gafas.js')
+  cargar3D()
     .then(m => m.iniciarGafas(canvas, document.getElementById('historia'),
                                document.querySelectorAll('.panel[data-lente]')))
     .catch(() => {});
@@ -1304,6 +1355,9 @@ function navegar() {
 window.addEventListener('hashchange', navegar);
 
 /* ---------------- Vista de producto ---------------- */
+/* Índice reservado para el visor 3D: así convive con las fotos en el mismo
+   selector sin ocupar un espacio en el array de imágenes. */
+const VISTA_3D = -1;
 let imagenActiva = 0;
 
 function pintarProducto(p) {
@@ -1379,17 +1433,55 @@ function pintarGaleria(p) {
   const principal = document.getElementById('galeriaPrincipal');
   const tiras = document.getElementById('galeriaTiras');
 
-  principal.innerHTML = `<img src="${esc(p.imagenes[imagenActiva])}" alt="${esc(p.nombre)}" hidden>
-                         <span class="tbd">[TBD] Foto ${imagenActiva + 1}</span>`;
-  activarImagenes(principal);
+  if (imagenActiva === VISTA_3D) {
+    const alterna = (p.lentes || []).length > 1 ? `
+      <div class="visor-lentes" role="group" aria-label="Lente a mostrar">
+        ${p.lentes.map((l, i) => `<button type="button" data-visor-lente="${l}"
+           aria-pressed="${i === 0}">${l === 'rojo' ? 'Rojo' : 'Ámbar'}</button>`).join('')}
+      </div>` : '';
+    principal.innerHTML = '<canvas id="visor3d"></canvas>'
+      + alterna
+      + '<p class="visor-pista">Arrástralo para girarlo</p>';
+    montarVisor(p);
+  } else {
+    principal.innerHTML = `<img src="${esc(p.imagenes[imagenActiva])}" alt="${esc(p.nombre)}" hidden>
+                           <span class="tbd">[TBD] Foto ${imagenActiva + 1}</span>`;
+    activarImagenes(principal);
+  }
 
-  tiras.innerHTML = p.imagenes.map((src, i) => `
+  const miniaturas = p.imagenes.map((src, i) => `
     <button class="tira" type="button" data-tira="${i}"
             aria-pressed="${i === imagenActiva}" aria-label="Foto ${i + 1}">
       <img src="${esc(src)}" alt="" hidden>
       <span class="tbd">${i + 1}</span>
-    </button>`).join('');
+    </button>`);
+
+  /* La miniatura del 3D solo existe si el navegador puede con él. */
+  if (HAY_WEBGL) {
+    miniaturas.push(`
+      <button class="tira tira--3d" type="button" data-tira="${VISTA_3D}"
+              aria-pressed="${imagenActiva === VISTA_3D}" aria-label="Ver en 3D">
+        <span>3D</span>
+      </button>`);
+  }
+  tiras.innerHTML = miniaturas.join('');
   activarImagenes(tiras);
+}
+
+/* El visor vive solo mientras la ficha esté en pantalla. Al cambiar de
+   producto o de vista se descarta y se vuelve a crear: es más simple y más
+   seguro que reutilizar un contexto WebGL entre productos. */
+let visor = null;
+function montarVisor(p) {
+  const canvas = document.getElementById('visor3d');
+  if (!canvas) return;
+  cargar3D()
+    .then(m => { visor = m.iniciarVisor(canvas, { color: p.lente || 'ambar' }); })
+    .catch(() => {
+      /* Sin 3D: se vuelve a la primera foto en vez de dejar un hueco. */
+      imagenActiva = 0;
+      pintarGaleria(p);
+    });
 }
 
 /* ---------------- Checkout paso a paso ---------------- */
@@ -1571,8 +1663,15 @@ let cantidadProducto = 1;
 
 document.addEventListener('click', ev => {
   const b = ev.target.closest('[data-tira],[data-cant],[data-agregar-cant],[data-comprar-ahora],'
-    + '[data-paso],[data-carrito-cant],[data-pagar],[data-vaciar-todo]');
+    + '[data-paso],[data-carrito-cant],[data-pagar],[data-vaciar-todo],[data-visor-lente]');
   if (!b) return;
+
+  if (b.dataset.visorLente) {
+    if (visor) visor.pintarLente(b.dataset.visorLente);
+    document.querySelectorAll('[data-visor-lente]').forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    return;
+  }
 
   /* Galería */
   if (b.dataset.tira !== undefined) {

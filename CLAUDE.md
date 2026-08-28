@@ -36,6 +36,10 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
 - **Todo lo inmersivo es una capa encima, nunca un requisito.** El 3D se carga solo
   si el navegador puede; sin WebGL, sin JS o con el módulo caído, la página vende
   igual. Nada de la compra depende de la escena.
+- **Lo inmersivo se apuesta donde decide la compra, no como adorno.** En la home el
+  modelo es ambiente; en la ficha de producto es un visor girable con el lente de
+  ESE producto. La miniatura «3D» es una opción más de la galería, nunca la primera:
+  la foto real va de primera porque es la que da confianza. El checkout no se toca.
 
 ## La historia (estructura de la home)
 La home es un recorrido de una noche, con el modelo 3D fijo detrás y los paneles
@@ -183,7 +187,7 @@ Tres vistas sobre el mismo `index.html`, sin build step ni configuración de rut
 | Ruta | Vista |
 |---|---|
 | *(sin hash)* | La home: historia, catálogo, envíos, FAQ |
-| `#/producto/<id>` | Ficha completa: galería, precio, cantidad, acordeones |
+| `#/producto/<id>` | Ficha completa: galería con visor 3D, precio, cantidad, acordeones |
 | `#/checkout` | Compra en 4 pasos |
 
 - Una ruta inválida cae a la home, no a una pantalla en blanco.
