@@ -216,6 +216,14 @@ de WhatsApp el paso 4 lo marca `[TBD]`.
       existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
       exige fotos recortadas o de fondo limpio.
 - [ ] Dominio (~$50.000 COP/año). Único gasto fijo aprobado.
+      **Criterio: el dominio NO puede nombrar la categoría.** Nada de `lentes`,
+      `gafas`, `optica` ni `glasses`. RELIEF es el alivio de la jornada, del
+      trabajo y del sueño; el catálogo de mañana puede incluir antifaces, tapones
+      o luz de escritorio, y un dominio con la categoría adentro lo contradice.
+      Solo la marca, o la marca con una palabra de voz (`soy`, `hola`) que
+      tampoco nombre producto.
+      ⚠ `relief.com` está tomado por un tercero: cualquier `relief.xx` va a
+      filtrar tráfico hacia ese `.com` cuando alguien teclee de memoria.
 - [ ] Nombre legal / quién factura (persona natural sirve para arrancar con Wompi).
 
 ## Reseñas y estudios (reglas duras)
