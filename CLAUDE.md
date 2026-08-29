@@ -303,21 +303,39 @@ después de validar que antes.
 - **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
   Estatuto del Consumidor (Ley 1480). La sección existe vacía y dice que estamos
   empezando, hasta que haya clientes reales que hayan recibido el pedido.
-- ⚠ **La cinta de reseñas está montada con ejemplos de maqueta.** Existe para
-  ver el comportamiento (desfila sola, se detiene con el cursor, la tarjeta que
-  se mira se separa y las demás ceden), no para publicarse. Vive tras
-  `RESENAS_DE_MUESTRA = true`; **antes de que el sitio sea público hay que
-  bajarla a `false`**, y el bloque honesto de "todavía no tenemos" vuelve a ser
-  el único. Mientras esté encendida, el aviso ámbar de arriba y el rótulo
-  «ejemplo» de cada tarjeta no se quitan.
-- El texto de los ejemplos también respeta las reglas de la marca —habla de
-  comodidad, entrega y servicio, nunca de dormir ni de porcentajes—. Si la
-  maqueta se permite claims, alguien los copia cuando lleguen los reales.
+- ⚠ Las reseñas del prototipo son inventadas y viven en el **modo maqueta**
+  (ver más abajo). El texto de los ejemplos respeta igual las reglas de la
+  marca —habla de comodidad, entrega y servicio, nunca de dormir ni de
+  porcentajes—. Si la maqueta se permite claims, alguien los copia cuando
+  lleguen los reales.
 - **Cero estudios citados sin leer el estudio.** Si algún día se citan, se cita la
   fuente completa y jamás se traduce a una promesa ("dormirás mejor").
 - La sección **"Lo que no vamos a decirte"** convierte esa restricción en
   posicionamiento: Warblue publica 84/97/99% sin respaldo; nosotros decimos por qué
   no publicamos nada todavía. La honestidad es el diferenciador, no un costo.
+
+## Modo maqueta (`MAQUETA`)
+El prototipo tiene que **verse terminado** para poder juzgarlo: una página
+sembrada de `[TBD]` no deja ver si el diseño funciona. Así que todo lo que
+todavía no sabemos está inventado en un solo sitio —el bloque `MAQUETA` /
+`MUESTRA` al inicio del script— y de ahí sale a la ficha técnica, al costo de
+envío, a las respuestas del FAQ, a la garantía, a las devoluciones, al número
+de WhatsApp, a las redes, al NIT y a las reseñas. Encendido, además, se calla
+el aviso de precios provisionales y desaparecen las miniaturas de las fotos
+que aún no existen.
+
+- **`MAQUETA = false` antes de publicar.** Con eso cada dato vuelve a su
+  `[TBD]` y la página dice la verdad otra vez. Es **un solo interruptor a
+  propósito**: repartido en veinte sitios, alguno se queda encendido.
+  Verificado que funciona en los dos sentidos.
+- Los datos inventados son **plausibles, no confirmados**. Al llegar los
+  reales se reemplazan; no se "verifican contra" lo que hay ahí.
+- **Tres cosas no se inventan ni en maqueta**, porque son exactamente lo que
+  costaría una sanción si se filtran al sitio real:
+  1. porcentajes de bloqueo de luz azul,
+  2. cualquier promesa de salud o de sueño,
+  3. «grado médico» y familia.
+  No están en el bloque y no deben entrar nunca.
 
 ## Descartado
 - Shopify, WooCommerce, Tiendanube o cualquier plataforma con mensualidad.
