@@ -196,6 +196,12 @@
   img{ max-width:100%; height:auto; }
   img:not([hidden]){ display:block; }
 
+  /* [hidden] lo trae la hoja del navegador, que pierde contra cualquier regla
+     de autor: .wordmark-fijo{display:flex} lo anulaba, y el wordmark gigante
+     del hero se quedaba pintado encima de la ficha de producto. Se refuerza
+     una vez, arriba, en vez de acordarse de excluirlo regla por regla. */
+  [hidden]{ display:none !important; }
+
   a{ color:inherit; }
 
   /* Sin caja central: la retícula ocupa todo el ancho de la ventana. El
@@ -1676,7 +1682,7 @@
      · «grado médico» y familia.
    Esos tres no están aquí abajo y no deben aparecer nunca.
 ================================================= */
-const MAQUETA = false;
+const MAQUETA = true;
 
 const MUESTRA = {
   /* Contacto */
