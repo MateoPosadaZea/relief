@@ -36,6 +36,11 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
   defecto: el visitante llega a cualquier hora y un fondo negro de entrada le
   pide una decisión que no ha tomado. Noche queda a un clic, y es donde el
   producto se ve mejor.
+- **El modelo va por encima del texto del recorrido**, no detrás: cuando el
+  texto le pasaba por encima tapaba la pieza justo mientras el panel hablaba
+  de ella. Sigue por debajo de la barra, del wordmark y de las láminas de menú
+  y carrito. Como la escena es fija y ocupa la ventana, se **retira** al salir
+  del recorrido: si no, se quedaba flotando sobre las secciones de abajo.
 - **En el recorrido no se atenúa ninguna pieza.** Se probó bajar la opacidad de
   todo lo que no fuera la pieza del panel y no se lee como «mira esta»: se lee
   como un modelo a medio cargar —un aro gris y translúcido junto a uno negro y
@@ -149,10 +154,17 @@ Es el único riesgo de capital aprobado del proyecto.
   `transform: scale()` desde un cuerpo enorme, y un texto escalado se rasteriza
   a un tamaño y se muestra en otro: se veía pastoso al lado del resto de la
   barra. La estática es texto de 26 px de verdad.
-- **En escritorio la barra lleva la palabra; en móvil, el isotipo.** A 26 px,
-  con el menú y el carrito a los lados, `relief` compite por un ancho que no
-  tiene. El isotipo va **en línea** en el HTML, no como `<img>`, para que herede
-  el color del modo.
+- **La barra lleva el conjunto: isotipo + palabra.** En móvil se queda solo el
+  isotipo, porque a 26 px con el menú y el carrito a los lados `relief` compite
+  por un ancho que no tiene. El isotipo va **en línea** en el HTML, no como
+  `<img>`, para que herede el color del modo, y a ese tamaño usa el dibujo de
+  la **versión reducida** —trazo grueso, punto grande—, que es la regla de los
+  dos tamaños ópticos. Hay interruptor en el banco para volver a solo palabra.
+- **El wordmark del recorrido no lleva isotipo.** Ahí la palabra llena la
+  pantalla y es un gesto tipográfico, no una presentación de logo: un isotipo
+  a esa escala sería enorme, y la medida del morfo está calculada sobre la
+  tinta de una sola palabra. El conjunto se presenta en la barra, que es donde
+  se ve en cada pantalla del sitio.
 - **Los lentes SON la paleta.** No hay colores de marca aparte del producto.
   Ámbar = trabajo. Rojo = dormir. Nada más.
 
@@ -174,7 +186,12 @@ Es el único riesgo de capital aprobado del proyecto.
     `--etiqueta`, `--texto`— aunque hoy los cuatro apunten a la misma cara: eso
     deja cambiar de idea sin tocar una sola regla de CSS.
   - `--peso-display` calibra el grosor de los titulares grandes (300–700).
-  - Los precios llevan `font-variant-numeric: tabular-nums`.
+  - Los precios llevan `font-variant-numeric: tabular-nums` y son **la única
+    excepción de peso**: van en 800 fijo, no en `--peso-display`, porque
+    calibrar los titulares no debe adelgazar el precio. Lo que hacía que
+    parecieran de otra tipografía era el peso, no la cara: los números de
+    Epilogue son geométricos y anchos, y a 600 junto a un párrafo de 400 leen
+    como otra cosa. Ahora la diferencia es deliberada.
   - El **logotipo** va en Epilogue, minúscula: `relief`.
   - **Solo el wordmark va en minúscula.** Los titulares de sección van en tipo
     oración. Todo en minúscula leía a manifiesto y le quitaba jerarquía a la

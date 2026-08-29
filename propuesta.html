@@ -330,11 +330,18 @@
     color:var(--hueso); text-decoration:none;
     transition:color .2s ease;
   }
+  /* Mismo peso que los titulares grandes: es la misma palabra. Con un 600
+     fijo, calibrar el grosor cambiaba el wordmark del recorrido pero no el
+     logotipo de la barra, y al aterrizar la palabra cambiaba de grosor. */
   .marca-palabra{
-    font-family:var(--display); font-weight:600; font-size:26px;
+    font-family:var(--display); font-weight:var(--peso-display); font-size:26px;
     letter-spacing:-.01em; text-transform:lowercase; line-height:1;
   }
-  .marca-iso{ display:none; width:26px; height:26px; }
+  /* El isotipo al lado de la palabra: el conjunto. En móvil va solo. */
+  /* El viewBox de la reducida es más ancho que alto, así que el ancho manda
+     y el alto sale solo. */
+  .marca-iso{ display:block; width:26px; height:auto; margin-right:9px; flex:0 0 auto; }
+  body[data-marca="palabra"] .marca-iso{ display:none; }
   .marca:hover{ color:var(--texto-tenue); }
   /* La palabra del recorrido no se queda como logotipo: al llegar a la barra
      se apaga y la releva la marca estática. La del recorrido llega ahí por
@@ -348,8 +355,10 @@
   .marca{ transition:opacity .28s ease, color .2s ease; }
 
   @media (max-width:759px){
+    /* En móvil solo el isotipo, con o sin conjunto: a 26 px entre el menú y
+       el carrito la palabra no tiene ancho, y el isotipo sí aguanta ahí. */
     .marca-palabra{ display:none; }
-    .marca-iso{ display:block; }
+    .marca-iso{ display:block; width:28px; height:auto; margin-right:0; }
   }
   /* Menu de la barra. Va a la izquierda porque el centro es del logotipo:
      el wordmark aterriza ahi y no se le puede disputar el sitio. */
@@ -586,8 +595,21 @@
      A diferencia de la otra versión, acá el modelo no vive pegado dentro de
      la historia: ocupa la pantalla completa y de forma permanente, porque el
      producto es el protagonista de esta propuesta. */
+  /* Por encima de los paneles del recorrido (z-index 10). El modelo es el
+     objeto y el texto lo acompaña: cuando el texto le pasaba por encima, la
+     pieza de la que hablaba el panel quedaba tapada justo mientras se
+     hablaba de ella. Sigue por debajo de la barra (50), del wordmark (55) y
+     de las láminas de menú y carrito (80), que sí tienen que taparlo todo. */
   .escena-fija{
-    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+    position:fixed; inset:0; z-index:20; overflow:hidden; pointer-events:none;
+    transition:opacity .35s ease, visibility 0s;
+  }
+  /* Es fija y ocupa la ventana entera, así que al terminar el recorrido
+     seguiría flotando sobre las secciones de abajo. Antes la tapaban ellas
+     —z-index 10 con fondo—, pero ahora va por encima y hay que retirarla
+     a mano. */
+  body[data-recorrido="fuera"] .escena-fija{
+    opacity:0; visibility:hidden; transition:opacity .35s ease, visibility 0s .35s;
   }
   #gafas3d{
     position:absolute; inset:0; width:100%; height:100%; display:block;
@@ -766,7 +788,7 @@
   /* Las secciones del catálogo en adelante tapan la escena. */
   main > .seccion{ position:relative; z-index:10; background:var(--noche); }
   .footer{ position:relative; z-index:10; background:var(--noche); }
-  .vista{ position:relative; z-index:20; background:var(--noche); min-height:100vh; }
+  .vista{ position:relative; z-index:30; background:var(--noche); min-height:100vh; }
 
   /* ---------- Botones ---------- */
   .btn{
@@ -846,9 +868,17 @@
   .ficha .momento{ margin:0 0 12px; }
   .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
   .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
+  /* Misma cara que todo lo demás —Epilogue, medido: las 47 reglas de
+     font-family del archivo apuntan a los cuatro tokens y los cuatro a
+     Epilogue—. Lo que hace que un precio parezca de otra tipografía es el
+     peso: los números de Epilogue son geométricos y anchos, y a 600 junto a
+     un párrafo de 400 leen como otra cosa. La excepción es deliberada y va
+     al máximo: el precio es el dato que hay que poder leer de un vistazo.
+     Peso fijo, no --peso-display: calibrar los titulares no debe adelgazar
+     el precio. */
   .precio{
-    font-family:var(--titulo); font-weight:var(--peso-display);
-    font-size:23px; letter-spacing:-.01em;
+    font-family:var(--titulo); font-weight:800;
+    font-size:23px; letter-spacing:-.02em;
     font-variant-numeric:tabular-nums;
   }
   .precio--tachado{
@@ -1405,16 +1435,18 @@
       <a href="#envios">Envíos</a>
     </nav>
     <a class="marca" href="#top" id="marcaNav" aria-label="RELIEF — inicio" hidden>
-      <span class="marca-palabra">relief</span>
       <!-- El isotipo va en línea y no como <img> para que herede el color del
-           modo: un archivo externo no puede leer --hueso. -->
-      <svg class="marca-iso" viewBox="14 19 72 62" aria-hidden="true" focusable="false">
-        <g fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round">
-          <path d="M36 22 A30 30 0 0 0 36 78"/>
-          <path d="M64 22 A30 30 0 0 1 64 78"/>
+           modo: un archivo externo no puede leer --hueso. Y es el dibujo de la
+           versión REDUCIDA —trazo grueso, punto grande— porque a 22 px el
+           trazo fino se empasta: es la regla de los dos tamaños ópticos. -->
+      <svg class="marca-iso" viewBox="2 20 96 60" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round">
+          <path d="M34 26 A26 26 0 0 0 34 74"/>
+          <path d="M66 26 A26 26 0 0 1 66 74"/>
         </g>
-        <circle cx="50" cy="50" r="8" fill="currentColor"/>
+        <circle cx="50" cy="50" r="11" fill="currentColor"/>
       </svg>
+      <span class="marca-palabra">relief</span>
     </a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel"
             aria-label="Carrito, 0 artículos">
@@ -1505,6 +1537,11 @@
   <div class="banco-fila" role="group" aria-label="Fondo del modo dia">
     <button type="button" data-claro-set="blanco">Blanco</button>
     <button type="button" data-claro-set="hueso">Hueso</button>
+  </div>
+  <h4>Marca de la barra</h4>
+  <div class="banco-fila" role="group" aria-label="Marca de la barra">
+    <button type="button" data-marca-set="conjunto">Isotipo + palabra</button>
+    <button type="button" data-marca-set="palabra">Solo palabra</button>
   </div>
   <h4>Pie</h4>
   <div class="banco-fila" role="group" aria-label="Estilo del pie">
@@ -2547,6 +2584,23 @@ const RESENAS_EJEMPLO = [
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(acompasar);
 })();
 
+/* ---------------- El recorrido en pantalla ----------------
+   La escena va por encima de los paneles, y como es fija y ocupa la ventana
+   entera hay que retirarla cuando el recorrido termina: si no, el modelo
+   se queda flotando sobre las secciones de abajo y sobre el pie.
+--------------------------------------------------------- */
+(function(){
+  const historia = document.getElementById('historia');
+  if (!historia) return;
+  const marcar = dentro => {
+    if (dentro) delete document.body.dataset.recorrido;
+    else document.body.dataset.recorrido = 'fuera';
+  };
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(e => marcar(e[0].isIntersecting), { threshold: 0 })
+    .observe(historia);
+})();
+
 /* ---------------- La marca de la barra ----------------
    En escritorio la barra lleva la palabra, y en la home no hace falta: la
    pone el wordmark del recorrido al aterrizar. En móvil la palabra no cabe
@@ -3363,6 +3417,8 @@ navegar();
   }
   function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
   function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('relief.claro', v); }
+  /* Va en el body y no en :root porque solo lo mira la barra. */
+  function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('relief.marca', v); }
   /* El pie es el único bloque que puede llevar color propio, así que su
      interruptor vive en el elemento y no en :root. */
   function aplicarPie(v){
@@ -3380,11 +3436,12 @@ navegar();
   }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set],[data-claro-set]');
+    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set],[data-claro-set],[data-marca-set]');
     if (!b) return;
     if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
     else if (b.dataset.pieSet) aplicarPie(b.dataset.pieSet);
     else if (b.dataset.claroSet) aplicarClaro(b.dataset.claroSet);
+    else if (b.dataset.marcaSet) aplicarMarca(b.dataset.marcaSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -3405,6 +3462,7 @@ navegar();
   aplicarPeso(leer('relief.peso', '600'));
   aplicarPie(leer('relief.pie', 'claro'));
   aplicarClaro(leer('relief.claro', 'blanco'));
+  aplicarMarca(leer('relief.marca', 'conjunto'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------
