@@ -36,6 +36,12 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
   defecto: el visitante llega a cualquier hora y un fondo negro de entrada le
   pide una decisión que no ha tomado. Noche queda a un clic, y es donde el
   producto se ve mejor.
+- **En el recorrido no se atenúa ninguna pieza.** Se probó bajar la opacidad de
+  todo lo que no fuera la pieza del panel y no se lee como «mira esta»: se lee
+  como un modelo a medio cargar —un aro gris y translúcido junto a uno negro y
+  sólido es un defecto, no un énfasis—, y el cambio de opacidad entre pasos
+  hacía que las piezas se acoplaran de golpe. La pieza la señalan el encuadre y
+  el zoom, que es como lo hace una cámara: acercándose, no borrando el resto.
 - **Todo lo inmersivo es una capa encima, nunca un requisito.** El 3D se carga solo
   si el navegador puede; sin WebGL, sin JS o con el módulo caído, la página vende
   igual. Nada de la compra depende de la escena.
@@ -75,6 +81,12 @@ modelo 3D pegado, girable, con el lente del producto.
   columna. Es el dato que se consulta al decidir, no un capítulo del recorrido:
   como sección aparte cortaba la historia justo después del scroll inmersivo.
   La ficha completa sigue estando en la página de producto.
+- El recuadro tiene **dos vistas y dos lentes**: ámbar/rojo cambian el color
+  del modelo y marcan la fila; 3D/Puestas alterna entre el modelo y la foto
+  puesta de ESE lente. Así la sección tiene las dos cosas —el objeto girable y
+  la prueba social de verlas puestas— sin duplicar tarjetas. Si a algún lente
+  le falta la foto, el par de botones de vista desaparece entero: media opción
+  no sirve de nada.
 - Es el **segundo visor de la home**. No compite con la escena del recorrido:
   los dos se paran solos al salir de pantalla, así que solo hay uno dibujando.
   Se monta al acercarse la sección, no en la primera pantalla. Sin WebGL el
@@ -132,6 +144,15 @@ Es el único riesgo de capital aprobado del proyecto.
     y en una barra lee a menú de tres puntos.
   - La sigla **RLF** sigue sirviendo para nombrar producto (RLF Ámbar, RLF Rojo),
     no como isotipo.
+- **La palabra del recorrido no se queda como logotipo.** Al llegar a la barra
+  se apaga y la releva la marca estática. La del recorrido llega ahí por
+  `transform: scale()` desde un cuerpo enorme, y un texto escalado se rasteriza
+  a un tamaño y se muestra en otro: se veía pastoso al lado del resto de la
+  barra. La estática es texto de 26 px de verdad.
+- **En escritorio la barra lleva la palabra; en móvil, el isotipo.** A 26 px,
+  con el menú y el carrito a los lados, `relief` compite por un ancho que no
+  tiene. El isotipo va **en línea** en el HTML, no como `<img>`, para que herede
+  el color del modo.
 - **Los lentes SON la paleta.** No hay colores de marca aparte del producto.
   Ámbar = trabajo. Rojo = dormir. Nada más.
 

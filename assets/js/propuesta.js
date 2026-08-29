@@ -36,16 +36,12 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   escena.add(gafas);
 
   /* Cada malla con su propio material: el modelo los comparte para ahorrar
-     memoria, y así no se puede atenuar ni recolorear una pieza sola. */
+     memoria, y así no se podría recolorear el cristal de un lado solo. */
   const mallas = [];
   gafas.traverse(o => {
     if (!o.isMesh) return;
     o.material = o.material.clone();
-    /* Se recuerda si la pieza YA era translúcida (el cristal lo es). A las
-       opacas no se les toca `transparent` mientras no estén atenuadas:
-       marcarlas todas rompía el orden de dibujo y rayaba los bordes. */
-    mallas.push({ objeto: o, plena: o.material.opacity,
-                  translucida: o.material.transparent, atenuacion: 1 });
+    mallas.push({ objeto: o });
   });
 
   escena.add(new THREE.AmbientLight(0xffffff, 0.28));
@@ -225,16 +221,15 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     return p.dataset.lente === 'rojo' ? colorRojo : colorAmbar;
   }
 
-  const encendida = (an, nombre) => !an.piezas || an.piezas.includes(nombre);
-  /* Los dos lentes nunca se atenúan. Antes el paso del lente encendía solo el
-     derecho y dejaba el izquierdo pálido: no se leía como "mira este", se leía
-     como un lente descolorido, o sea como un defecto. El color del lente es la
-     identidad del producto y va siempre entero en los dos. */
-  const esLente = n => n.startsWith('cristal');
-  function nivel(an, m) {
-    if (esLente(m.objeto.name)) return 1;
-    return encendida(an, m.objeto.name) ? 1 : 0.38;
-  }
+  /* NO se atenúa ninguna pieza. Lo intentamos —bajar la opacidad de todo lo
+     que no fuera la pieza de la que habla el panel— y no se lee como "mira
+     esta": se lee como un modelo a medio cargar. En la foto el aro izquierdo
+     salía gris y translúcido junto a uno negro y sólido, y eso es un defecto,
+     no un énfasis. Además el cambio de opacidad entre pasos hacía que las
+     piezas se "acoplaran" de golpe, como una imagen terminando de bajar.
+     La pieza de la que se habla ya la señalan el encuadre y el zoom, que es
+     como lo hace una cámara: acercándose, no borrando el resto.
+     `piezas` se queda en las anclas porque documenta de qué habla cada paso. */
 
   function apuntar(paso) {
     if (!paso) return;
@@ -247,7 +242,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     giroPiezaObj = mezclar(A.giroY, B.giroY, k);
     inclinaObj   = mezclar(A.giroX, B.giroX, k);
     zoomObj      = mezclar(A.zoom,  B.zoom,  k);
-    for (const m of mallas) m.atenuacion = mezclar(nivel(A, m), nivel(B, m), k);
 
     /* El color también se mezcla: el ámbar pasa a rojo durante el viaje y no
        de golpe al cruzar el centro de un panel. */
@@ -267,7 +261,9 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     const dt = ultimoCuadro ? Math.min(0.1, (t - ultimoCuadro) / 1000) : 1;
     ultimoCuadro = t;
     const kMano  = suavizar(dt, 0.35);
-    const kPieza = suavizar(dt, 0.55);
+    /* Un pelo más lento que antes: el viaje entre piezas se sentía cortado al
+       final. Más allá de esto se despega del scroll y parece que arrastra. */
+    const kPieza = suavizar(dt, 0.68);
     const kColor = suavizar(dt, 0.90);
 
     progreso += (leerProgreso() - progreso) * suavizar(dt, 0.35);
@@ -308,21 +304,13 @@ export function iniciarEscena(canvas, contenedor, paneles) {
                      + (subeHist - desplaz.y) * dentro;
     gafas.position.z = -desplaz.z * dentro;
 
+    /* Lo único que cambia por malla es el color del cristal, y cambia en los
+       dos a la vez. Sin opacidades que animar no hay nada que se acople de
+       golpe, ni banderas de transparencia que alteren el orden de dibujo. */
     for (const m of mallas) {
-      /* La atenuación solo cuenta dentro del recorrido: en el hero se ve el
-         modelo entero, sin piezas apagadas. */
-      const meta = m.plena * (1 - (1 - m.atenuacion) * dentro);
-      const mat = m.objeto.material;
-      mat.opacity += (meta - mat.opacity) * kPieza;
-      const conAlfa = m.translucida || mat.opacity < 0.995;
-      if (mat.transparent !== conAlfa) { mat.transparent = conAlfa; mat.needsUpdate = true; }
-      /* Se sigue escribiendo profundidad aunque haya alfa: sin esto las caras
-         que se tocan (la barra sobre el aro) se dibujan en orden arbitrario. */
-      mat.depthWrite = true;
-      if (m.objeto.name.startsWith('cristal')) {
-        mat.color.copy(colorActual);
-        mat.emissive.copy(colorActual);
-      }
+      if (!m.objeto.name.startsWith('cristal')) continue;
+      m.objeto.material.color.copy(colorActual);
+      m.objeto.material.emissive.copy(colorActual);
     }
 
     renderer.render(escena, camara);
@@ -384,7 +372,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   apuntar(tramo());
   if (objetivoColor) colorActual.copy(objetivoColor);
   foco.copy(focoObj); giroPieza = giroPiezaObj; inclina = inclinaObj; zoom = zoomObj;
-  for (const m of mallas) m.objeto.material.opacity = m.plena * m.atenuacion;
   dibujar();
 
   if (quietud.matches) {

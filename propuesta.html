@@ -23,6 +23,10 @@
 <meta name="twitter:image" content="assets/img/og.png">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3Cg transform='translate(16 16) scale(0.235) translate(-50 -50)'%3E%3Cg fill='none' stroke='%23EDEBE6' stroke-width='11' stroke-linecap='round'%3E%3Cpath d='M34 26 A26 26 0 0 0 34 74'/%3E%3Cpath d='M66 26 A26 26 0 0 1 66 74'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='11' fill='%23EDEBE6'/%3E%3C/g%3E%3C/svg%3E">
+<!-- El de la pestaña es el isotipo reducido —trazo grueso— porque a 16 px
+     el trazo fino se cierra. El de la pantalla de inicio es el PNG, que es
+     lo que iOS pide. Los dos son el mismo dibujo en dos tamaños ópticos. -->
+<link rel="apple-touch-icon" href="assets/img/icono-app-180.png">
 
 <script>
 /* Antes del primer paint: sin esto la página parpadea en noche y luego
@@ -304,13 +308,37 @@
   /* El logotipo de las vistas internas es el mismo que aterriza en la barra al
      terminar el recorrido: minúscula, misma cara, mismo tamaño. Y en el mismo
      sitio —centrado— porque el centro de la barra es suyo. */
+  /* La marca de la barra. En escritorio es la palabra; en móvil, el isotipo:
+     a 26 px con el menú y el carrito a los lados, «relief» compite por un
+     ancho que no tiene, y el isotipo aguanta ese tamaño porque para eso se
+     dibujó. Es el mismo sitio —el centro de la barra— en los dos. */
   .marca{
     position:absolute; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; line-height:0;
+    color:var(--hueso); text-decoration:none;
+    transition:color .2s ease;
+  }
+  .marca-palabra{
     font-family:var(--display); font-weight:600; font-size:26px;
     letter-spacing:-.01em; text-transform:lowercase; line-height:1;
-    color:var(--hueso); text-decoration:none;
   }
+  .marca-iso{ display:none; width:26px; height:26px; }
   .marca:hover{ color:var(--texto-tenue); }
+  /* La palabra del recorrido no se queda como logotipo: al llegar a la barra
+     se apaga y la releva la marca estática. La del recorrido llega ahí por
+     `transform: scale()` desde un cuerpo enorme, y un texto escalado se
+     rasteriza a un tamaño y se muestra en otro — se veía pastoso al lado del
+     resto de la barra, que sí está dibujado a su tamaño. La estática es
+     texto de 26 px de verdad. El relevo es el mismo en escritorio y en
+     móvil; lo único que cambia es si la marca es la palabra o el isotipo. */
+  .wordmark-fijo{ transition:opacity .28s ease; }
+  .wordmark-fijo[data-posado="true"]{ opacity:0; pointer-events:none; }
+  .marca{ transition:opacity .28s ease, color .2s ease; }
+
+  @media (max-width:759px){
+    .marca-palabra{ display:none; }
+    .marca-iso{ display:block; }
+  }
   /* Menu de la barra. Va a la izquierda porque el centro es del logotipo:
      el wordmark aterriza ahi y no se le puede disputar el sitio. */
   .menu{ display:flex; gap:4px; align-items:center; margin-left:-10px; }
@@ -1037,15 +1065,39 @@
      serían dos filas de precio sin ninguna imagen. */
   .lentes-grid{ display:grid; gap:32px; margin-top:32px; }
   .lentes-visor{ order:-1; }
-  .lentes-visor canvas{
-    display:block; width:100%; aspect-ratio:1 / 1;
+  /* Modelo y foto comparten caja y medida: alternarlos no puede mover nada
+     de lo que hay debajo. */
+  .visor-caja{
+    position:relative; aspect-ratio:1 / 1;
     background:var(--superficie); border:1px solid var(--linea);
+    overflow:hidden;
   }
+  .visor-caja canvas{ display:block; width:100%; height:100%; }
+  .visor-puesta{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; display:block;
+  }
+  .visor-mandos{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;
+    margin-top:12px;
+  }
+  .visor-grupo{ display:flex; border:1px solid var(--linea); }
+  .visor-grupo button{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--etiqueta); font-weight:600; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:9px 14px;
+    transition:background-color .2s ease, color .2s ease;
+  }
+  .visor-grupo button:last-child{ border-right:0; }
+  .visor-grupo button:hover{ color:var(--hueso); }
+  .visor-grupo button[aria-pressed="true"]{ background:var(--superficie); color:var(--hueso); }
+  .visor-grupo button:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
   .lentes-visor .visor-pista{ margin:10px 0 0; text-align:center; }
   @media (min-width:900px){
     .lentes-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:56px; align-items:start; }
     .lentes-visor{ order:0; position:sticky; top:calc(var(--alto-nav, 60px) + 24px); }
-    .lentes-visor canvas{ aspect-ratio:1 / 1; }
   }
 
   /* Cada lente es una fila, no una tarjeta con foto: la foto de esta sección
@@ -1340,7 +1392,18 @@
       <a href="#materiales">Materiales</a>
       <a href="#envios">Envíos</a>
     </nav>
-    <a class="marca" href="#top" id="marcaNav" aria-label="RELIEF — inicio" hidden>relief</a>
+    <a class="marca" href="#top" id="marcaNav" aria-label="RELIEF — inicio" hidden>
+      <span class="marca-palabra">relief</span>
+      <!-- El isotipo va en línea y no como <img> para que herede el color del
+           modo: un archivo externo no puede leer --hueso. -->
+      <svg class="marca-iso" viewBox="14 19 72 62" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round">
+          <path d="M36 22 A30 30 0 0 0 36 78"/>
+          <path d="M64 22 A30 30 0 0 1 64 78"/>
+        </g>
+        <circle cx="50" cy="50" r="8" fill="currentColor"/>
+      </svg>
+    </a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel"
             aria-label="Carrito, 0 artículos">
       <span class="carrito-cuenta" id="carritoCount" hidden>0</span>
@@ -1615,8 +1678,21 @@
              el bloque entero se retira y la columna de datos se queda con
              toda la sección. Nada de la compra depende de la escena. -->
         <div class="lentes-visor" id="lentesVisor" hidden>
-          <canvas id="visorLentes"></canvas>
-          <p class="visor-pista">Arrástralo para girarlo</p>
+          <div class="visor-caja">
+            <canvas id="visorLentes"></canvas>
+            <img class="visor-puesta" id="visorPuesta" alt="" hidden>
+          </div>
+          <div class="visor-mandos">
+            <div class="visor-grupo" role="group" aria-label="Lente">
+              <button type="button" data-lente-set="ambar" aria-pressed="true">Ámbar</button>
+              <button type="button" data-lente-set="rojo" aria-pressed="false">Rojo</button>
+            </div>
+            <div class="visor-grupo" id="visorVistas" role="group" aria-label="Vista">
+              <button type="button" data-vista-set="modelo" aria-pressed="true">3D</button>
+              <button type="button" data-vista-set="puesta" aria-pressed="false">Puestas</button>
+            </div>
+          </div>
+          <p class="visor-pista" id="visorPista">Arrástralo para girarlo</p>
         </div>
       </div>
     </div>
@@ -2167,14 +2243,61 @@ function cargar3D() {
   if (!caja || !filas.length || !HAY_WEBGL) return;
 
   let visorLentes = null;
+  let lenteActual = filas[0].dataset.lente;
+  let vistaActualVisor = 'modelo';
+
+  const foto   = document.getElementById('visorPuesta');
+  const pista  = document.getElementById('visorPista');
+  const vistas = document.getElementById('visorVistas');
+  const marcar = (attr, valor) => caja.querySelectorAll('[data-' + attr + '-set]')
+    .forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
+
+  /* La foto puesta de cada lente sale del catálogo, así que cuando llegue la
+     del combo o se reemplacen las actuales esto la toma sin tocar nada. Si
+     algún lente no tiene foto, el grupo de vista entero desaparece: media
+     opción no sirve de nada. */
+  const puestas = {};
+  for (const p of PRODUCTOS) if (p.lente && p.puesta) puestas[p.lente] = p.puesta;
+  const hayPuestas = filas.every(f => puestas[f.dataset.lente]);
+  if (!hayPuestas && vistas) vistas.remove();
 
   /* Marcar la fila y pintar el lente son la misma acción vista desde los dos
      lados: pulsar una fila cambia el modelo, y no hay forma de que queden
      desincronizados porque solo existe este camino. */
   function elegir(lente) {
+    lenteActual = lente;
     for (const f of filas) f.dataset.activa = String(f.dataset.lente === lente);
+    marcar('lente', lente);
     if (visorLentes) visorLentes.pintarLente(lente);
+    if (vistaActualVisor === 'puesta') verPuesta();
   }
+
+  function verPuesta() {
+    if (!foto || !puestas[lenteActual]) return;
+    foto.src = puestas[lenteActual];
+    foto.alt = 'Las RLF ' + (lenteActual === 'rojo' ? 'Rojo' : 'Ámbar') + ' puestas';
+    foto.hidden = false;
+    if (pista) pista.hidden = true;
+  }
+
+  function verVista(cual) {
+    /* Si la foto no carga se vuelve al modelo en vez de dejar un hueco: es la
+       misma regla que en la galería de producto. */
+    if (cual === 'puesta' && !puestas[lenteActual]) cual = 'modelo';
+    vistaActualVisor = cual;
+    marcar('vista', cual);
+    if (cual === 'puesta') verPuesta();
+    else { if (foto) foto.hidden = true; if (pista) pista.hidden = false; }
+  }
+
+  if (foto) foto.addEventListener('error', () => { verVista('modelo'); if (vistas) vistas.remove(); });
+
+  caja.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-lente-set],[data-vista-set]');
+    if (!b) return;
+    if (b.dataset.lenteSet) { elegir(b.dataset.lenteSet); verVista('modelo'); }
+    else verVista(b.dataset.vistaSet);
+  });
 
   filas.forEach(f => {
     /* En el botón no: pulsar «agregar al carrito» no es pedir ver ese lente,
@@ -2190,7 +2313,7 @@ function cargar3D() {
     cargar3D()
       .then(m => {
         visorLentes = m.iniciarVisor(document.getElementById('visorLentes'),
-                                     { color: filas[0].dataset.lente });
+                                     { color: lenteActual });
         visorLentes.medir();
         visorLentes.dibujar();
       })
@@ -2406,6 +2529,26 @@ const RESENAS_EJEMPLO = [
   /* Las tarjetas se miden bien recién cuando la tipografía carga. */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(acompasar);
 })();
+
+/* ---------------- La marca de la barra ----------------
+   En escritorio la barra lleva la palabra, y en la home no hace falta: la
+   pone el wordmark del recorrido al aterrizar. En móvil la palabra no cabe
+   a 26 px entre el menú y el carrito, así que la barra lleva el isotipo — y
+   en la home aparece justo cuando el recorrido suelta la palabra, que es el
+   momento en que la barra se materializa.
+-------------------------------------------------------- */
+function marcaDeBarra() {
+  const marca = document.getElementById('marcaNav');
+  const nav = document.querySelector('.nav');
+  if (!marca || !nav) return;
+  const enHome = document.body.dataset.vista !== 'interna';
+  const posado = nav.dataset.posado === 'true';
+  /* Fuera de la home siempre; dentro de la home, cuando el recorrido suelta
+     la palabra y la barra se materializa. */
+  marca.hidden = enHome && !posado;
+}
+/* El morfo la llama al cambiar de estado: es quien sabe cuándo se posa. */
+window.__marcaBarra = marcaDeBarra;
 
 /* ---------------- Sección activa en la barra ----------------
    El enlace de la sección que tienes delante se marca. Sin esto la barra no
@@ -2728,7 +2871,7 @@ function navegar() {
   document.getElementById('wordmarkFijo').hidden = !enHome;
   document.getElementById('pistaScroll').hidden = !enHome;
   document.getElementById('escenaFija').hidden = !enHome;
-  document.getElementById('marcaNav').hidden = enHome;
+  marcaDeBarra();
   document.body.dataset.vista = enHome ? 'home' : 'interna';
 
   const cambioVista = nueva !== vistaActual;
@@ -3345,8 +3488,11 @@ navegar();
     const y      = yInicio + (yFin - yInicio) * t;
     palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
     const posado = t > 0.92 ? 'true' : 'false';
+    const cambio = marco.dataset.posado !== posado;
     if (nav) nav.dataset.posado = posado;
     marco.dataset.posado = posado;
+    /* Solo al cambiar: esto corre en cada cuadro de scroll. */
+    if (cambio && window.__marcaBarra) window.__marcaBarra();
   }
 
   palabra.addEventListener('click', () => {
