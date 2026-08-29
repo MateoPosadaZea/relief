@@ -37,7 +37,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&family=Lora:wght@500;600;700&family=Sora:wght@400;600&family=Epilogue:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -66,10 +66,73 @@
        Archivo trae eje de ancho: expandida (125%) para las etiquetas en
        mayúsculas, y algo menos abierta (112%) para los titulares. */
     --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --etiqueta: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --ancho-display: 112%;
+    --ancho-etiqueta: 125%;
     --texto:   "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-    --ancho: 1080px;
     --gutter: 20px;
+  }
+
+  /* Candidatas de tipografía. Solo cambia la cara de los titulares; el texto
+     corrido se queda en Instrument Sans, para no pasar de dos familias. */
+  :root[data-tipo="lora"]{
+    --display:"Lora", Georgia, "Times New Roman", serif;
+    --etiqueta:"Instrument Sans", system-ui, sans-serif;
+    --ancho-display:normal; --ancho-etiqueta:normal;
+  }
+  :root[data-tipo="sora"]{
+    --display:"Sora", system-ui, sans-serif;
+    --etiqueta:"Sora", system-ui, sans-serif;
+    --ancho-display:normal; --ancho-etiqueta:normal;
+  }
+  :root[data-tipo="epilogue"]{
+    --display:"Epilogue", system-ui, sans-serif;
+    --etiqueta:"Epilogue", system-ui, sans-serif;
+    --ancho-display:normal; --ancho-etiqueta:normal;
+  }
+
+  /* Fondos candidatos. Solo aplican al modo noche: los otros tres modos ya
+     traen su propio fondo por definición. Los cuatro verificados AA. */
+  :root[data-modo="noche"][data-fondo="roja"]{ --noche:#120A0B; }
+  :root[data-modo="noche"][data-fondo="calida"]{ --noche:#100C08; }
+  :root[data-modo="noche"][data-fondo="carbon"]{ --noche:#16151A; }
+
+  /* ---------- Banco de pruebas ---------- */
+  .banco{
+    position:fixed; left:14px; bottom:14px; z-index:60;
+    background:var(--superficie); border:1px solid var(--linea);
+    padding:12px 34px 12px 14px; max-width:calc(100vw - 28px);
+  }
+  .banco[hidden], .banco-abrir[hidden]{ display:none; }
+  .banco h4{
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
+    font-weight:600; font-size:9px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--texto-tenue); margin:0 0 8px;
+  }
+  .banco h4 + .banco-fila{ margin-bottom:12px; }
+  .banco-fila{ display:flex; flex-wrap:wrap; border:1px solid var(--linea); }
+  .banco-fila:last-of-type{ margin-bottom:0; }
+  .banco-fila button{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
+    font-weight:600; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:7px 10px;
+  }
+  .banco-fila button:last-child{ border-right:0; }
+  .banco-fila button[aria-pressed="true"]{ background:var(--noche); color:var(--hueso); }
+  .banco-fila button:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
+  .banco-cerrar{
+    position:absolute; top:6px; right:8px; background:none; border:0;
+    color:var(--texto-tenue); cursor:pointer; font-size:15px; line-height:1; padding:2px 4px;
+  }
+  .banco-abrir{
+    position:fixed; left:14px; bottom:14px; z-index:60;
+    background:var(--superficie); border:1px solid var(--linea); color:var(--texto-tenue);
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
+    font-weight:600; font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    padding:8px 11px; cursor:pointer;
   }
 
   /* DÍA — para quien entra a las 2pm. Fondo hueso, nunca blanco puro.
@@ -150,16 +213,17 @@
 
   a{ color:inherit; }
 
+  /* Sin caja central: la retícula ocupa todo el ancho de la ventana. El
+     margen crece con la pantalla para que el contenido no toque el borde. */
   .wrap{
     width:100%;
-    max-width:var(--ancho);
     margin:0 auto;
-    padding:0 var(--gutter);
+    padding:0 clamp(20px, 4vw, 72px);
   }
 
   /* Label mono en mayúsculas con tracking abierto */
   .label{
-    font-family:var(--display); font-stretch:125%;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
     font-weight:500;
     font-size:11px;
     letter-spacing:.18em;
@@ -168,7 +232,7 @@
   }
 
   .tbd{
-    font-family:var(--display); font-stretch:125%;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
     font-size:11px;
     letter-spacing:.08em;
     color:var(--texto-tenue);
@@ -183,7 +247,7 @@
 
   .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
   .seccion h2{
-    font-family:var(--display); font-stretch:112%;
+    font-family:var(--display); font-stretch:var(--ancho-display);
     font-weight:600;
     font-size:clamp(24px, 3.4vw, 32px);
     letter-spacing:-.01em;
@@ -203,7 +267,7 @@
     display:flex; align-items:center; justify-content:space-between;
   }
   .marca{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:14px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:14px;
     letter-spacing:.26em; text-transform:uppercase;
     color:var(--hueso); text-decoration:none;
     /* el tracking abre a la derecha; se compensa para que el bloque
@@ -213,7 +277,7 @@
   .marca:hover{ color:var(--texto-tenue); }
   .carrito-btn{
     background:none; border:1px solid var(--linea); color:var(--hueso);
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:11px;
     letter-spacing:.11em; text-transform:uppercase;
     padding:7px 12px; cursor:pointer;
   }
@@ -237,7 +301,7 @@
   .carrito-pie{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; margin-top:12px; }
   .link-tenue{
     background:none; border:0; padding:0; cursor:pointer;
-    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-size:11px; letter-spacing:.11em; text-transform:uppercase;
     color:var(--texto-tenue); text-decoration:underline;
   }
 
@@ -266,7 +330,7 @@
   }
   .wordmark-fijo span{
     display:block;
-    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
     font-size:100px; line-height:1; letter-spacing:-.03em;
     white-space:nowrap; color:var(--hueso);
     transform-origin:50% 50%; will-change:transform;
@@ -290,7 +354,7 @@
   /* La primera pantalla es el escenario del wordmark: va vacía a propósito. */
   .panel--apertura{ min-height:190vh; align-items:flex-end; padding-bottom:16vh; }
   .pista{
-    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
     font-size:10px; letter-spacing:.2em; text-transform:uppercase;
     color:var(--texto-tenue); margin:0;
     display:flex; align-items:center; gap:10px;
@@ -298,14 +362,14 @@
   .pista::before{ content:""; width:26px; height:1px; background:var(--texto-tenue); }
 
   .hora{
-    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
     font-size:11px; letter-spacing:.18em; text-transform:uppercase;
     color:var(--texto-tenue); margin:0 0 18px;
   }
   .hora--ambar{ color:var(--ambar-texto); }
   .hora--rojo{ color:var(--rojo-rlf); }
   .panel-texto{
-    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
     font-size:clamp(28px,5.6vw,50px);
     line-height:1.08; letter-spacing:-.025em;
     margin:0 0 16px; max-width:15ch; text-wrap:balance;
@@ -325,7 +389,7 @@
   .modo-btn{
     background:none; border:0; border-right:1px solid var(--linea);
     color:var(--texto-tenue); cursor:pointer;
-    font-family:var(--display); font-stretch:125%; font-weight:600; font-size:11px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600; font-size:11px;
     letter-spacing:.11em; text-transform:uppercase; padding:10px 14px;
   }
   .modo-btn:last-child{ border-right:0; }
@@ -342,7 +406,7 @@
   /* ---------- Botones ---------- */
   .btn{
     display:inline-block;
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:12px;
     letter-spacing:.11em; text-transform:uppercase;
     padding:14px 22px;
     border:1px solid var(--rojo-rlf);
@@ -390,7 +454,7 @@
   .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
-    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:19px;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:19px;
     letter-spacing:-.01em;
     margin:0 0 4px;
   }
@@ -398,7 +462,7 @@
   .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
   .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
   .precio{
-    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
     font-size:23px; letter-spacing:-.01em;
     font-variant-numeric:tabular-nums;
   }
@@ -412,7 +476,7 @@
   .combo{ background:var(--noche); }
   .combo .combo-grid{ display:grid; gap:24px; }
   .combo h3{
-    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:26px;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:26px;
     letter-spacing:0; margin:0 0 8px;
   }
   .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
@@ -429,7 +493,7 @@
   table{ width:100%; border-collapse:collapse; }
   th,td{ text-align:left; padding:12px 0; border-bottom:1px solid var(--linea); vertical-align:top; }
   th{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:11px;
     letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
   }
   td{ font-size:15px; }
@@ -454,7 +518,7 @@
   summary{
     cursor:pointer; list-style:none;
     padding:18px 0;
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:13px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:13px;
     letter-spacing:.06em;
     display:flex; justify-content:space-between; align-items:center; gap:16px;
   }
@@ -466,13 +530,13 @@
   /* ---------- Envíos y pagos ---------- */
   .dos-columnas{ display:grid; gap:40px; }
   .sub{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:12px;
     letter-spacing:.13em; text-transform:uppercase;
     color:var(--texto-tenue); margin:0 0 16px;
   }
   .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:0; }
   .datos dt{
-    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.12em;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-size:11px; letter-spacing:.12em;
     text-transform:uppercase; color:var(--texto-tenue);
     padding:10px 20px 10px 0; border-bottom:1px solid var(--linea);
   }
@@ -486,7 +550,7 @@
   .vista{ padding:40px 0 80px; }
   .volver{
     display:inline-block; margin-bottom:32px;
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:11px;
     letter-spacing:.11em; text-transform:uppercase;
     color:var(--texto-tenue); text-decoration:none;
   }
@@ -510,7 +574,7 @@
   #visor3d[data-listo="true"]{ opacity:1; }
   .visor-pista{
     position:absolute; left:0; right:0; bottom:10px; margin:0; text-align:center;
-    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
     font-size:10px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--texto-tenue); pointer-events:none;
   }
@@ -521,7 +585,7 @@
   .visor-lentes button{
     background:none; border:0; border-right:1px solid var(--linea);
     color:var(--texto-tenue); cursor:pointer;
-    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
     font-size:10px; letter-spacing:.14em; text-transform:uppercase;
     padding:7px 12px;
   }
@@ -530,7 +594,7 @@
   .visor-lentes button:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
 
   .tira--3d span{
-    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
     font-size:11px; letter-spacing:.12em; color:var(--texto-tenue);
     border:0; padding:0;
   }
@@ -550,25 +614,25 @@
   .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
 
   .producto-titulo{
-    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:clamp(28px, 6vw, 42px);
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:clamp(28px, 6vw, 42px);
     letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance;
   }
   .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
   .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; max-width:100%; }
   .cantidad button{
     background:none; border:0; color:var(--hueso); cursor:pointer;
-    font-family:var(--display); font-stretch:125%; font-size:15px; padding:10px 14px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-size:15px; padding:10px 14px;
   }
   .cantidad button:hover{ background:var(--superficie); }
   .cantidad span{
-    font-family:var(--display); font-stretch:125%; font-size:14px; min-width:40px; text-align:center;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-size:14px; min-width:40px; text-align:center;
     border-left:1px solid var(--linea); border-right:1px solid var(--linea); padding:10px 0;
   }
 
   /* Checkout */
   .pasos{ display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--linea); margin-bottom:36px; width:max-content; max-width:100%; }
   .paso-chip{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:10px;
     letter-spacing:.10em; text-transform:uppercase;
     color:var(--texto-tenue); padding:9px 12px;
     border-right:1px solid var(--linea);
@@ -579,7 +643,7 @@
 
   .campo{ display:grid; gap:6px; margin-bottom:18px; max-width:420px; }
   .campo label{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:10px;
     letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
   }
   .campo input, .campo textarea, .campo select{
@@ -606,7 +670,7 @@
 
   .aviso-precios{
     background:var(--superficie); border-bottom:1px solid var(--linea);
-    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.1em;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-size:11px; letter-spacing:.1em;
     text-transform:uppercase; color:var(--texto-tenue);
     padding:8px 0; text-align:center;
   }
@@ -615,7 +679,7 @@
   .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
   .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
   .footer a{
-    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:11px;
     letter-spacing:.11em; text-transform:uppercase; text-decoration:none;
     color:var(--hueso);
   }
@@ -643,7 +707,6 @@
   }
 
   @media (min-width:768px){
-    :root{ --gutter:32px; }
     .seccion{ padding:88px 0; }
     .hero{ padding:112px 0 96px; }
     .fichas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; }
@@ -681,6 +744,25 @@
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
 <div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">RELIEF</span></div>
+
+<div class="banco" id="banco">
+  <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
+  <h4>Titulares</h4>
+  <div class="banco-fila" role="group" aria-label="Tipografia de titulares">
+    <button type="button" data-tipo-set="lora">Lora</button>
+    <button type="button" data-tipo-set="sora">Sora</button>
+    <button type="button" data-tipo-set="epilogue">Epilogue</button>
+    <button type="button" data-tipo-set="archivo">Archivo</button>
+  </div>
+  <h4>Fondo del modo noche</h4>
+  <div class="banco-fila" role="group" aria-label="Color de fondo">
+    <button type="button" data-fondo-set="neutro">Negro</button>
+    <button type="button" data-fondo-set="roja">Tinta roja</button>
+    <button type="button" data-fondo-set="calida">Calida</button>
+    <button type="button" data-fondo-set="carbon">Carbon</button>
+  </div>
+</div>
+<button class="banco-abrir" id="bancoAbrir" type="button" hidden>Banco de pruebas</button>
 
 <main id="top">
 
@@ -1739,6 +1821,43 @@ document.addEventListener('submit', ev => {
 
 navegar();
 
+/* ---------------- Banco de pruebas ----------------
+   Solo vive en esta propuesta: sirve para comparar tipografía y fondo sobre
+   el sitio real en vez de sobre un muestrario. Al decidir se borra, y la
+   elección se fija directamente en :root.
+--------------------------------------------------- */
+(function(){
+  const raiz = document.documentElement;
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const leer = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+
+  function marcar(attr, valor) {
+    document.querySelectorAll('[data-' + attr + '-set]').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
+  }
+  function aplicarTipo(v){ raiz.dataset.tipo = v; marcar('tipo', v); guardar('relief.tipo', v); }
+  function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
+
+  document.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-tipo-set],[data-fondo-set]');
+    if (!b) return;
+    if (b.dataset.tipoSet) aplicarTipo(b.dataset.tipoSet);
+    else aplicarFondo(b.dataset.fondoSet);
+    /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
+    if (window.__remedirWordmark) window.__remedirWordmark();
+  });
+
+  const banco = document.getElementById('banco');
+  const abrir = document.getElementById('bancoAbrir');
+  document.getElementById('bancoCerrar').addEventListener('click', () => {
+    banco.hidden = true; abrir.hidden = false;
+  });
+  abrir.addEventListener('click', () => { banco.hidden = false; abrir.hidden = true; });
+
+  aplicarTipo(leer('relief.tipo', 'lora'));
+  aplicarFondo(leer('relief.fondo', 'neutro'));
+})();
+
 /* ---------------- El wordmark se vuelve logotipo ----------------
    Se mide el ancho natural de la palabra una sola vez y de ahí salen las dos
    escalas: la que la lleva de punta a punta y la del nav. El scroll solo
@@ -1800,6 +1919,12 @@ navegar();
      es otro y la palabra no quedaría de punta a punta. */
   medir();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
+  /* El banco de pruebas lo llama al cambiar de tipografía: cada cara tiene
+     un ancho distinto y las escalas hay que recalcularlas. */
+  window.__remedirWordmark = () => {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
+    else medir();
+  };
 })();
 </script>
 
