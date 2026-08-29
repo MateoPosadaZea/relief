@@ -37,7 +37,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -62,12 +62,11 @@
        sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
     --blanco:      #FFFFFF;
 
-    /* Dos familias, las dos SIL OFL. Lora (serif) solo para los titulares
-       supergrandes —el hero, el logotipo, los cierres—; Epilogue para todo lo
-       demás: titulares de sección, párrafos, rótulos, botones y formularios.
-       Ninguna de las dos tiene eje de ancho, así que los tokens de stretch
-       quedan en normal y siguen ahí solo para el banco de pruebas. */
-    --display:  "Lora", Georgia, "Times New Roman", serif;
+    /* Una sola cara, en todos los pesos. Lora se probó para los titulares
+       supergrandes y se descartó: con la escena y el 3D encima, dos caras
+       eran una capa de ruido más. Los tokens siguen separados por rol para
+       poder cambiar de idea sin tocar una sola regla. */
+    --display:  "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
     --titulo:   "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
     --etiqueta: "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
     --texto:    "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -77,9 +76,6 @@
     --gutter: 20px;
   }
 
-  /* Lo único que queda por decidir es con cuál cara va el titular grande y,
-     con él, el logotipo. El resto del sitio es Epilogue en los dos casos. */
-  :root[data-tipo="epilogue"]{ --display:"Epilogue", system-ui, sans-serif; }
 
   /* Fondos candidatos. Solo aplican al modo noche: los otros tres modos ya
      traen su propio fondo por definición. Los cuatro verificados AA. */
@@ -287,6 +283,7 @@
   /* Solo el icono: la palabra "carrito" no dice nada que el dibujo no diga. */
   .carrito-btn{
     background:none; border:1px solid var(--linea); color:var(--hueso);
+    font-family:var(--etiqueta);
     padding:6px; cursor:pointer;
     display:flex; align-items:center; gap:5px; line-height:0;
   }
@@ -851,11 +848,6 @@
 
 <div class="banco" id="banco">
   <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
-  <h4>Titular grande y logotipo</h4>
-  <div class="banco-fila" role="group" aria-label="Cara del titular grande">
-    <button type="button" data-tipo-set="lora">Lora</button>
-    <button type="button" data-tipo-set="epilogue">Epilogue</button>
-  </div>
   <h4>Grosor del titular grande</h4>
   <div class="banco-fila" role="group" aria-label="Grosor de los titulares">
     <button type="button" data-peso-set="300">300</button>
@@ -2052,7 +2044,6 @@ navegar();
     document.querySelectorAll('[data-' + attr + '-set]').forEach(b =>
       b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
   }
-  function aplicarTipo(v){ raiz.dataset.tipo = v; marcar('tipo', v); guardar('relief.tipo', v); }
   function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
   /* El peso no es un atributo de :root sino una variable, porque lo consumen
      todas las reglas de titulares a la vez. */
@@ -2062,10 +2053,9 @@ navegar();
   }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-tipo-set],[data-fondo-set],[data-peso-set]');
+    const b = ev.target.closest('[data-fondo-set],[data-peso-set]');
     if (!b) return;
-    if (b.dataset.tipoSet) aplicarTipo(b.dataset.tipoSet);
-    else if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
+    if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -2082,7 +2072,6 @@ navegar();
      que juzgar. Arranca plegado. */
   if (window.innerWidth < 760) { banco.hidden = true; abrir.hidden = false; }
 
-  aplicarTipo(leer('relief.tipo', 'lora'));
   aplicarFondo(leer('relief.fondo', 'neutro'));
   aplicarPeso(leer('relief.peso', '600'));
 })();

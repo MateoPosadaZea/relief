@@ -115,9 +115,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   let zoom = 1, zoomObj = 1;
   let objetivoColor = null;
   let panelPrevio = null;
-  /* Giro que acompaña al scroll dentro de cada panel. */
-  let deriva = 0, derivaSuave = 0;
-  const DERIVA = 0.30;
 
   function medir() {
     const r = canvas.getBoundingClientRect();
@@ -176,18 +173,16 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   function panelActual() {
     if (!paneles || !paneles.length) return null;
     const medio = window.innerHeight / 2;
-    let elegido = null, cerca = Infinity, dist = 0;
+    let elegido = null, cerca = Infinity;
     for (const p of paneles) {
       const r = p.getBoundingClientRect();
       if (r.bottom < 0 || r.top > window.innerHeight) continue;
-      const centro = (r.top + r.bottom) / 2;
-      const d = Math.abs(centro - medio);
-      if (d < cerca) { cerca = d; elegido = p; dist = (centro - medio) / window.innerHeight; }
+      const d = Math.abs((r.top + r.bottom) / 2 - medio);
+      if (d < cerca) { cerca = d; elegido = p; }
     }
-    /* Cuánto falta o sobra para que el panel esté centrado, de -0.5 a 0.5. De
-       ahí sale el giro que acompaña al scroll: sin él el modelo se queda
-       congelado entre panel y panel y el scroll no parece hacer nada. */
-    deriva = Math.max(-0.5, Math.min(0.5, dist));
+    /* El modelo solo se mueve al cambiar de pieza. Llegó a acompañar al scroll
+       dentro de cada panel y era demasiado: con la escena moviéndose todo el
+       tiempo no se puede leer. */
     return elegido;
   }
 
@@ -237,7 +232,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     ratonSuave.x += (raton.x - ratonSuave.x) * kMano;
     ratonSuave.y += (raton.y - ratonSuave.y) * kMano;
 
-    derivaSuave += (deriva - derivaSuave) * kMano;
     foco.lerp(focoObj, kPieza);
     giroPieza += (giroPiezaObj - giroPieza) * kPieza;
     inclina   += (inclinaObj   - inclina)   * kPieza;
@@ -251,8 +245,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
     /* El giro del hero cede el mando al de la pieza en cuanto la palabra suelta
        la pantalla. Encima van siempre el arrastre y el cursor. */
-    gafas.rotation.y = (-0.72 + progreso * 0.72) * cede
-                     + (giroPieza + derivaSuave * DERIVA) * dentro
+    gafas.rotation.y = (-0.72 + progreso * 0.72) * cede + giroPieza * dentro
                      + manualSuave.y + ratonSuave.y;
     gafas.rotation.x = (0.20 - progreso * 0.14) * cede + inclina * dentro
                      + manualSuave.x + ratonSuave.x;
