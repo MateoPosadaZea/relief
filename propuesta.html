@@ -407,7 +407,17 @@
      modelo puede ser grande y acercarse a una pieza sin invadir la lectura.
      El lado del texto cambia por grupos de dos o tres paneles, no en cada uno:
      saltar de lado doce veces marea más que cualquier movimiento. */
-  .panel{ align-items:flex-end; padding-top:44vh; padding-bottom:11vh; }
+  /* El texto se queda pegado a la franja de abajo mientras su panel está en
+     pantalla, en vez de subir atravesando el modelo. Sin esto, entre panel y
+     panel el párrafo pasa por encima de las gafas: el reparto vertical solo se
+     cumplía con el panel exactamente centrado. */
+  .panel:not(.panel--apertura){ align-items:stretch; padding:0; }
+  .panel:not(.panel--apertura) > .wrap{
+    position:sticky; top:0;
+    height:100vh; height:100svh;
+    justify-content:flex-end; padding-bottom:9vh;
+  }
+  .panel{ min-height:125vh; }
   .panel--apertura{ padding-top:14vh; }
   .panel > .wrap{ display:flex; flex-direction:column; align-items:flex-start; }
   .panel > .wrap > *{ max-width:min(38%, 440px); }
@@ -422,9 +432,15 @@
      lateral: el movimiento horizontal es el que marea. */
   .panel > .wrap > *{
     opacity:0; transform:translateY(16px);
+    /* Sale rápido y entra despacio: la transición que manda es la del estado
+       al que se va. Si sale lento alcanza a subir por encima del modelo
+       todavía legible. */
+    transition:opacity .22s ease, transform .22s ease;
+  }
+  .panel[data-visible="true"] > .wrap > *{
+    opacity:1; transform:none;
     transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1);
   }
-  .panel[data-visible="true"] > .wrap > *{ opacity:1; transform:none; }
   .panel[data-visible="true"] > .wrap > :nth-child(2){ transition-delay:.09s; }
   .panel[data-visible="true"] > .wrap > :nth-child(3){ transition-delay:.18s; }
   .panel[data-visible="true"] > .wrap > :nth-child(4){ transition-delay:.27s; }
@@ -435,7 +451,7 @@
   /* Los paneles de pieza son un tramo más rápido dentro del mismo recorrido:
      el titular pesa menos y ocupan menos pantalla, para que mirar de cerca no
      alargue la historia el doble. */
-  .panel--pieza{ min-height:78vh; }
+  .panel--pieza{ min-height:105vh; }
   .panel--pieza .panel-texto{ font-size:clamp(24px,3.6vw,34px); max-width:18ch; }
   .panel--pieza .hora{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   @media (max-width:899px){
@@ -522,6 +538,7 @@
     min-width:0;
   }
   .ficha-img{
+    position:relative;
     min-width:0; overflow:hidden;
     /* El producto es muy apaisado: en móvil un marco 16:10 a ancho completo
        se come media pantalla sin aportar nada. */
@@ -538,6 +555,18 @@
     width:100%; height:100%; max-width:100%; object-fit:contain;
     padding:8%;
   }
+  /* La foto puesta se cruza con la de producto al pasar el cursor. Es una capa
+     encima: sin el archivo no hay nodo y la tarjeta se comporta igual. */
+  .ficha-puesta{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity .45s ease;
+  }
+  .ficha-enlace:hover .ficha-puesta,
+  .ficha-enlace:focus-visible .ficha-puesta{ opacity:1; }
+  /* En táctil no hay hover: la foto no aportaría nada y sí peso. */
+  @media (hover: none){ .ficha-puesta{ display:none; } }
+  @media (prefers-reduced-motion:reduce){ .ficha-puesta{ transition:none; } }
+
   .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
   .ficha-enlace:hover .ficha-img img,
   .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
@@ -894,11 +923,11 @@
 
           <div class="modos">
             <span class="label" id="modosLabel">Ver el sitio con cada lente</span>
-            <div class="modos-fila" role="group" aria-labelledby="modosLabel">
-              <button type="button" data-modo-set="noche">Noche</button>
-              <button type="button" data-modo-set="dia">Día</button>
-              <button type="button" data-modo-set="trabajo">Trabajo</button>
-              <button type="button" data-modo-set="descanso">Descanso</button>
+            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
+              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
+              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
+              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
+              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
             </div>
             <p class="modos-nota">Aproximación visual de cada lente, no una medición.</p>
           </div>
@@ -1189,6 +1218,7 @@ const PRODUCTOS = [
     detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
     precio: 129000,
     lente: "ambar",
+    puesta: 'assets/img/ambar-puesta.webp',
     imagenes: [
       "assets/img/ambar.webp",
       "assets/img/ambar-frente.webp",
@@ -1206,6 +1236,7 @@ const PRODUCTOS = [
     detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
     precio: 129000,
     lente: "rojo",
+    puesta: 'assets/img/rojo-puesta.webp',
     imagenes: [
       "assets/img/rojo.webp",
       "assets/img/rojo-frente.webp",
@@ -1227,6 +1258,7 @@ const PRODUCTOS = [
        lo que el combo vende. */
     lente: "ambar",
     lentes: ["ambar", "rojo"],
+    puesta: 'assets/img/combo-puesta.webp',
     imagenes: [
       "assets/img/combo.webp",
       "assets/img/combo-frente.webp",
@@ -1268,8 +1300,14 @@ function porId(id){ return PRODUCTOS.find(p => p.id === id); }
 function imagenHTML(p){
   const marcador = '<span class="tbd">[TBD] Foto 16:10</span>';
   if (!p.imagen) return marcador;
-  return '<img src="' + esc(p.imagen) + '" alt="' + esc(p.nombre) + '" hidden>'
-       + marcador;
+  let html = '<img src="' + esc(p.imagen) + '" alt="' + esc(p.nombre) + '" hidden>';
+  /* Segunda foto, puesta en una persona, que aparece al pasar el cursor. Es un
+     slot: si el archivo no existe no se muestra nada y la tarjeta queda igual.
+     Va con alt vacío porque no aporta información nueva sobre el producto. */
+  if (p.puesta) {
+    html += '<img class="ficha-puesta" src="' + esc(p.puesta) + '" alt="" aria-hidden="true" hidden>';
+  }
+  return html + marcador;
 }
 
 /* La foto solo se muestra si carga; si falla, se queda el [TBD]. */
@@ -1277,7 +1315,10 @@ function activarImagenes(raiz){
   raiz.querySelectorAll('img[hidden]').forEach(img => {
     const mostrar = () => {
       img.hidden = false;
-      const marcador = img.nextElementSibling;
+      /* La foto puesta es una capa encima: no le toca quitar el marcador,
+         que pertenece a la principal. */
+      if (img.classList.contains('ficha-puesta')) return;
+      const marcador = img.parentElement.querySelector('.tbd');
       if (marcador) marcador.remove();
     };
     if (img.complete && img.naturalWidth > 0) mostrar();
@@ -1381,20 +1422,24 @@ function cargar3D() {
    una página en blanco.
 ------------------------------------------------------- */
 (function(){
-  const paneles = document.querySelectorAll('.panel');
+  const paneles = [...document.querySelectorAll('.panel')];
   if (!paneles.length) return;
   if (!('IntersectionObserver' in window)) {
     paneles.forEach(p => p.dataset.visible = 'true');
     return;
   }
+  /* Se enciende y se apaga, y el momento exacto importa: mientras el bloque
+     está pegado abajo no se mueve, y solo empieza a subir —cruzando el
+     modelo— cuando el sticky se suelta. Se observa el bloque, no el panel, y
+     la franja de observación es la última del viewport: el bloque la ocupa
+     mientras está pegado y la abandona justo al soltarse. */
   const ojo = new IntersectionObserver(entradas => {
     for (const e of entradas) {
-      /* Se marca al entrar y no se desmarca: releer hacia arriba no debería
-         volver a animar el texto que ya viste. */
-      if (e.isIntersecting) { e.target.dataset.visible = 'true'; ojo.unobserve(e.target); }
+      const panel = e.target.closest('.panel');
+      if (panel) panel.dataset.visible = String(e.isIntersecting);
     }
-  }, { rootMargin: '0px 0px -22% 0px' });
-  paneles.forEach(p => ojo.observe(p));
+  }, { rootMargin: '-96% 0px 0px 0px' });
+  paneles.forEach(p => { const w = p.querySelector(':scope > .wrap'); if (w) ojo.observe(w); });
 })();
 
 /* ---------------- Modos de visualización ----------------

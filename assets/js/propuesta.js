@@ -153,7 +153,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
        alta es suya entera, así que puede ser bastante más grande de lo que era
        cuando compartía el ancho con el texto. */
     angosto = w < 900;
-    const CENTRO = angosto ? 0.30 : 0.34;      // dónde queda su centro, en alto
+    const CENTRO = angosto ? 0.30 : 0.28;      // dónde queda su centro, en alto
     escalaHistoria = angosto ? encuadre(w * 0.88, h * 0.34)
                              : encuadre(w * 0.62, h * 0.42);
     desplazX = 0;
