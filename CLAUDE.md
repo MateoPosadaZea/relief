@@ -36,6 +36,11 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
   defecto: el visitante llega a cualquier hora y un fondo negro de entrada le
   pide una decisión que no ha tomado. Noche queda a un clic, y es donde el
   producto se ve mejor.
+- **El modelo se va con el recorrido.** La escena es fija, así que en cuanto
+  el final del bloque sube por encima de la banda del modelo, la escena se
+  desplaza hacia arriba lo mismo que él: el pie del modelo queda atado al
+  borde de la sección y nunca lo cruza. Es esto y no un recorte —un corte duro
+  partiría las gafas justo en la línea de la sección, que se ve peor.
 - **El modelo va por encima del texto del recorrido**, no detrás: cuando el
   texto le pasaba por encima tapaba la pieza justo mientras el panel hablaba
   de ella. Sigue por debajo de la barra, del wordmark y de las láminas de menú
@@ -145,6 +150,10 @@ compra el aro se pone rojo.
   enlaces en una línea baja y al final la letra pequeña. El cuerpo de la
   palabra lo mide el JS para que llene el ancho exacto, porque depende de la
   cara, del peso y del tracking.
+- En el hueco del medio del pie va **«Volver arriba»**: es donde termina de
+  leerse la página y donde ya no queda nada abajo. Va en una retícula de tres
+  columnas y no en `space-between`, porque con flex se centraba en el hueco
+  que dejaran los otros dos grupos y no en la página.
 - Como ahora el rojo es **texto** y no fondo, usa el token `--rojo-rlf` y sí
   participa de los modos: verificado que los cuatro pasan 3:1 de texto grande,
   y día pasa incluso 4.5:1. El hex fijo se queda solo en el botón de compra.

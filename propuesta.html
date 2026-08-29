@@ -485,10 +485,17 @@
   body[data-carrito="abierto"] .nav{ z-index:90; }
   body[data-menu="abierto"] .nav[data-posado="false"],
   body[data-carrito="abierto"] .nav[data-posado="false"]{ background:var(--noche); }
+  /* El wordmark y el indicio se retiran solo cuando la lámina los tapa de
+     verdad. El menú es siempre a pantalla completa, así que ahí siempre. El
+     carrito no: por encima de 560 px es una barra pegada a la derecha y el
+     resto de la pantalla sigue siendo del hero — escondiendo la palabra ahí,
+     abrir el carrito en escritorio dejaba la portada en blanco. */
   body[data-menu="abierto"] .wordmark-fijo,
-  body[data-menu="abierto"] .pista-scroll,
-  body[data-carrito="abierto"] .wordmark-fijo,
-  body[data-carrito="abierto"] .pista-scroll{ display:none; }
+  body[data-menu="abierto"] .pista-scroll{ display:none; }
+  @media (max-width:559px){
+    body[data-carrito="abierto"] .wordmark-fijo,
+    body[data-carrito="abierto"] .pista-scroll{ display:none; }
+  }
 
   /* Solo el icono: la palabra "carrito" no dice nada que el dibujo no diga. */
   /* Sin recuadro: encerrar el icono en una caja lo convierte en un botón de
@@ -1422,10 +1429,20 @@
   /* La palabra va primero y ocupa el ancho; debajo, en una sola línea baja,
      los enlaces. Es el orden del referente: primero la marca a tamaño de
      cartel, después la letra pequeña. */
+  /* Tres columnas y no space-between: con flex, el botón del medio se
+     centraba en el hueco que dejaran los otros dos, no en la página, y
+     bastaba con que un grupo fuera más largo para descuadrarlo. Con
+     `1fr auto 1fr` el del medio cae en el centro real pase lo que pase. */
   .footer-cima{
-    display:flex; flex-wrap:wrap; gap:28px 48px;
-    justify-content:space-between; align-items:flex-end;
+    display:grid; gap:20px;
+    justify-items:start; align-items:end;
     padding-top:8px;
+  }
+  .footer-cima .footer-arriba{ justify-self:start; }
+  @media (min-width:760px){
+    .footer-cima{ grid-template-columns:1fr auto 1fr; gap:28px 32px; }
+    .footer-cima .footer-arriba{ justify-self:center; }
+    .footer-cima > :last-child{ justify-self:end; }
   }
   .footer-bloque{ display:flex; flex-direction:column; gap:6px; min-width:130px; }
   .footer-enlaces{ display:flex; flex-wrap:wrap; gap:4px 22px; align-items:baseline; }
@@ -1464,6 +1481,22 @@
   .footer[data-pie="rojo"] .footer-palabra{ color:#F7EFEE; }
   /* Sin líneas: el pie ya está separado del resto por el aire de arriba y
      por la palabra, y dos divisores más lo convertían en una tabla. */
+  .footer-arriba{
+    display:inline-flex; align-items:center; gap:9px;
+    background:none; border:0; padding:6px 0; cursor:pointer;
+    font-family:var(--etiqueta); font-weight:500; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--texto-tenue);
+    transition:color .2s ease;
+  }
+  .footer-arriba svg{ width:15px; height:15px; display:block; transition:transform .25s ease; }
+  .footer-arriba:hover{ color:var(--hueso); }
+  /* La flecha se adelanta al gesto: sube un poco antes de que subas tú. */
+  .footer-arriba:hover svg{ transform:translateY(-3px); }
+  .footer-arriba:focus-visible{ outline:2px solid currentColor; outline-offset:3px; }
+  .footer[data-pie="rojo"] .footer-arriba{ color:rgba(255,255,255,.72); }
+  .footer[data-pie="rojo"] .footer-arriba:hover{ color:#F7EFEE; }
+
   .footer-pie{
     display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between;
     padding:14px 0 34px; margin-top:20px;
@@ -2015,6 +2048,17 @@
         <a href="#envios">Envíos y pagos</a>
         <a href="#faq">Preguntas</a>
       </nav>
+      <!-- El hueco del medio del pie es el sitio natural para volver arriba:
+           es donde termina de leerse la página y donde ya no queda nada
+           abajo. Es un botón y no un enlace a #top porque no es una ruta:
+           no tiene por qué quedar en el historial ni cambiar la URL. -->
+      <button class="footer-arriba" type="button" id="volverArriba">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 13V3M4 7l4-4 4 4"/>
+        </svg>
+        Volver arriba
+      </button>
       <div class="footer-enlaces">
         <a data-contacto="whatsapp">WhatsApp</a>
         <a data-contacto="instagram">Instagram</a>
@@ -2777,6 +2821,18 @@ const RESENAS_EJEMPLO = [
   window.__cursorPropio = encender;
 })();
 
+/* Volver arriba. Sin hash: no es una ruta, no tiene por qué quedar en el
+   historial. Respeta «reducir movimiento», donde un salto largo animado es
+   exactamente lo que molesta. */
+(function(){
+  const btn = document.getElementById('volverArriba');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' });
+  });
+})();
+
 /* ---------------- El recorrido en pantalla ----------------
    La escena va por encima de los paneles, y como es fija y ocupa la ventana
    entera hay que retirarla cuando el recorrido termina: si no, el modelo
@@ -2784,20 +2840,41 @@ const RESENAS_EJEMPLO = [
 --------------------------------------------------------- */
 (function(){
   const historia = document.getElementById('historia');
-  if (!historia) return;
-  const marcar = dentro => {
-    if (dentro) delete document.body.dataset.recorrido;
-    else document.body.dataset.recorrido = 'fuera';
-  };
+  const escena = document.getElementById('escenaFija');
+  if (!historia || !escena) return;
+
+  /* El modelo se va CON el recorrido, no se queda flotando encima de lo que
+     viene después. La escena es fija, así que mientras el final del
+     recorrido está por debajo de la banda del modelo no hay nada que hacer;
+     en cuanto sube por encima, la escena se desplaza hacia arriba lo mismo
+     que él. Así el pie del modelo queda atado al borde de la sección y nunca
+     lo cruza: sale de pantalla empujado por el propio recorrido, como si
+     estuviera dentro del bloque.
+     Es esto y no un recorte: un corte duro partiría las gafas por la mitad
+     justo en la línea de la sección, que se ve peor que el problema. */
+  let pedido = false;
+  function seguir(){
+    pedido = false;
+    const fin = historia.getBoundingClientRect().bottom;
+    /* Pie de la banda donde vive el modelo; el mismo 0.60/0.56 que usa
+       medir() en la escena para encuadrarlo. */
+    const banda = window.innerHeight * (window.innerWidth < 900 ? 0.56 : 0.60);
+    const salida = Math.min(0, fin - banda);
+    escena.style.transform = salida ? 'translate3d(0,' + salida.toFixed(1) + 'px,0)' : '';
+  }
+  function pedir(){ if (!pedido) { pedido = true; requestAnimationFrame(seguir); } }
+  addEventListener('scroll', pedir, { passive: true });
+  addEventListener('resize', pedir);
+  seguir();
+
+  /* Y cuando ya no queda nada del recorrido en pantalla, la escena se retira
+     del todo: sin esto seguiría ahí, invisible pero viva, por encima de las
+     secciones de abajo. */
   if (!('IntersectionObserver' in window)) return;
-  /* El margen superior negativo es lo que hace que se retire A TIEMPO. Sin
-     él, el recorrido sigue "dentro" mientras le quede un pixel abajo de la
-     pantalla, así que el modelo seguía puesto —y enorme— encima de la
-     sección de los lentes. Con la raíz recortada al 45% inferior, el
-     recorrido se da por terminado en cuanto su final sube por encima de esa
-     línea, que es cuando el último panel ya se leyó. */
-  new IntersectionObserver(e => marcar(e[0].isIntersecting),
-    { threshold: 0, rootMargin: '-55% 0px 0px 0px' }).observe(historia);
+  new IntersectionObserver(e => {
+    if (e[0].isIntersecting) delete document.body.dataset.recorrido;
+    else document.body.dataset.recorrido = 'fuera';
+  }, { threshold: 0 }).observe(historia);
 })();
 
 /* ---------------- La marca de la barra ----------------
