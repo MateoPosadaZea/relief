@@ -580,10 +580,14 @@
 
   /* Indicio de scroll. Vive en la franja que la escena le reserva entre las
      gafas y la palabra, y se apaga apenas empieza el recorrido. */
+  /* Solo la palabra. Antes iba con un riel animado al lado; los dos juntos
+     medían más que el hueco que deja el wordmark encima y el bloque se
+     montaba sobre la palabra. Con «Desliza» ya se entiende, y una sola línea
+     de texto cabe. Late despacio para que se note sin pedir atención. */
   .pista-scroll{
     position:fixed; left:0; right:0; z-index:44;
-    top:calc(var(--palabra-cima, 70vh) - 46px);
-    display:flex; justify-content:center; align-items:center; gap:11px;
+    top:calc(var(--palabra-cima, 70vh) - 34px);
+    display:flex; justify-content:center; align-items:center;
     pointer-events:none;
     font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
     font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
@@ -591,16 +595,10 @@
     transition:opacity .3s ease;
   }
   .pista-scroll[hidden]{ display:none; }
-  .pista-scroll .riel{
-    position:relative; width:1px; height:22px; background:var(--linea); overflow:hidden;
-  }
-  .pista-scroll .riel::after{
-    content:""; position:absolute; left:0; top:0; width:1px; height:9px;
-    background:var(--hueso); animation:pista-baja 1.9s ease-in-out infinite;
-  }
-  @keyframes pista-baja{ 0%{transform:translateY(-9px)} 62%,100%{transform:translateY(22px)} }
+  .pista-scroll span{ animation:pista-late 2.6s ease-in-out infinite; }
+  @keyframes pista-late{ 0%,100%{opacity:.55} 50%{opacity:1} }
   @media (prefers-reduced-motion:reduce){
-    .pista-scroll .riel::after{ animation:none; height:22px; background:var(--texto-tenue); }
+    .pista-scroll span{ animation:none; }
   }
   /* El carrito queda anclado a la derecha aunque el logotipo del nav esté
      oculto: con space-between y un solo hijo se iría a la izquierda. */
@@ -1226,14 +1224,22 @@
      rojo NO cambia entre modos —es el mismo del botón de compra— así que
      aquí se escriben hexadecimales fijos en vez de tokens: este bloque no
      participa del tema, lo interrumpe. */
+  /* Dos pies, un interruptor. Por defecto el bloque no se colorea y el color
+     lo lleva la palabra: la marca se firma en rojo sobre el fondo de la
+     página, en vez de teñir la pantalla entera. `data-pie="rojo"` devuelve el
+     bloque rojo entero, para poder comparar los dos sobre el sitio real.
+     El rojo de la palabra sí usa el token del modo —no un hex fijo— porque
+     ahora es texto y tiene que seguir legible en los cuatro: verificado, los
+     cuatro pasan 3:1 de texto grande y día pasa incluso 4.5:1. */
   .footer{
     border-top:1px solid var(--linea);
-    background:#D91F26; color:#F7EFEE;
-    /* Aire arriba: el rojo entraba pegado al contenido anterior y la
-       palabra parecía cortada por el borde de la sección. */
+    background:var(--noche); color:var(--hueso);
+    /* Aire arriba: entraba pegado al contenido anterior y la palabra parecía
+       cortada por el borde de la sección. */
     padding:clamp(72px, 9vw, 128px) 0 0;
     overflow:hidden;
   }
+  .footer[data-pie="rojo"]{ background:#D91F26; color:#F7EFEE; }
   /* La palabra va primero y ocupa el ancho; debajo, en una sola línea baja,
      los enlaces. Es el orden del referente: primero la marca a tamaño de
      cartel, después la letra pequeña. */
@@ -1245,17 +1251,20 @@
   .footer-bloque{ display:flex; flex-direction:column; gap:6px; min-width:130px; }
   .footer-enlaces{ display:flex; flex-wrap:wrap; gap:4px 22px; align-items:baseline; }
   .footer-enlaces a{ font-size:13px; }
-  .footer .label{ color:rgba(255,255,255,.62); margin:0 0 4px; }
+  .footer .label{ margin:0 0 4px; }
+  .footer[data-pie="rojo"] .label{ color:rgba(255,255,255,.62); }
   .footer a{
     font-family:var(--texto); font-weight:400; font-size:15px;
     letter-spacing:0; text-transform:none; text-decoration:none;
-    color:#F7EFEE; width:fit-content;
+    color:inherit; width:fit-content;
     border-bottom:1px solid transparent;
     transition:border-color .18s ease, opacity .18s ease;
   }
   .footer a:hover{ border-bottom-color:currentColor; }
-  .footer a:focus-visible{ outline:2px solid #F7EFEE; outline-offset:3px; }
-  .footer p{ margin:0; font-size:15px; color:rgba(255,255,255,.78); max-width:34ch; }
+  .footer a:focus-visible{ outline:2px solid currentColor; outline-offset:3px; }
+  .footer p{ margin:0; font-size:15px; color:var(--texto-tenue); max-width:34ch; }
+  .footer[data-pie="rojo"] a{ color:#F7EFEE; }
+  .footer[data-pie="rojo"] p{ color:rgba(255,255,255,.78); }
 
   /* El wordmark a sangre. Con vw crece con la ventana y se corta solo por el
      padding del wrap; el line-height ajustado evita la banda muerta que deja
@@ -1270,16 +1279,19 @@
     font-size:var(--pie-cuerpo, clamp(56px, 21vw, 260px));
     line-height:.76;
     margin:0 0 8px; padding-bottom:.05em;
-    color:#F7EFEE;
+    color:var(--rojo-rlf);
     user-select:none;
   }
+  .footer[data-pie="rojo"] .footer-palabra{ color:#F7EFEE; }
   .footer-pie{
     display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between;
-    border-top:1px solid rgba(255,255,255,.28);
+    border-top:1px solid var(--linea);
     padding:18px 0 28px; margin-top:24px;
   }
-  .footer small{ color:rgba(255,255,255,.72); font-size:12px; display:block; }
-  .footer .tbd{ color:rgba(255,255,255,.8); border-color:rgba(255,255,255,.4); }
+  .footer small{ color:var(--texto-tenue); font-size:12px; display:block; }
+  .footer[data-pie="rojo"] .footer-pie{ border-top-color:rgba(255,255,255,.28); }
+  .footer[data-pie="rojo"] small{ color:rgba(255,255,255,.72); }
+  .footer[data-pie="rojo"] .tbd{ color:rgba(255,255,255,.8); border-color:rgba(255,255,255,.4); }
 
   .sr-only{
     position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -1395,7 +1407,7 @@
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
 <div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
-<div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span class="riel"></span><span>Desliza</span></div>
+<div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span>Desliza</span></div>
 
 <div class="banco" id="banco">
   <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
@@ -1413,6 +1425,11 @@
     <button type="button" data-fondo-set="roja">Tinta roja</button>
     <button type="button" data-fondo-set="calida">Calida</button>
     <button type="button" data-fondo-set="carbon">Carbon</button>
+  </div>
+  <h4>Pie</h4>
+  <div class="banco-fila" role="group" aria-label="Estilo del pie">
+    <button type="button" data-pie-set="claro">Palabra roja</button>
+    <button type="button" data-pie-set="rojo">Bloque rojo</button>
   </div>
 </div>
 <button class="banco-abrir" id="bancoAbrir" type="button" hidden>Banco de pruebas</button>
@@ -3178,6 +3195,14 @@ navegar();
       b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
   }
   function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
+  /* El pie es el único bloque que puede llevar color propio, así que su
+     interruptor vive en el elemento y no en :root. */
+  function aplicarPie(v){
+    const pie = document.querySelector('.footer');
+    if (pie) pie.dataset.pie = v;
+    marcar('pie', v); guardar('relief.pie', v);
+    if (window.__ajustarPie) window.__ajustarPie();
+  }
   /* El peso no es un atributo de :root sino una variable, porque lo consumen
      todas las reglas de titulares a la vez. */
   function aplicarPeso(v){
@@ -3187,9 +3212,10 @@ navegar();
   }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-fondo-set],[data-peso-set]');
+    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set]');
     if (!b) return;
     if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
+    else if (b.dataset.pieSet) aplicarPie(b.dataset.pieSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -3208,6 +3234,7 @@ navegar();
 
   aplicarFondo(leer('relief.fondo', 'neutro'));
   aplicarPeso(leer('relief.peso', '600'));
+  aplicarPie(leer('relief.pie', 'claro'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------

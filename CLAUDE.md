@@ -91,14 +91,18 @@ modelo 3D pegado, girable, con el lente del producto.
   alineado con el resto de la página. Sin difuminado en los extremos —cortaba
   la primera y la última tarjeta y parecía un fallo de carga—. La tarjeta usa
   `--tarjeta` y el borde se pone rojo al pasar el cursor.
-- **El pie es el único bloque rojo del sitio**, y por eso cierra: después de una
-  noche entera en negro, el color del producto ocupa la pantalla. Ahí van el
-  wordmark a tamaño de cartel —el cuerpo lo mide el JS para que llene el ancho
-  exacto, porque depende de la cara, del peso y del tracking—, después los
-  enlaces en una línea baja, y al final la letra pequeña.
-- El rojo del pie **no participa de los cuatro modos**: se escribe en
-  hexadecimal fijo, igual que el botón de compra. Es la excepción declarada a la
-  regla de que ninguna regla CSS conoce un hex.
+- **El pie firma en rojo, no se pinta de rojo.** El bloque conserva el fondo de
+  la página y el color lo lleva la palabra: el wordmark a tamaño de cartel, en
+  rojo. Teñir la pantalla entera pesaba más de lo que decía. Después van los
+  enlaces en una línea baja y al final la letra pequeña. El cuerpo de la
+  palabra lo mide el JS para que llene el ancho exacto, porque depende de la
+  cara, del peso y del tracking.
+- Como ahora el rojo es **texto** y no fondo, usa el token `--rojo-rlf` y sí
+  participa de los modos: verificado que los cuatro pasan 3:1 de texto grande,
+  y día pasa incluso 4.5:1. El hex fijo se queda solo en el botón de compra.
+- La versión de **bloque rojo entero** sigue viva en `.footer[data-pie="rojo"]`,
+  con su interruptor en el banco de pruebas, para poder comparar las dos sobre
+  el sitio real antes de decidir.
 
 ## Posicionamiento (la tesis del negocio)
 Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot está destruido:
