@@ -221,6 +221,36 @@ Tres vistas sobre el mismo `index.html`, sin build step ni configuración de rut
 ⚠ Sin link de Wompi el paso 3 avisa y deja seguir, en vez de romperse. Sin número
 de WhatsApp el paso 4 lo marca `[TBD]`.
 
+## Proveedor — lo que ofrece (de sus fichas, sin cotizar todavía)
+- **Montura**: PC, TR90, CP, acetato, **bambú, madera**, metal, paja de trigo, RPCTG.
+- **Lente**: PC, vidrio, nylon, resina, acrílico, TAC, CR-39.
+- **Personalizable**: forma del frente, diseño de varilla, bisagras y apliques
+  metálicos, color por **Pantone**, y logo impreso o grabado en la varilla.
+  → La bisagra metálica con tornillo que promete el copy del sitio **sí es una
+  opción real que hay que pedir**, no un supuesto.
+  → El isotipo en la varilla es la primera aplicación física de la marca.
+- **Cuatro tintes**, no dos: ámbar/naranja, amarillo, rojo y transparente.
+  Nuestro catálogo de dos es una simplificación deliberada, no una limitación.
+
+### ⚠ La ficha de tintes del proveedor NO se puede usar como copy
+Trae porcentajes (20-40 / 40-60 / 80-99 / 99 %) **sin ensayo adjunto**, y frases
+como «Melatonin Support», «promote natural sleep cycles» y «Medical Grade».
+- Los porcentajes son la misma situación de Warblue: cifras del vendedor, no de
+  un laboratorio. No se publican. Al cotizar, **pedir el reporte de
+  transmitancia espectral por tinte**, no la ficha comercial.
+- «Medical grade» y las promesas de sueño son justo lo que no podemos repetir
+  (riesgo INVIMA/SIC). Ni citándolas como «según el fabricante».
+
+### Madera y bambú — evaluado, no para el primer pedido
+Diferencia de verdad en una categoría donde todo es TR90 negro, y fotografía
+muy bien. Pero: **pesa más que el TR90**, y el argumento del producto es
+aguantar seis horas seguidas — el conflicto es directo. Además sube MOQ y costo
+unitario sobre un primer pedido de 50-100 sin demanda validada, y la veta varía
+pieza a pieza, así que la foto de producto deja de coincidir con lo que llega.
+→ Candidato fuerte para una **segunda serie limitada** cuando el primer lote se
+venda, con precio más alto. Diferenciarse por material es más fácil de pagar
+después de validar que antes.
+
 ## PENDIENTE (no bloquea el scaffold — usar placeholders)
 - [ ] Hex exacto del rojo, desde el SVG/AI del logo.
 - [ ] Nombres finales de los dos lentes (propuesta: Turno / Apagado, o dejar Ámbar / Rojo).
