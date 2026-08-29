@@ -160,7 +160,7 @@ Es el único riesgo de capital aprobado del proyecto.
 |---|---|---|
 | Noche | `#0B0B0C` | Fondo del sitio |
 | Superficie | `#16161A` | Tarjetas, secciones |
-| Hueso | `#EDEBE6` | Texto principal (NO blanco puro) |
+| Hueso | `#EDEBE6` | Texto principal en oscuro (NO blanco puro) |
 | Ámbar | `#F2A93B` | Lente de trabajo, acentos diurnos |
 | Rojo RLF | `#D91F26` | Logo, lente nocturno, botón comprar |
 | Línea | `#26262B` | Divisores hairline |
@@ -193,7 +193,7 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 | Modo | Qué es | Fondo |
 |---|---|---|
 | **Noche** | Tokens exactos de la tabla de arriba. | `#0B0B0C` |
-| **Día** | **Por defecto.** Fondo hueso, nunca blanco puro. | `#EDEBE6` |
+| **Día** | **Por defecto.** Fondo blanco. | `#FFFFFF` |
 | **Trabajo** | Aproximación del lente ámbar: azules fuera, todo cálido. | `#100C07` |
 | **Descanso** | Aproximación del lente rojo: la página baja de intensidad. | `#0D0708` |
 
@@ -202,9 +202,15 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
   `:root` a secas: un `data-modo` desconocido no puede dejar la página sin
   tipografía. La paleta de día va también ahí, porque es el defecto.
 - `--tarjeta` es el octavo: el fondo de una tarjeta que tiene que despegarse
-  del fondo de página. En día es **blanco puro** —sobre hueso, una tarjeta
-  hueso no se ve— y en los tres modos oscuros es idéntico a `--superficie`.
-  Es la única excepción a "nunca blanco puro", y es de superficie, no de texto.
+  del fondo de página. En los tres modos oscuros es idéntico a `--superficie`.
+- ⚠ **El modo día pasó a fondo blanco** (`#FFFFFF`). La regla vieja decía
+  «fondo hueso, nunca blanco puro»; se cambió a pedido, y con el fondo blanco
+  la que se hunde un punto es `--superficie` en vez de la tarjeta. La versión
+  hueso sigue viva en `:root[data-modo="dia"][data-claro="hueso"]` con su
+  interruptor en el banco. **«Nunca blanco puro» sigue vigente para el
+  texto**: `--hueso` es `#16161A` en día y `#EDEBE6` en noche.
+  Contraste reverificado sobre blanco: texto 18.0, tenue 6.3, ámbar 5.9,
+  rojo 6.0 — los cuatro pasan AA.
 - Los nombres de token describen el **rol**, no el color literal: en modo día,
   `--noche` guarda el color de fondo claro y `--hueso` el texto oscuro.
 - `--ambar-texto` es un token derivado: el ámbar de la tabla no alcanza 4.5:1

@@ -145,15 +145,27 @@
      levanta. El texto de página sigue sin ser blanco puro nunca. */
   :root,
   :root[data-modo="dia"]{
-    --noche:       #EDEBE6;
-    --superficie:  #E2DED6;
+    --noche:       #FFFFFF;
+    --superficie:  #F4F2ED;
     --tarjeta:     #FFFFFF;
     --hueso:       #16161A;
     --ambar:       #F2A93B;
     --ambar-texto: #8A5A0B;
     --rojo-rlf:    #C41A20;
-    --linea:       #D2CEC5;
+    --linea:       #E4E1DA;
     --texto-tenue: #5F5F66;
+  }
+
+  /* La versión anterior del modo día: fondo hueso en vez de blanco. Vive con
+     su interruptor en el banco de pruebas para poder comparar las dos sobre
+     el sitio real. En esta, la tarjeta es la que se despega —blanco sobre
+     hueso—; en la blanca es al revés: la página es blanca y la superficie es
+     la que se hunde un punto. */
+  :root[data-modo="dia"][data-claro="hueso"]{
+    --noche:       #EDEBE6;
+    --superficie:  #E2DED6;
+    --tarjeta:     #FFFFFF;
+    --linea:       #D2CEC5;
   }
 
   /* TRABAJO — aproximación del lente ámbar: azules fuera, todo cálido. */
@@ -1489,6 +1501,11 @@
     <button type="button" data-fondo-set="calida">Calida</button>
     <button type="button" data-fondo-set="carbon">Carbon</button>
   </div>
+  <h4>Fondo del modo día</h4>
+  <div class="banco-fila" role="group" aria-label="Fondo del modo dia">
+    <button type="button" data-claro-set="blanco">Blanco</button>
+    <button type="button" data-claro-set="hueso">Hueso</button>
+  </div>
   <h4>Pie</h4>
   <div class="banco-fila" role="group" aria-label="Estilo del pie">
     <button type="button" data-pie-set="claro">Palabra roja</button>
@@ -2618,7 +2635,14 @@ function aplicarModo(modo, persistir){
   botonesModo.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modoSet === modo)));
 
   const barra = document.querySelector('meta[name="theme-color"]');
-  if (barra) barra.setAttribute('content', MODOS[modo].fondoBarra);
+  /* El color de la barra del navegador se lee del token, no de una tabla
+     aparte: así el modo día con fondo blanco o con fondo hueso lo dice bien
+     sin duplicar el dato en dos sitios. */
+  if (barra) {
+    const fondo = getComputedStyle(document.documentElement)
+      .getPropertyValue('--noche').trim();
+    barra.setAttribute('content', fondo || MODOS[modo].fondoBarra);
+  }
 
   if (persistir) {
     try { localStorage.setItem(CLAVE_MODO, modo); } catch (e) {}
@@ -3338,6 +3362,7 @@ navegar();
       b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
   }
   function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
+  function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('relief.claro', v); }
   /* El pie es el único bloque que puede llevar color propio, así que su
      interruptor vive en el elemento y no en :root. */
   function aplicarPie(v){
@@ -3355,10 +3380,11 @@ navegar();
   }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set]');
+    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set],[data-claro-set]');
     if (!b) return;
     if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
     else if (b.dataset.pieSet) aplicarPie(b.dataset.pieSet);
+    else if (b.dataset.claroSet) aplicarClaro(b.dataset.claroSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -3378,6 +3404,7 @@ navegar();
   aplicarFondo(leer('relief.fondo', 'neutro'));
   aplicarPeso(leer('relief.peso', '600'));
   aplicarPie(leer('relief.pie', 'claro'));
+  aplicarClaro(leer('relief.claro', 'blanco'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------
