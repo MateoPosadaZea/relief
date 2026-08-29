@@ -50,19 +50,61 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const manualSuave = { x: 0, y: 0 };
   let arrastrando = false, ultimoX = 0, ultimoY = 0;
 
+  /* Composición: las gafas arriba, la palabra abajo. La palabra publica en
+     --palabra-cima dónde empieza su tinta; el modelo se ajusta a la banda que
+     queda libre encima, y recupera el centro y su tamaño cuando la palabra se
+     convierte en logotipo y le devuelve la pantalla.
+
+     El tamaño no sale de constantes tanteadas sino de medir el modelo: se lee
+     su caja una vez, sin girar ni escalar, y de ahí salen tanto el encuadre
+     como el desplazamiento que lo centra. */
+  gafas.scale.setScalar(1);
+  gafas.rotation.set(0, 0, 0);
+  gafas.updateMatrixWorld(true);
+  const caja = new THREE.Box3().setFromObject(gafas);
+  const dim  = caja.getSize(new THREE.Vector3());
+  const centro = caja.getCenter(new THREE.Vector3());
+  /* Girado sobre Y, el ancho aparente mezcla las dos dimensiones
+     horizontales. Se encuadra por el giro de reposo (-0.72 rad), que es el
+     más abierto del recorrido; usar el máximo de las dos sería encuadrar por
+     un giro que nunca ocurre y dejaría el modelo innecesariamente chico. */
+  const GIRO = 0.72;
+  const anchoModelo = dim.x * Math.cos(GIRO) + dim.z * Math.sin(GIRO);
+  const altoModelo  = dim.y;
+
+  let escalaBanda = 1, escalaPlena = 1, subida = 0;
+
   function medir() {
     const r = canvas.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width));
     const h = Math.max(1, Math.round(r.height));
     renderer.setSize(w, h, false);
     camara.aspect = w / h;
-    /* En vertical el campo horizontal es mucho más estrecho: el modelo
-       encoge para no cortarse por los lados. */
-    const vertical = w / h < 1;
-    gafas.scale.setScalar(vertical ? 0.80 : 1.06);
-    gafas.position.y = vertical ? 0.30 : 0.02;
-    camara.position.z = vertical ? 5.4 : 4.2;
+    camara.position.z = w / h < 1 ? 5.4 : 4.2;
     camara.updateProjectionMatrix();
+
+    const raiz = getComputedStyle(document.documentElement);
+    const cima = parseFloat(raiz.getPropertyValue('--palabra-cima'));
+    /* La barra tampoco es espacio libre: la banda va del pie del nav al techo
+       de la palabra. Sin palabra medida todavía llega hasta abajo, y la escena
+       se compone como si el wordmark no existiera. */
+    const techo = parseFloat(raiz.getPropertyValue('--alto-nav')) || 0;
+    const piso  = (cima > 40 && cima < h) ? cima : h;
+    const util  = Math.max(80, piso - techo);
+
+    const alturaMundo = 2 * Math.tan(camara.fov * Math.PI / 360) * camara.position.z;
+    const porUnidad = h / alturaMundo;
+
+    /* Cabe por lo ancho o por lo alto, lo que primero se agote. */
+    const encuadre = alto =>
+      Math.max(0.35, Math.min((w * 0.86) / (anchoModelo * porUnidad),
+                              (alto * 0.62) / (altoModelo * porUnidad)));
+    escalaBanda = encuadre(util);
+    escalaPlena = encuadre(h);
+
+    /* Cuánto hay que subir el modelo desde el centro de la pantalla hasta el
+       centro de la banda. */
+    subida = (h / 2 - (techo + piso) / 2) / porUnidad;
   }
 
   function leerProgreso() {
@@ -92,6 +134,13 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   function dibujar() {
     manualSuave.x += (manual.x - manualSuave.x) * 0.1;
     manualSuave.y += (manual.y - manualSuave.y) * 0.1;
+    /* 1 mientras la palabra ocupa la pantalla, 0 cuando ya es logotipo. */
+    const cede = 1 - (window.__morfo || 0);
+    const escala = escalaPlena + (escalaBanda - escalaPlena) * cede;
+    gafas.scale.setScalar(escala);
+    /* El modelo no está centrado en su origen: se compensa su propio centro
+       antes de subirlo a la banda. */
+    gafas.position.y = -centro.y * escala + subida * cede;
     gafas.rotation.y = -0.72 + progreso * 0.72 + manualSuave.y;
     gafas.rotation.x = 0.20 - progreso * 0.14 + manualSuave.x;
     gafas.rotation.z = 0.05 - progreso * 0.05;
@@ -132,6 +181,9 @@ export function iniciarEscena(canvas, contenedor, paneles) {
       { threshold: 0 }).observe(canvas);
   }
   window.addEventListener('resize', () => { medir(); dibujar(); });
+  /* La palabra avisa cuando cambia de tamaño (carga de la fuente, banco de
+     pruebas, rotación): la banda libre es otra y hay que recomponer. */
+  window.addEventListener('relief:banda', () => { medir(); dibujar(); });
 
   medir();
   progreso = leerProgreso();

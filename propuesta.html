@@ -1888,6 +1888,10 @@ navegar();
   });
   abrir.addEventListener('click', () => { banco.hidden = false; abrir.hidden = true; });
 
+  /* En móvil el panel se come la pantalla completa y tapa justo lo que hay
+     que juzgar. Arranca plegado. */
+  if (window.innerWidth < 760) { banco.hidden = true; abrir.hidden = false; }
+
   aplicarTipo(leer('relief.tipo', 'lora'));
   aplicarFondo(leer('relief.fondo', 'neutro'));
   aplicarPeso(leer('relief.peso', '600'));
@@ -1904,23 +1908,53 @@ navegar();
   const nav     = document.querySelector('.nav');
   if (!marco || !palabra) return;
 
+  const BASE      = 100;   // tamaño de referencia solo para medir
   const ANCHO_NAV = 104;   // ancho final del logotipo, en px (techo)
   const HUECO     = 12;    // aire minimo entre el logotipo y el carrito
   const MARGEN    = 28;    // aire lateral cuando ocupa la pantalla
-  const PIE       = 56;    // aire bajo la palabra en su posición inicial
+  const PIE       = 40;    // aire bajo la palabra en su posición inicial
 
   let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
 
+  /* El alto de la caja de texto no es el alto de las letras: con line-height 1
+     sobra el hueco de los descendentes, y "relief" no tiene ninguno. Para
+     apoyar la palabra abajo hay que medir la tinta, no la caja. */
+  const medidor = document.createElement('canvas').getContext('2d');
+  function tinta(tam) {
+    try {
+      const cs = getComputedStyle(palabra);
+      medidor.font = cs.font || (cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily);
+      const m = medidor.measureText(palabra.textContent);
+      if (m.fontBoundingBoxAscent == null || m.actualBoundingBoxAscent == null) throw 0;
+      const linea = (tam - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2;
+      const base  = linea + m.fontBoundingBoxAscent;
+      return { arriba: base - m.actualBoundingBoxAscent,
+               abajo:  base + m.actualBoundingBoxDescent };
+    } catch (e) {
+      return { arriba: tam * 0.22, abajo: tam * 0.95 };
+    }
+  }
+
   function medir() {
     palabra.style.transform = 'none';         // medir sin transformación
-    const caja  = palabra.getBoundingClientRect();
-    const ancho = caja.width  || 1;
-    const alto  = caja.height || 1;
     const vw = document.documentElement.clientWidth;
     const vh = window.innerHeight;
     const alturaNav = nav ? nav.getBoundingClientRect().height : 56;
 
-    escalaGrande = Math.max(0.2, (vw - MARGEN * 2) / ancho);
+    /* La palabra no se agranda con scale: se compone al tamaño real y de ahí
+       solo encoge. Escalar texto rasterizado hacia arriba lo pixela, que es
+       justo lo que se veía. Hacia abajo siempre queda limpio. */
+    palabra.style.fontSize = BASE + 'px';
+    const anchoBase = palabra.getBoundingClientRect().width || 1;
+    const tam = Math.max(24, BASE * (vw - MARGEN * 2) / anchoBase);
+    palabra.style.fontSize = tam + 'px';
+
+    const caja  = palabra.getBoundingClientRect();
+    const ancho = caja.width  || 1;
+    const alto  = caja.height || 1;
+    const ink   = tinta(tam);
+
+    escalaGrande = 1;
 
     /* El ancho final no es fijo: el logotipo va centrado, asi que su borde
        derecho no puede pasar del borde izquierdo del carrito. En pantallas
@@ -1933,12 +1967,23 @@ navegar();
     }
     escalaChica = anchoFinal / ancho;
 
-    /* Al escalar sobre el centro, el borde inferior queda en
-       alto/2 + y + alto*escala/2. Se despeja para apoyarlo abajo. */
-    yInicio = vh - PIE - alto / 2 - (alto * escalaGrande) / 2;
-    yFin    = alturaNav / 2 - alto / 2;
+    /* Apoyada abajo: el pie de la tinta queda a PIE del borde inferior. */
+    yInicio = vh - PIE - ink.abajo;
+
+    /* Al escalar sobre el centro de la caja, un punto a distancia d del borde
+       superior acaba en alto/2 + (d - alto/2)*escala. Se despeja para dejar el
+       centro de la tinta en el centro de la barra. */
+    const inkCentro = (ink.arriba + ink.abajo) / 2;
+    yFin = alturaNav / 2 - alto / 2 - (inkCentro - alto / 2) * escalaChica;
 
     recorrido = Math.max(1, vh * 1.15);
+
+    /* La escena lee esto para saber cuánto espacio le queda arriba: las gafas
+       van encima de la palabra, nunca detrás. */
+    document.documentElement.style.setProperty('--palabra-cima',
+      Math.round(yInicio + ink.arriba) + 'px');
+    window.dispatchEvent(new Event('relief:banda'));
+
     aplicar();
   }
 
@@ -1947,6 +1992,9 @@ navegar();
 
   function aplicar() {
     const t = suave(Math.min(1, Math.max(0, window.scrollY / recorrido)));
+    /* La escena 3D sigue este mismo avance para bajar y crecer a medida que
+       la palabra le devuelve la pantalla. */
+    window.__morfo = t;
     const escala = escalaGrande + (escalaChica - escalaGrande) * t;
     const y      = yInicio + (yFin - yInicio) * t;
     palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
