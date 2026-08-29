@@ -1168,6 +1168,84 @@
   .medidas{ margin-top:28px; }
   .medidas table{ margin-top:4px; }
 
+  /* ---------- Ficha de producto: lo que convierte ----------
+     Las cuatro dudas que frenan una compra en una tienda que nadie conoce,
+     respondidas en una línea cada una. Nada de urgencia inventada ni de
+     contadores: lo que da confianza aquí son hechos verificables. */
+  .garantias{
+    list-style:none; margin:24px 0 0; padding:20px 0 0;
+    border-top:1px solid var(--linea);
+    display:grid; gap:12px;
+  }
+  .garantias li{
+    display:grid; gap:2px;
+    font-size:14px; color:var(--texto-tenue);
+  }
+  .garantias strong{
+    font-weight:600; font-size:14px; color:var(--hueso);
+  }
+  @media (min-width:560px){
+    .garantias{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px 24px; }
+  }
+
+  .producto-resenas{ margin-top:72px; padding-top:40px; border-top:1px solid var(--linea); }
+  .producto-resenas h2{
+    font-family:var(--titulo); font-weight:var(--peso-display);
+    font-size:clamp(24px, 3.4vw, 32px); letter-spacing:-.01em; margin:0 0 28px;
+  }
+  .resenas-rejilla{ display:grid; gap:16px; }
+  /* La tarjeta es la misma de la cinta de la home, pero aquí no desfila: se
+     le quita el ancho fijo y el margen que la cinta necesita para su bucle. */
+  .resenas-rejilla .resena{ width:auto; margin-right:0; }
+  @media (min-width:820px){
+    .resenas-rejilla{ grid-template-columns:repeat(3, minmax(0,1fr)); gap:20px; }
+  }
+
+  /* ---------- El cursor ----------
+     El átomo de la marca —el punto del centro de las manos— haciendo de
+     puntero. Al acercarse a algo que se puede pulsar, se abre: pasa de punto
+     lleno a aro, que es el mismo gesto de los arcos del isotipo.
+     Solo se activa con ratón fino y solo si el JS llegó a correr: el
+     atributo lo pone él, así que sin JS nadie se queda sin cursor. */
+  .cursor{ display:none; }
+  @media (hover:hover) and (pointer:fine){
+    html[data-cursor="propio"], html[data-cursor="propio"] *{ cursor:none; }
+    /* Salvo donde el cursor del sistema dice algo que el punto no puede
+       decir: dónde va a caer el texto que escribes. */
+    html[data-cursor="propio"] input,
+    html[data-cursor="propio"] textarea,
+    html[data-cursor="propio"] select,
+    html[data-cursor="propio"] [contenteditable]{ cursor:auto; }
+    /* El lienzo trae `grab` en estilo en línea, que le gana a la hoja. */
+    html[data-cursor="propio"] canvas{ cursor:none !important; }
+
+    html[data-cursor="propio"] .cursor{
+      display:block;
+      position:fixed; left:0; top:0; z-index:100;
+      width:9px; height:9px; border-radius:50%;
+      background:var(--hueso); border:1px solid transparent;
+      pointer-events:none;
+      opacity:0;
+      transition:width .22s cubic-bezier(.2,.8,.3,1),
+                 height .22s cubic-bezier(.2,.8,.3,1),
+                 background-color .22s ease, border-color .22s ease, opacity .2s ease;
+      will-change:transform;
+    }
+    html[data-cursor="propio"] .cursor[data-dentro="true"]{ opacity:1; }
+    /* Abierto: el punto se vacía y queda el aro. */
+    html[data-cursor="propio"] .cursor[data-abierto="true"]{
+      width:34px; height:34px;
+      background:transparent; border-color:var(--hueso);
+    }
+    html[data-cursor="propio"] .cursor[data-abierto="rojo"]{
+      width:34px; height:34px;
+      background:transparent; border-color:var(--rojo-rlf);
+    }
+  }
+  @media (prefers-reduced-motion:reduce){
+    html[data-cursor="propio"] .cursor{ transition:opacity .2s ease; }
+  }
+
   /* ---------- Reseñas: la cinta ----------
      Una fila horizontal que desfila sola. No es un slider: no hay pasos ni
      flechas ni un elemento "actual", es una cinta continua que se para
@@ -1399,6 +1477,10 @@
     .tira{ aspect-ratio:1; }
     .dos-columnas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:56px; }
     .producto-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; align-items:start; }
+    /* La columna de imagen se queda pegada mientras se lee la de la derecha:
+       la foto es lo que sostiene la decisión y desaparecía en cuanto abrías
+       un par de acordeones. */
+    .producto-galeria{ position:sticky; top:calc(var(--alto-nav, 60px) + 24px); }
   }
 
   @media (min-width:900px){
@@ -1515,6 +1597,10 @@
 <div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
 <div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span>Desliza</span></div>
 
+<!-- El punto del centro del isotipo, convertido en cursor. Solo existe con
+     ratón: en táctil no hay puntero que sustituir y el elemento ni se crea. -->
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
 <div class="banco" id="banco">
   <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
   <h4>Grosor del titular grande</h4>
@@ -1537,7 +1623,12 @@
     <button type="button" data-claro-set="blanco">Blanco</button>
     <button type="button" data-claro-set="hueso">Hueso</button>
   </div>
-  <h4>Marca de la barra</h4>
+  <h4>Cursor</h4>
+  <div class="banco-fila" role="group" aria-label="Cursor">
+    <button type="button" data-cursor-set="punto">Punto</button>
+    <button type="button" data-cursor-set="sistema">Del sistema</button>
+  </div>
+    <h4>Marca de la barra</h4>
   <div class="banco-fila" role="group" aria-label="Marca de la barra">
     <button type="button" data-marca-set="conjunto">Isotipo + palabra</button>
     <button type="button" data-marca-set="palabra">Solo palabra</button>
@@ -2590,6 +2681,58 @@ const RESENAS_EJEMPLO = [
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(acompasar);
 })();
 
+/* ---------------- El cursor de punto ----------------
+   El átomo de la marca haciendo de puntero: punto lleno, y aro al acercarse
+   a algo pulsable. Solo con ratón fino —en táctil no hay puntero que
+   sustituir— y solo si este script corre: el atributo que apaga el cursor
+   del sistema lo pone él, así que si el JS falla nadie se queda sin cursor.
+------------------------------------------------------- */
+(function(){
+  const fino = window.matchMedia('(hover:hover) and (pointer:fine)');
+  const punto = document.getElementById('cursor');
+  if (!punto || !fino.matches) return;
+
+  const raiz = document.documentElement;
+  let activo = false;
+  function encender(si){
+    activo = si;
+    if (si) raiz.dataset.cursor = 'propio';
+    else { delete raiz.dataset.cursor; punto.dataset.dentro = 'false'; }
+  }
+  encender(true);
+
+  /* Lo pulsable, en un solo sitio. `.opcion` entra porque la fila entera
+     responde al cursor, aunque no sea un enlace. */
+  const PULSABLE = 'a[href], button, summary, label, [role="button"], .opcion, .tira, .resena';
+
+  let x = 0, y = 0, pedido = false;
+  function pintar(){
+    pedido = false;
+    punto.style.transform = 'translate3d(' + (x - 0.5) + 'px,' + (y - 0.5) + 'px,0) translate(-50%,-50%)';
+  }
+
+  document.addEventListener('pointermove', ev => {
+    if (ev.pointerType !== 'mouse' || !activo) return;
+    x = ev.clientX; y = ev.clientY;
+    if (punto.dataset.dentro !== 'true') punto.dataset.dentro = 'true';
+    if (!pedido) { pedido = true; requestAnimationFrame(pintar); }
+
+    const sobre = ev.target instanceof Element ? ev.target.closest(PULSABLE) : null;
+    /* El botón de compra abre el aro en rojo: es el único elemento del sitio
+       que merece que el cursor lo distinga. */
+    const rojo = sobre && (sobre.matches('.btn:not(.btn--ghost)') || sobre.closest('.btn:not(.btn--ghost)'));
+    punto.dataset.abierto = sobre ? (rojo ? 'rojo' : 'true') : 'false';
+  }, { passive: true });
+
+  /* Al salir de la ventana el punto se va con el ratón. */
+  document.addEventListener('pointerleave', () => { punto.dataset.dentro = 'false'; });
+  window.addEventListener('blur', () => { punto.dataset.dentro = 'false'; });
+  /* Un ratón conectado o desconectado en caliente cambia el medio. */
+  fino.addEventListener('change', e => encender(e.matches));
+  /* El banco lo puede apagar para comparar. */
+  window.__cursorPropio = encender;
+})();
+
 /* ---------------- El recorrido en pantalla ----------------
    La escena va por encima de los paneles, y como es fija y ocupa la ventana
    entera hay que retirarla cuando el recorrido termina: si no, el modelo
@@ -2993,7 +3136,7 @@ function pintarProducto(p) {
     <div class="wrap">
       <a class="volver" href="#">← Volver</a>
       <div class="producto-grid">
-        <div>
+        <div class="producto-galeria">
           <div class="galeria-principal" id="galeriaPrincipal"></div>
           <div class="galeria-tiras" id="galeriaTiras"></div>
         </div>
@@ -3018,6 +3161,17 @@ function pintarProducto(p) {
             <button class="btn btn--ghost btn--block" data-agregar-cant="${p.id}">Agregar al carrito</button>
           </div>
           <p class="aviso" data-aviso="${p.id}"></p>
+
+          <!-- Las cuatro dudas que frenan una compra en una tienda que nadie
+               conoce: cuándo llega, si el pago es seguro, qué pasa si no me
+               gustan, y si hay alguien del otro lado. Van arriba de los
+               acordeones porque un acordeón cerrado no responde nada. -->
+          <ul class="garantias">
+            <li><strong>Llega en 2-3 días</strong> Stock propio en Bogotá, no viene de China.</li>
+            <li><strong>Pago seguro con Wompi</strong> Tarjeta, PSE, Nequi y Bancolombia.</li>
+            <li><strong>30 días para devolverlas</strong> Si no eran para ti, se devuelven.</li>
+            <li><strong>Te contestamos el mismo día</strong> Por WhatsApp, en español.</li>
+          </ul>
 
           <details style="margin-top:28px">
             <summary>Especificaciones</summary>
@@ -3053,9 +3207,45 @@ function pintarProducto(p) {
           </details>
         </div>
       </div>
+
+      <!-- La prueba social va al final y a lo ancho, no metida en la columna
+           de la derecha: quien llega hasta aquí ya leyó el producto y lo que
+           le falta es que otro se lo confirme. -->
+      <section class="producto-resenas" id="productoResenas" hidden>
+        <h2>Lo que dicen</h2>
+        <div class="resenas-rejilla" id="productoResenasLista"></div>
+      </section>
     </div>`;
 
   pintarGaleria(p);
+  pintarResenasProducto(p);
+}
+
+/* Reseñas de la ficha. Se filtran a las de ESE producto; si no hay
+   suficientes, se completa con el resto, porque tres tarjetas convencen y
+   una sola parece un accidente. Con la maqueta apagada la sección no
+   aparece: no hay reseñas reales que mostrar. */
+function pintarResenasProducto(p) {
+  const caja = document.getElementById('productoResenas');
+  const lista = document.getElementById('productoResenasLista');
+  if (!caja || !lista) return;
+  if (!MAQUETA || typeof RESENAS_EJEMPLO === 'undefined' || !RESENAS_EJEMPLO.length) return;
+
+  const suyas = RESENAS_EJEMPLO.filter(r => r.compra === p.nombre);
+  const otras = RESENAS_EJEMPLO.filter(r => r.compra !== p.nombre);
+  const elegidas = suyas.concat(otras).slice(0, 3);
+  if (!elegidas.length) return;
+
+  lista.innerHTML = elegidas.map(r => `
+    <article class="resena">
+      <p class="resena-texto">${esc(r.texto)}</p>
+      <div class="resena-quien">
+        <span class="resena-nombre">${esc(r.nombre)}</span>
+        <span class="resena-dato">${esc(r.ciudad)} · ${esc(r.compra)}</span>
+        <span class="resena-dato">${esc(r.fecha || '')}</span>
+      </div>
+    </article>`).join('');
+  caja.hidden = false;
 }
 
 function pintarGaleria(p) {
@@ -3431,6 +3621,10 @@ navegar();
   function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('relief.claro', v); }
   /* Va en el body y no en :root porque solo lo mira la barra. */
   function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('relief.marca', v); }
+  function aplicarCursor(v){
+    if (window.__cursorPropio) window.__cursorPropio(v === 'punto');
+    marcar('cursor', v); guardar('relief.cursor', v);
+  }
   /* El pie es el único bloque que puede llevar color propio, así que su
      interruptor vive en el elemento y no en :root. */
   function aplicarPie(v){
@@ -3448,12 +3642,13 @@ navegar();
   }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set],[data-claro-set],[data-marca-set]');
+    const b = ev.target.closest('[data-fondo-set],[data-peso-set],[data-pie-set],[data-claro-set],[data-marca-set],[data-cursor-set]');
     if (!b) return;
     if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
     else if (b.dataset.pieSet) aplicarPie(b.dataset.pieSet);
     else if (b.dataset.claroSet) aplicarClaro(b.dataset.claroSet);
     else if (b.dataset.marcaSet) aplicarMarca(b.dataset.marcaSet);
+    else if (b.dataset.cursorSet) aplicarCursor(b.dataset.cursorSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -3475,6 +3670,7 @@ navegar();
   aplicarPie(leer('relief.pie', 'claro'));
   aplicarClaro(leer('relief.claro', 'blanco'));
   aplicarMarca(leer('relief.marca', 'conjunto'));
+  aplicarCursor(leer('relief.cursor', 'punto'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------

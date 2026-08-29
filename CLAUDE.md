@@ -97,6 +97,30 @@ modelo 3D pegado, girable, con el lente del producto.
   Se monta al acercarse la sección, no en la primera pantalla. Sin WebGL el
   bloque se retira y la columna de datos se queda con la sección entera.
 
+## La ficha de producto (donde se convierte)
+- La **columna de la imagen es pegajosa**: la foto sostiene la decisión y
+  desaparecía en cuanto abrías un par de acordeones.
+- Debajo de los botones van las **cuatro dudas** que frenan una compra en una
+  tienda que nadie conoce —cuándo llega, si el pago es seguro, qué pasa si no
+  me gustan, si hay alguien del otro lado—, en una línea cada una y **antes**
+  de los acordeones: un acordeón cerrado no responde nada.
+- ⚠ **Nada de urgencia inventada**: ni contadores, ni «quedan 3», ni «12
+  personas viendo esto». Es publicidad engañosa igual que una reseña falsa, y
+  además no hace falta: lo que da confianza en esta categoría son hechos
+  verificables, que es justo donde ganamos.
+- Las **reseñas van al final y a lo ancho**, no en la columna: quien llega ahí
+  ya leyó el producto y lo que le falta es que otro se lo confirme.
+
+## El cursor
+El punto del centro del isotipo haciendo de puntero: punto lleno, y aro al
+acercarse a algo pulsable —el mismo gesto de los arcos—. Sobre el botón de
+compra el aro se pone rojo.
+- Solo con **ratón fino**: en táctil no hay puntero que sustituir.
+- El atributo que apaga el cursor del sistema **lo pone el JS**, así que si el
+  script falla nadie se queda sin cursor. Los campos de formulario conservan
+  el del sistema: ahí el cursor dice dónde va a caer lo que escribes.
+- Interruptor en el banco para volver al del sistema.
+
 ## El cierre y el pie
 - **«Elige el tuyo»** cierra el recorrido: los tres productos en fila, sin
   descripción —esa la da la sección de los lentes—, solo foto, momento y precio.
