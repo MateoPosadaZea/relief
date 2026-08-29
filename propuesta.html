@@ -877,7 +877,7 @@
      Peso fijo, no --peso-display: calibrar los titulares no debe adelgazar
      el precio. */
   .precio{
-    font-family:var(--titulo); font-weight:800;
+    font-family:var(--titulo); font-weight:700;
     font-size:23px; letter-spacing:-.02em;
     font-variant-numeric:tabular-nums;
   }
@@ -1144,12 +1144,17 @@
 
   /* Cada lente es una fila, no una tarjeta con foto: la foto de esta sección
      es el modelo de la derecha, y repetirla al lado la volvía redundante. */
+  /* Tarjeta con borde entero, no fila con divisor: al marcarla, lo que se
+     enciende es el contorno completo. Un filete solo en el costado izquierdo
+     se leía como una marca de margen, no como «esta es la que estás
+     mirando». */
   .opcion{
-    border-top:1px solid var(--linea);
-    padding:22px 0;
+    border:1px solid var(--linea);
+    background:var(--tarjeta);
+    padding:22px;
     display:grid; gap:12px;
   }
-  .opcion:last-of-type{ border-bottom:1px solid var(--linea); }
+  .opcion + .opcion{ margin-top:16px; }
   .opcion-cima{ display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between; }
   .opcion h3{
     font-family:var(--titulo); font-weight:var(--peso-display); font-size:21px;
@@ -1162,8 +1167,8 @@
   /* La fila que el visor está mostrando se marca: si no, cambiar el lente en
      el modelo no tiene ninguna consecuencia visible en la columna de datos y
      los dos bloques parecen dos cosas distintas puestas al lado. */
-  .opcion[data-activa="true"]{ border-left:2px solid var(--rojo-rlf); padding-left:16px; }
-  .opcion{ border-left:2px solid transparent; padding-left:16px; transition:border-color .25s ease; }
+  .opcion{ transition:border-color .25s ease, transform .25s ease; }
+  .opcion[data-activa="true"]{ border-color:var(--rojo-rlf); }
 
   .medidas{ margin-top:28px; }
   .medidas table{ margin-top:4px; }
@@ -2716,7 +2721,14 @@ const RESENAS_EJEMPLO = [
   /* Con «reducir movimiento» el punto va pegado: perseguir el puntero es
      justo el tipo de movimiento del que la preferencia habla. */
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const RETARDO = quieto.matches ? 0.001 : 0.055;   // s para recorrer el 63%
+  /* Segundos que tarda en alcanzar al ratón: con base 0.001, al cumplirse
+     RETARDO le queda una milésima del camino. Lo que se siente al mover el
+     ratón no es ese número sino la constante de tiempo, RETARDO/ln(1000)
+     ≈ 40 ms, que a una velocidad normal de ratón deja el punto unos 30 px
+     por detrás. Empezó en 0.055 —seis píxeles, casi clavado—. Más allá de
+     ~0.35 deja de leerse como peso y empieza a leerse como que la página
+     va lenta. */
+  const RETARDO = quieto.matches ? 0.001 : 0.28;
   let x = 0, y = 0;             // a dónde va (el ratón)
   let px = 0, py = 0;           // dónde está el punto
   let corriendo = false, ultimo = 0, colocado = false;
@@ -3136,8 +3148,12 @@ function navegar() {
   document.getElementById('wordmarkFijo').hidden = !enHome;
   document.getElementById('pistaScroll').hidden = !enHome;
   document.getElementById('escenaFija').hidden = !enHome;
-  marcaDeBarra();
+  /* El estado va primero: marcaDeBarra() lee data-vista para decidir, y
+     llamándola antes leía el de la vista anterior. Al entrar a un producto
+     desde el inicio de la home se quedaba con el «home sin posar» de antes
+     y escondía el logotipo, así que la barra de la ficha salía sin marca. */
   document.body.dataset.vista = enHome ? 'home' : 'interna';
+  marcaDeBarra();
 
   const cambioVista = nueva !== vistaActual;
   vistaActual = nueva;

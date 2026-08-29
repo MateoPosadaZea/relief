@@ -218,7 +218,7 @@ Es el único riesgo de capital aprobado del proyecto.
     deja cambiar de idea sin tocar una sola regla de CSS.
   - `--peso-display` calibra el grosor de los titulares grandes (300–700).
   - Los precios llevan `font-variant-numeric: tabular-nums` y son **la única
-    excepción de peso**: van en 800 fijo, no en `--peso-display`, porque
+    excepción de peso**: van en 700 fijo, no en `--peso-display`, porque
     calibrar los titulares no debe adelgazar el precio. Lo que hacía que
     parecieran de otra tipografía era el peso, no la cara: los números de
     Epilogue son geométricos y anchos, y a 600 junto a un párrafo de 400 leen
