@@ -37,7 +37,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&family=Lora:wght@500;600;700&family=Sora:wght@400;600&family=Epilogue:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..700&family=Instrument+Sans:wght@400;500;600&family=Lora:wght@400..700&family=Sora:wght@200..800&family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -69,6 +69,9 @@
     --etiqueta: "Archivo", "Helvetica Neue", Arial, sans-serif;
     --ancho-display: 112%;
     --ancho-etiqueta: 125%;
+    /* Grosor de los titulares. Es un token porque cada cara pesa distinto:
+       el 600 de Lora se ve mas liviano que el 600 de Epilogue. */
+    --peso-display: 600;
     --texto:   "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
     --gutter: 20px;
@@ -246,9 +249,15 @@
   [id]{ scroll-margin-top:calc(var(--alto-nav, 60px) + 20px); }
 
   .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
+  /* La marca se escribe en minuscula y los titulares la acompanan. Los
+     nombres propios se salvan con .propio: text-transform no sabe de
+     Bogota ni de Shenzhen. */
+  .seccion h2, .panel-texto{ text-transform:lowercase; }
+  .propio{ text-transform:none; }
+
   .seccion h2{
     font-family:var(--display); font-stretch:var(--ancho-display);
-    font-weight:600;
+    font-weight:var(--peso-display);
     font-size:clamp(24px, 3.4vw, 32px);
     letter-spacing:-.01em;
     margin:0 0 8px;
@@ -324,20 +333,30 @@
      y desplazamiento vertical. Solo se toca `transform`: animar font-size
      provocaría relayout en cada cuadro. */
   .wordmark-fijo{
-    position:fixed; top:0; left:0; right:0; z-index:45;
+    /* Por encima del nav (z-index 50): al posarse, el fondo opaco de la
+       barra tapaba la palabra y el logotipo desaparecia. */
+    position:fixed; top:0; left:0; right:0; z-index:55;
     display:flex; justify-content:center;
     pointer-events:none; will-change:transform;
   }
   .wordmark-fijo span{
     display:block;
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
     font-size:100px; line-height:1; letter-spacing:-.03em;
     white-space:nowrap; color:var(--hueso);
     transform-origin:50% 50%; will-change:transform;
   }
+  /* Solo recibe clics cuando ya es logotipo: a pantalla completa taparia
+     todo lo que hay debajo. */
+  .wordmark-fijo[data-posado="true"] span{ pointer-events:auto; cursor:pointer; }
   /* El carrito queda anclado a la derecha aunque el logotipo del nav esté
      oculto: con space-between y un solo hijo se iría a la izquierda. */
   .carrito-btn{ margin-left:auto; }
+  /* A 320 px el logotipo posado y el carrito se disputan la barra: el boton
+     cede primero, porque el logotipo va centrado y no puede moverse. */
+  @media (max-width:400px){
+    .carrito-btn{ font-size:11px; padding-left:10px; padding-right:10px; }
+  }
 
   /* La barra solo se materializa cuando la palabra ya aterrizó en ella. */
   .nav{ background:transparent; border-bottom-color:transparent; }
@@ -369,7 +388,7 @@
   .hora--ambar{ color:var(--ambar-texto); }
   .hora--rojo{ color:var(--rojo-rlf); }
   .panel-texto{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
     font-size:clamp(28px,5.6vw,50px);
     line-height:1.08; letter-spacing:-.025em;
     margin:0 0 16px; max-width:15ch; text-wrap:balance;
@@ -454,7 +473,7 @@
   .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:19px;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:19px;
     letter-spacing:-.01em;
     margin:0 0 4px;
   }
@@ -462,7 +481,7 @@
   .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
   .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
   .precio{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
     font-size:23px; letter-spacing:-.01em;
     font-variant-numeric:tabular-nums;
   }
@@ -476,7 +495,7 @@
   .combo{ background:var(--noche); }
   .combo .combo-grid{ display:grid; gap:24px; }
   .combo h3{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:26px;
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:26px;
     letter-spacing:0; margin:0 0 8px;
   }
   .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
@@ -614,7 +633,7 @@
   .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
 
   .producto-titulo{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:600; font-size:clamp(28px, 6vw, 42px);
+    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:clamp(28px, 6vw, 42px);
     letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance;
   }
   .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
@@ -743,7 +762,7 @@
 </header>
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
-<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">RELIEF</span></div>
+<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
 
 <div class="banco" id="banco">
   <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
@@ -753,6 +772,14 @@
     <button type="button" data-tipo-set="sora">Sora</button>
     <button type="button" data-tipo-set="epilogue">Epilogue</button>
     <button type="button" data-tipo-set="archivo">Archivo</button>
+  </div>
+  <h4>Grosor de los titulares</h4>
+  <div class="banco-fila" role="group" aria-label="Grosor de los titulares">
+    <button type="button" data-peso-set="300">300</button>
+    <button type="button" data-peso-set="400">400</button>
+    <button type="button" data-peso-set="500">500</button>
+    <button type="button" data-peso-set="600">600</button>
+    <button type="button" data-peso-set="700">700</button>
   </div>
   <h4>Fondo del modo noche</h4>
   <div class="banco-fila" role="group" aria-label="Color de fondo">
@@ -824,7 +851,7 @@
       <section class="panel" data-lente="rojo">
         <div class="wrap">
           <p class="hora">Mañana, 9:00 AM</p>
-          <p class="panel-texto">Sale de Bogotá, no de Shenzhen.</p>
+          <p class="panel-texto">Sale de <span class="propio">Bogotá</span>, no de <span class="propio">Shenzhen</span>.</p>
           <p class="panel-apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
             Esa es toda la diferencia, y es la única que importa.</p>
           <div style="margin-top:28px"><a class="btn" href="#combo">Ver el combo</a></div>
@@ -1837,11 +1864,18 @@ navegar();
   }
   function aplicarTipo(v){ raiz.dataset.tipo = v; marcar('tipo', v); guardar('relief.tipo', v); }
   function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
+  /* El peso no es un atributo de :root sino una variable, porque lo consumen
+     todas las reglas de titulares a la vez. */
+  function aplicarPeso(v){
+    raiz.style.setProperty('--peso-display', v);
+    marcar('peso', v); guardar('relief.peso', v);
+  }
 
   document.addEventListener('click', ev => {
-    const b = ev.target.closest('[data-tipo-set],[data-fondo-set]');
+    const b = ev.target.closest('[data-tipo-set],[data-fondo-set],[data-peso-set]');
     if (!b) return;
     if (b.dataset.tipoSet) aplicarTipo(b.dataset.tipoSet);
+    else if (b.dataset.pesoSet) aplicarPeso(b.dataset.pesoSet);
     else aplicarFondo(b.dataset.fondoSet);
     /* El wordmark cambia de ancho con la tipografía: hay que remedirlo. */
     if (window.__remedirWordmark) window.__remedirWordmark();
@@ -1856,6 +1890,7 @@ navegar();
 
   aplicarTipo(leer('relief.tipo', 'lora'));
   aplicarFondo(leer('relief.fondo', 'neutro'));
+  aplicarPeso(leer('relief.peso', '600'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------
@@ -1869,7 +1904,8 @@ navegar();
   const nav     = document.querySelector('.nav');
   if (!marco || !palabra) return;
 
-  const ANCHO_NAV = 104;   // ancho final del logotipo, en px
+  const ANCHO_NAV = 104;   // ancho final del logotipo, en px (techo)
+  const HUECO     = 12;    // aire minimo entre el logotipo y el carrito
   const MARGEN    = 28;    // aire lateral cuando ocupa la pantalla
   const PIE       = 56;    // aire bajo la palabra en su posición inicial
 
@@ -1885,7 +1921,17 @@ navegar();
     const alturaNav = nav ? nav.getBoundingClientRect().height : 56;
 
     escalaGrande = Math.max(0.2, (vw - MARGEN * 2) / ancho);
-    escalaChica  = ANCHO_NAV / ancho;
+
+    /* El ancho final no es fijo: el logotipo va centrado, asi que su borde
+       derecho no puede pasar del borde izquierdo del carrito. En pantallas
+       anchas sobra espacio y manda el techo. */
+    const btn = document.getElementById('carritoBtn');
+    let anchoFinal = ANCHO_NAV;
+    if (btn) {
+      const cabe = 2 * (btn.getBoundingClientRect().left - HUECO - vw / 2);
+      anchoFinal = Math.max(64, Math.min(ANCHO_NAV, cabe));
+    }
+    escalaChica = anchoFinal / ancho;
 
     /* Al escalar sobre el centro, el borde inferior queda en
        alto/2 + y + alto*escala/2. Se despeja para apoyarlo abajo. */
@@ -1904,8 +1950,15 @@ navegar();
     const escala = escalaGrande + (escalaChica - escalaGrande) * t;
     const y      = yInicio + (yFin - yInicio) * t;
     palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
-    if (nav) nav.dataset.posado = t > 0.92 ? 'true' : 'false';
+    const posado = t > 0.92 ? 'true' : 'false';
+    if (nav) nav.dataset.posado = posado;
+    marco.dataset.posado = posado;
   }
+
+  palabra.addEventListener('click', () => {
+    if (marco.dataset.posado !== 'true') return;
+    location.hash = '#top';
+  });
 
   let pedido = false;
   addEventListener('scroll', () => {
