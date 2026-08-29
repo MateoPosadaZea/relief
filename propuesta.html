@@ -555,12 +555,16 @@
     width:100%; height:100%; max-width:100%; object-fit:contain;
     padding:8%;
   }
-  /* La foto puesta se cruza con la de producto al pasar el cursor. Es una capa
-     encima: sin el archivo no hay nodo y la tarjeta se comporta igual. */
+  /* La capa se ajusta a la foto de producto y la puesta la cubre exactamente:
+     mismo ancho, mismo alto. Sin este contenedor la puesta se dimensionaba
+     contra el marco 2:1 y salía más grande que las gafas. */
+  .ficha-capas{ position:relative; display:block; width:100%; height:100%; }
   .ficha-puesta{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-    opacity:0; transition:opacity .45s ease;
+    position:absolute; inset:0; width:100%; height:100%;
+    opacity:0;
   }
+  /* Cambio seco, sin fundido: superpuestas a media transición se ven las dos
+     translúcidas, que es justo lo que no queremos. */
   .ficha-enlace:hover .ficha-puesta,
   .ficha-enlace:focus-visible .ficha-puesta{ opacity:1; }
   /* En táctil no hay hover: la foto no aportaría nada y sí peso. */
@@ -568,8 +572,11 @@
   @media (prefers-reduced-motion:reduce){ .ficha-puesta{ transition:none; } }
 
   .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
-  .ficha-enlace:hover .ficha-img img,
-  .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
+  /* La atenuación al pasar el cursor es para la foto de producto sola: sin la
+     exclusión alcanzaba también a la puesta —y con más especificidad—, así que
+     la puesta se quedaba al 82% y se veía translúcida. */
+  .ficha-enlace:hover .ficha-img img:not(.ficha-puesta),
+  .ficha-enlace:hover .combo-img img:not(.ficha-puesta){ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
     font-family:var(--titulo); font-weight:var(--peso-display); font-size:19px;
@@ -1303,9 +1310,13 @@ function imagenHTML(p){
   let html = '<img src="' + esc(p.imagen) + '" alt="' + esc(p.nombre) + '" hidden>';
   /* Segunda foto, puesta en una persona, que aparece al pasar el cursor. Es un
      slot: si el archivo no existe no se muestra nada y la tarjeta queda igual.
-     Va con alt vacío porque no aporta información nueva sobre el producto. */
+     Va con alt vacío porque no aporta información nueva sobre el producto.
+     Las dos van dentro de una capa que se ajusta a la foto de producto: así la
+     puesta hereda su ancho y su alto en vez de ir a sangre por su cuenta. */
   if (p.puesta) {
-    html += '<img class="ficha-puesta" src="' + esc(p.puesta) + '" alt="" aria-hidden="true" hidden>';
+    html = '<span class="ficha-capas">' + html
+         + '<img class="ficha-puesta" src="' + esc(p.puesta) + '" alt="" aria-hidden="true" hidden>'
+         + '</span>';
   }
   return html + marcador;
 }
@@ -1318,8 +1329,9 @@ function activarImagenes(raiz){
       /* La foto puesta es una capa encima: no le toca quitar el marcador,
          que pertenece a la principal. */
       if (img.classList.contains('ficha-puesta')) return;
-      const marcador = img.parentElement.querySelector('.tbd');
-      if (marcador) marcador.remove();
+      const marcador = img.closest('.ficha-img, .combo-img');
+      const tbd = marcador && marcador.querySelector('.tbd');
+      if (tbd) tbd.remove();
     };
     if (img.complete && img.naturalWidth > 0) mostrar();
     else img.addEventListener('load', mostrar, { once: true });
