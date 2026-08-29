@@ -231,6 +231,17 @@
   [id]{ scroll-margin-top:calc(var(--alto-nav, 60px) + 20px); }
 
   .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
+  /* En pantalla grande el contenido deja de estirarse. Sin tope, la tarjeta de
+     producto —imagen cuadrada + nombre + precio— crecía hasta llenar la
+     pantalla de alto y el texto de abajo quedaba fuera de alcance: había que
+     hacer scroll a ciegas para saber que existía. El tope es del contenido que
+     se lee; la escena 3D y el wordmark siguen yendo a sangre. */
+  .seccion > .wrap,
+  .footer > .wrap,
+  .vista > .wrap{ max-width:1180px; }
+  /* La imagen del producto tampoco: es cuadrada, así que su ancho es su alto y
+     una tarjeta de 560 px ya ocupa media pantalla ella sola. */
+  .ficha-img, .combo-img, .galeria-principal{ max-width:440px; }
   /* La marca se escribe en minuscula y los titulares la acompanan. Los
      nombres propios se salvan con .propio: text-transform no sabe de
      Bogota ni de Shenzhen. */
@@ -270,14 +281,23 @@
   .marca:hover{ color:var(--texto-tenue); }
   /* Menu de la barra. Va a la izquierda porque el centro es del logotipo:
      el wordmark aterriza ahi y no se le puede disputar el sitio. */
-  .menu{ display:flex; gap:22px; align-items:center; }
+  .menu{ display:flex; gap:4px; align-items:center; margin-left:-10px; }
+  /* Minúscula como todo lo demás: la marca se escribe abajo y la barra no es
+     la excepción. Sin versalita el tracking abierto sobra, así que baja. */
   .menu a{
-    font-family:var(--etiqueta); font-weight:500; font-size:11px;
-    letter-spacing:.13em; text-transform:uppercase;
+    font-family:var(--etiqueta); font-weight:500; font-size:13px;
+    letter-spacing:.01em; text-transform:lowercase;
     color:var(--texto-tenue); text-decoration:none;
+    padding:6px 10px;
+    border-radius:2px;
+    transition:color .18s ease, background-color .18s ease;
   }
-  .menu a:hover{ color:var(--hueso); }
-  .menu a:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
+  /* El hover y el activo se ven, no se adivinan: fondo sutil —la superficie de
+     la marca, no un gris inventado— y el texto sube a hueso. El activo lo
+     marca el JS con aria-current según qué sección tienes delante. */
+  .menu a:hover{ color:var(--hueso); background:var(--superficie); }
+  .menu a[aria-current="true"]{ color:var(--hueso); background:var(--superficie); }
+  .menu a:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
   /* Bajo 760 px no cabe al lado del logotipo centrado: el recorrido de la
      home ya lleva a todas estas secciones por scroll. */
   @media (max-width:760px){ .menu{ display:none; } }
@@ -960,16 +980,200 @@
     padding:8px 0; text-align:center;
   }
 
-  /* ---------- Footer ---------- */
-  .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
-  .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
-  .footer a{
-    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:11px;
-    letter-spacing:.11em; text-transform:uppercase; text-decoration:none;
-    color:var(--hueso);
+  /* ---------- Reseñas: la cinta ----------
+     Una fila horizontal que desfila sola. No es un slider: no hay pasos ni
+     flechas ni un elemento "actual", es una cinta continua que se para
+     cuando pones el cursor encima para que se pueda leer. La pista lleva las
+     tarjetas dos veces y se desplaza exactamente el ancho de una copia, así
+     el bucle no tiene costura. Por eso la separación va en margin-right de
+     cada tarjeta y no en gap: con gap la mitad de la pista no coincide con
+     el inicio de la segunda copia y el salto se ve. */
+  .cinta{
+    position:relative; overflow:hidden;
+    margin:0 calc(clamp(20px, 4vw, 72px) * -1);
+    padding:4px 0 8px;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+            mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
   }
-  .footer a:hover{ color:var(--texto-tenue); }
-  .footer small{ color:var(--texto-tenue); font-size:12px; display:block; }
+  /* Sin padding en la pista: cualquier relleno propio rompe la cuenta del
+     50 % y la costura del bucle se ve. El aire de los bordes lo pone la
+     máscara. */
+  .cinta-pista{
+    display:flex; width:max-content;
+    animation:desfile var(--desfile, 60s) linear infinite;
+  }
+  @keyframes desfile{ from{ transform:translate3d(0,0,0); } to{ transform:translate3d(-50%,0,0); } }
+  .cinta:hover .cinta-pista,
+  .cinta:focus-within .cinta-pista{ animation-play-state:paused; }
+
+  .resena{
+    margin-right:16px;
+    width:clamp(260px, 74vw, 340px);
+    flex:0 0 auto;
+    background:var(--superficie);
+    border:1px solid var(--linea);
+    padding:20px 20px 18px;
+    display:flex; flex-direction:column; gap:12px;
+    transition:opacity .25s ease, border-color .25s ease, transform .25s ease;
+  }
+  /* Con el cursor encima, la que miras se separa y las demás ceden. Es el
+     mismo gesto de la cinta parándose: la fila deja de ser fondo y pasa a ser
+     algo que se lee. */
+  .cinta:hover .resena{ opacity:.38; }
+  .cinta .resena:hover,
+  .cinta .resena:focus-within{ opacity:1; border-color:var(--texto-tenue); transform:translateY(-3px); }
+  .resena-texto{ margin:0; font-size:15px; line-height:1.5; }
+  .resena-quien{
+    display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline;
+    margin-top:auto; padding-top:4px; border-top:1px solid var(--linea);
+  }
+  .resena-nombre{ font-weight:600; font-size:13px; }
+  .resena-dato{ font-size:12px; color:var(--texto-tenue); }
+  .resena-muestra{
+    align-self:flex-start;
+    font-family:var(--etiqueta); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--texto-tenue);
+    border:1px solid var(--linea); padding:1px 6px;
+  }
+  /* El aviso no es un detalle de maqueta: publicar reseñas inventadas es
+     sanción directa bajo el Estatuto del Consumidor. Mientras la cinta lleve
+     ejemplos, el aviso va encima y no se quita. */
+  .aviso-muestra{
+    background:var(--superficie); border:1px solid var(--ambar-texto);
+    color:var(--ambar-texto);
+    font-family:var(--etiqueta); font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:10px 14px; margin:0 0 24px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cinta-pista{ animation:none; }
+    .cinta{ overflow-x:auto; }
+  }
+
+  /* ---------- Elige el tuyo ----------
+     El cierre del recorrido: los tres puestos en fila, del tamaño en que se
+     comparan, justo encima del pie rojo. No repite la sección de los lentes
+     —esa explica y esta decide—: acá no hay descripción, solo el producto, el
+     momento y el precio. */
+  .elige{ padding:72px 0 88px; border-top:1px solid var(--linea); }
+  .elige-fila{ display:grid; gap:28px; margin-top:36px; }
+  .elige-item{ text-decoration:none; display:block; }
+  .elige-caja{
+    position:relative; aspect-ratio:1 / 1;
+    background:var(--superficie); border:1px solid var(--linea);
+    overflow:hidden;
+    transition:border-color .25s ease, transform .35s ease;
+  }
+  .elige-caja img{ width:100%; height:100%; object-fit:cover; display:block; }
+  /* La foto puesta cruza con la de producto, igual que en las tarjetas de
+     arriba: es la misma gramática, no un efecto nuevo. */
+  .elige-caja .ficha-puesta{
+    position:absolute; inset:0; opacity:0;
+    transition:opacity .35s ease;
+  }
+  .elige-item:hover .elige-caja{ border-color:var(--texto-tenue); transform:translateY(-4px); }
+  .elige-item:hover .elige-caja .ficha-puesta{ opacity:1; }
+  .elige-item:focus-visible .elige-caja{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
+
+  /* Sobre la foto, al pasar el cursor: la píldora con el momento del lente a
+     un lado y la flecha al otro. Suben desde abajo en vez de aparecer secas,
+     y en táctil —donde no hay hover— quedan puestas siempre: sin esto el dedo
+     no ve nunca que la tarjeta lleva a alguna parte. */
+  .elige-sobre{
+    position:absolute; left:0; right:0; bottom:0;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .3s ease, transform .3s ease;
+    pointer-events:none;
+  }
+  .elige-item:hover .elige-sobre,
+  .elige-item:focus-visible .elige-sobre{ opacity:1; transform:none; }
+  @media (hover:none){ .elige-sobre{ opacity:1; transform:none; } }
+
+  .elige-pildora{
+    background:var(--noche); color:var(--hueso);
+    border:1px solid var(--linea);
+    font-family:var(--etiqueta); font-size:11px; letter-spacing:.08em;
+    text-transform:lowercase;
+    padding:7px 12px; white-space:nowrap;
+  }
+  .elige-flecha{
+    flex:0 0 auto;
+    width:34px; height:34px; border-radius:50%;
+    background:var(--noche); color:var(--hueso);
+    border:1px solid var(--linea);
+    display:grid; place-items:center;
+  }
+  .elige-flecha svg{ width:14px; height:14px; display:block; }
+  .elige-pie{
+    display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    padding-top:14px; margin-top:14px; border-top:1px solid var(--linea);
+  }
+  .elige-nombre{ font-family:var(--titulo); font-weight:600; font-size:19px; text-transform:lowercase; margin:0; }
+  .elige-momento{ margin:6px 0 0; }
+  @media (min-width:820px){
+    .elige-fila{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+  }
+
+  /* ---------- Footer ----------
+     El pie es el único bloque rojo del sitio, y por eso cierra: después del
+     recorrido nocturno entero, el color del producto ocupa la pantalla. El
+     rojo NO cambia entre modos —es el mismo del botón de compra— así que
+     aquí se escriben hexadecimales fijos en vez de tokens: este bloque no
+     participa del tema, lo interrumpe. */
+  .footer{
+    border-top:1px solid var(--linea);
+    background:#D91F26; color:#F7EFEE;
+    padding:56px 0 0;
+    overflow:hidden;
+  }
+  /* La palabra va primero y ocupa el ancho; debajo, en una sola línea baja,
+     los enlaces. Es el orden del referente: primero la marca a tamaño de
+     cartel, después la letra pequeña. */
+  .footer-cima{
+    display:flex; flex-wrap:wrap; gap:28px 48px;
+    justify-content:space-between; align-items:flex-end;
+    padding-top:8px;
+  }
+  .footer-bloque{ display:flex; flex-direction:column; gap:6px; min-width:130px; }
+  .footer-enlaces{ display:flex; flex-wrap:wrap; gap:4px 22px; align-items:baseline; }
+  .footer-enlaces a{ font-size:13px; }
+  .footer .label{ color:rgba(255,255,255,.62); margin:0 0 4px; }
+  .footer a{
+    font-family:var(--texto); font-weight:400; font-size:15px;
+    letter-spacing:0; text-transform:none; text-decoration:none;
+    color:#F7EFEE; width:fit-content;
+    border-bottom:1px solid transparent;
+    transition:border-color .18s ease, opacity .18s ease;
+  }
+  .footer a:hover{ border-bottom-color:currentColor; }
+  .footer a:focus-visible{ outline:2px solid #F7EFEE; outline-offset:3px; }
+  .footer p{ margin:0; font-size:15px; color:rgba(255,255,255,.78); max-width:34ch; }
+
+  /* El wordmark a sangre. Con vw crece con la ventana y se corta solo por el
+     padding del wrap; el line-height ajustado evita la banda muerta que deja
+     Epilogue debajo de una palabra sin descendentes. */
+  .footer p.footer-palabra{
+    font-family:var(--display); font-weight:var(--peso-display);
+    text-transform:lowercase; letter-spacing:-.04em;
+    /* El cuerpo lo calcula el JS midiendo la palabra: se busca que ocupe
+       exactamente el ancho disponible, y eso depende de la cara, del peso y
+       del tracking, que aquí se pueden cambiar en caliente. El clamp queda de
+       respaldo por si no hay JS: se queda corto, pero nunca desborda. */
+    font-size:var(--pie-cuerpo, clamp(56px, 21vw, 260px));
+    line-height:.76;
+    margin:0 0 8px; padding-bottom:.05em;
+    color:#F7EFEE;
+    user-select:none;
+  }
+  .footer-pie{
+    display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between;
+    border-top:1px solid rgba(255,255,255,.28);
+    padding:18px 0 28px; margin-top:24px;
+  }
+  .footer small{ color:rgba(255,255,255,.72); font-size:12px; display:block; }
+  .footer .tbd{ color:rgba(255,255,255,.8); border-color:rgba(255,255,255,.4); }
 
   .sr-only{
     position:absolute; width:1px; height:1px; padding:0; margin:-1px;
@@ -1314,11 +1518,26 @@
   <section class="seccion" id="resenas">
     <div class="wrap">
       <p class="label">Reseñas</p>
-      <h2>Todavía no tenemos</h2>
-      <p class="bajada">Acabamos de empezar. Cuando haya clientes que hayan recibido
-        el pedido, sus reseñas van acá — con nombre y fecha, sin filtrar las malas.</p>
-      <p><span class="tbd">[TBD] Estructura de reseñas pendiente de decidir: formulario
-        propio o pedido por WhatsApp tras la entrega.</span></p>
+      <h2 id="resenasTitulo">Todavía no tenemos</h2>
+      <p class="bajada" id="resenasBajada">Acabamos de empezar. Cuando haya clientes que
+        hayan recibido el pedido, sus reseñas van acá — con nombre y fecha, sin filtrar
+        las malas.</p>
+
+      <!-- Estado real del sitio hoy. Es el que se publica. -->
+      <div id="resenasVacio">
+        <p><span class="tbd">[TBD] Estructura de reseñas pendiente de decidir: formulario
+          propio o pedido por WhatsApp tras la entrega.</span></p>
+      </div>
+
+      <!-- Maqueta. Solo existe para ver la cinta funcionando; se apaga poniendo
+           RESENAS_DE_MUESTRA en false y el bloque de arriba vuelve a mandar. -->
+      <div id="resenasMuestra" hidden>
+        <p class="aviso-muestra">Ejemplos de maqueta · ninguna de estas personas existe ·
+          no se publica hasta tener clientes reales</p>
+        <div class="cinta" id="cintaResenas">
+          <div class="cinta-pista" id="cintaPista"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1388,6 +1607,16 @@
     </div>
   </section>
 
+  <!-- 9. ELIGE EL TUYO — el cierre del recorrido, justo antes del pie -->
+  <section class="seccion elige" id="elige">
+    <div class="wrap">
+      <p class="label">El cierre</p>
+      <h2>Elige el tuyo</h2>
+      <p class="bajada">Uno para el turno, uno para el final, o los dos.</p>
+      <div class="elige-fila" id="eligeFila"></div>
+    </div>
+  </section>
+
 </main>
 
 <!-- VISTAS: tapan la home cuando la ruta lo pide. Se rellenan desde JS. -->
@@ -1397,12 +1626,30 @@
 <!-- 10. FOOTER -->
 <footer class="footer">
   <div class="wrap">
-    <div class="footer-grid">
-      <a data-contacto="whatsapp">WhatsApp</a>
-      <a data-contacto="instagram">Instagram</a>
-      <a data-contacto="correo">Correo</a>
+    <!-- aria-hidden: la palabra ya la dice el logotipo de la barra; para un
+         lector de pantalla esto es un dibujo, no un encabezado más. -->
+    <p class="footer-palabra" aria-hidden="true">relief</p>
+    <div class="footer-cima">
+      <nav class="footer-enlaces" aria-label="Pie de página">
+        <a href="#top">Inicio</a>
+        <a href="#lentes">Los lentes</a>
+        <a href="#materiales">Materiales</a>
+        <a href="#envios">Envíos y pagos</a>
+        <a href="#faq">Preguntas</a>
+      </nav>
+      <div class="footer-enlaces">
+        <a data-contacto="whatsapp">WhatsApp</a>
+        <a data-contacto="instagram">Instagram</a>
+        <a data-contacto="tiktok">TikTok</a>
+        <a data-contacto="correo">Correo</a>
+      </div>
     </div>
-    <small>RELIEF · Bogotá, Colombia · <span class="tbd">[TBD] Razón social y NIT</span></small>
+    <div class="footer-pie">
+      <small>Stock propio en <span class="propio">Bogotá</span> · entrega en 2-3 días ·
+        soporte por WhatsApp el mismo día</small>
+      <small><span class="tbd">[TBD] Razón social y NIT</span> · Lentes con filtro,
+        no son un dispositivo médico.</small>
+    </div>
   </div>
 </footer>
 
@@ -1608,6 +1855,32 @@ document.getElementById('comboCard').innerHTML = `
 
 activarImagenes(document.getElementById('comboCard'));
 
+/* ---------------- Render: elige el tuyo ----------------
+   Los tres en fila para comparar y decidir. Reusa imagenHTML —la misma foto y
+   la misma foto puesta que las tarjetas de arriba—, así que cuando llegue
+   combo-puesta.webp esta sección la toma sola, sin tocar nada. */
+const eligeFila = document.getElementById('eligeFila');
+if (eligeFila) {
+  const FLECHA = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">'
+               + '<path d="M2 7h10M8 3l4 4-4 4"/></svg>';
+  eligeFila.innerHTML = PRODUCTOS.map(p => `
+    <a class="elige-item" href="#/producto/${p.id}">
+      <div class="elige-caja">
+        ${imagenHTML(p)}
+        <div class="elige-sobre">
+          <span class="elige-pildora">${esc(p.momento)}</span>
+          <span class="elige-flecha">${FLECHA}</span>
+        </div>
+      </div>
+      <div class="elige-pie">
+        <h3 class="elige-nombre">${esc(p.nombre)}</h3>
+        <span>${precioHTML(p.precio)}</span>
+      </div>
+    </a>
+  `).join('');
+  activarImagenes(eligeFila);
+}
+
 /* ¿Puede este navegador con 3D? Lo decide una sola vez y lo usan tanto la
    historia de la home como el visor de la ficha de producto. */
 const HAY_WEBGL = (() => {
@@ -1693,6 +1966,172 @@ function cargar3D() {
     }
   }, { rootMargin: '-96% 0px 0px 0px' });
   paneles.forEach(p => { const w = p.querySelector(':scope > .wrap'); if (w) ojo.observe(w); });
+})();
+
+/* ---------------- La palabra del pie ----------------
+   Ocupa el ancho entero de la caja, así que su cuerpo no puede ser un número
+   fijo: depende de la cara, del peso —que se calibra en vivo— y del tracking.
+   Se mide una vez con el canvas y se publica como variable. Sin JS el CSS
+   trae un clamp de respaldo que se queda corto pero nunca desborda.
+------------------------------------------------------ */
+(function(){
+  const palabra = document.querySelector('.footer-palabra');
+  if (!palabra) return;
+  const lienzo = document.createElement('canvas').getContext('2d');
+
+  function ajustar(){
+    const caja = palabra.parentElement;
+    if (!caja) return;
+    const est = getComputedStyle(caja);
+    const disponible = caja.clientWidth
+      - parseFloat(est.paddingLeft) - parseFloat(est.paddingRight);
+    if (disponible <= 0) return;
+
+    const pal = getComputedStyle(palabra);
+    const BASE = 100;
+    lienzo.font = `${pal.fontWeight} ${BASE}px ${pal.fontFamily}`;
+    /* measureText no sabe de letter-spacing: se suma aparte, una vez por
+       hueco entre letras. En negativo resta, que es el caso. */
+    const texto = palabra.textContent.trim();
+    const track = parseFloat(pal.letterSpacing) || 0;
+    const anchoBase = lienzo.measureText(texto).width
+                    + (track / parseFloat(pal.fontSize)) * BASE * (texto.length - 1);
+    if (!(anchoBase > 0)) return;
+    document.documentElement.style.setProperty(
+      '--pie-cuerpo', (disponible / anchoBase * BASE).toFixed(1) + 'px');
+  }
+
+  ajustar();
+  window.addEventListener('resize', ajustar);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustar);
+  /* El calibrador del grosor cambia --peso-display en caliente y la palabra
+     hay que remedirla. Se expone en vez de observar el atributo style del
+     documento: ahí escriben también --alto-nav y --palabra-cima, y un
+     observador se dispararía en bucle con lo que escribe esta misma función. */
+  window.__ajustarPie = ajustar;
+})();
+
+/* ---------------- Reseñas de maqueta ----------------
+   ⚠ ESTO NO SE PUBLICA. Publicar testimonios inventados es publicidad
+   engañosa y es sanción directa de la SIC bajo el Estatuto del Consumidor
+   (Ley 1480). Estas tarjetas existen para ver cómo se comporta la cinta,
+   nada más. Antes de que el sitio sea público: RESENAS_DE_MUESTRA = false,
+   y el bloque honesto de "todavía no tenemos" vuelve a ser el único.
+
+   El texto de ejemplo también respeta las reglas de la marca: habla de
+   comodidad, de entrega y de servicio, y nunca de dormir mejor ni de
+   porcentajes. Si la maqueta se permite claims, alguien los copia después.
+-------------------------------------------------------- */
+const RESENAS_DE_MUESTRA = true;
+
+const RESENAS_EJEMPLO = [
+  { texto: 'Trabajo en soporte de 10 pm a 6 am. Llevo tres semanas con el ámbar y termino el turno con los ojos menos cansados. Es lo único que puedo decir, pero es real.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Bogotá', compra: 'RLF Ámbar' },
+  { texto: 'Pedí un martes y llegó el jueves. Venía de comprar unas parecidas en otra página y esperé mes y medio. La diferencia es esa.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Medellín', compra: 'Combo Rutina Nocturna' },
+  { texto: 'El rojo es más oscuro de lo que esperaba y eso está bien: no sirve para trabajar y ellos mismos lo dicen en la página. Lo uso la última hora y ya.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Cali', compra: 'RLF Rojo' },
+  { texto: 'Escribí por WhatsApp un domingo preguntando por la talla y me contestaron el mismo día. No esperaba eso.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Bucaramanga', compra: 'RLF Ámbar' },
+  { texto: 'La montura es más liviana de lo que se ve en las fotos. Seis horas seguidas y no me molesta en las orejas.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Barranquilla', compra: 'Combo Rutina Nocturna' },
+  { texto: 'Le pedí que me cambiaran el combo por dos ámbar porque el rojo no era para mí. Lo resolvieron sin pelear.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Pereira', compra: 'RLF Ámbar' },
+  { texto: 'Estudio de noche y la pantalla del portátil se me hacía insoportable después de la medianoche. Ahora aguanto el bloque completo.',
+    nombre: 'Nombre de ejemplo', ciudad: 'Manizales', compra: 'RLF Ámbar' }
+];
+
+(function(){
+  const caja   = document.getElementById('resenasMuestra');
+  const vacio  = document.getElementById('resenasVacio');
+  const pista  = document.getElementById('cintaPista');
+  const cinta  = document.getElementById('cintaResenas');
+  const titulo = document.getElementById('resenasTitulo');
+  const bajada = document.getElementById('resenasBajada');
+  if (!caja || !pista || !RESENAS_DE_MUESTRA || !RESENAS_EJEMPLO.length) return;
+
+  const esc = t => String(t).replace(/[&<>"]/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+  const tarjeta = r => '<article class="resena">'
+    + '<span class="resena-muestra">Ejemplo</span>'
+    + '<p class="resena-texto">' + esc(r.texto) + '</p>'
+    + '<div class="resena-quien">'
+    +   '<span class="resena-nombre">' + esc(r.nombre) + '</span>'
+    +   '<span class="resena-dato">' + esc(r.ciudad) + ' · ' + esc(r.compra) + '</span>'
+    + '</div></article>';
+
+  const copia = RESENAS_EJEMPLO.map(tarjeta).join('');
+  /* Dos copias: la animación recorre exactamente la mitad de la pista, así que
+     cuando termina está mostrando el mismo cuadro con el que empezó y el bucle
+     no tiene costura. La segunda copia es decorativa —el lector de pantalla ya
+     leyó la primera— y por eso va oculta a la accesibilidad. */
+  pista.innerHTML = copia + '<div class="cinta-copia" aria-hidden="true" style="display:flex">'
+                  + copia + '</div>';
+  /* Truco del margen: cada tarjeta lleva su separación a la derecha, incluida
+     la última, para que media pista caiga justo en el inicio de la copia. */
+  pista.querySelector('.cinta-copia').style.marginRight = '0';
+
+  caja.hidden = false;
+  if (vacio) vacio.hidden = true;
+  if (titulo) titulo.textContent = 'Lo que dicen';
+  if (bajada) bajada.textContent = 'Así se verá esta sección cuando haya clientes reales. '
+    + 'Hoy son ejemplos de maqueta: pasa el cursor por encima y la cinta se detiene.';
+
+  /* La duración se calcula en vez de fijarse: con más o menos tarjetas la
+     velocidad tiene que seguir siendo la misma. 55 px por segundo es lento
+     como para leer de reojo sin que parezca que la página se atascó. */
+  const acompasar = () => {
+    const largo = pista.scrollWidth / 2;
+    if (largo > 0) pista.style.setProperty('--desfile', Math.round(largo / 55) + 's');
+  };
+  acompasar();
+  window.addEventListener('resize', acompasar);
+  /* Las tarjetas se miden bien recién cuando la tipografía carga. */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(acompasar);
+})();
+
+/* ---------------- Sección activa en la barra ----------------
+   El enlace de la sección que tienes delante se marca. Sin esto la barra no
+   dice nunca dónde estás, y en una home de un solo scroll eso es todo lo que
+   hay para orientarse. Solo aplica en la home: dentro de una ficha o del
+   checkout no hay ninguna sección delante.
+--------------------------------------------------------------- */
+(function(){
+  const enlaces = [...document.querySelectorAll('.menu a[href^="#"]')];
+  if (!enlaces.length || !('IntersectionObserver' in window)) return;
+
+  const destinos = new Map();
+  for (const a of enlaces) {
+    const el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) destinos.set(el, a);
+  }
+  if (!destinos.size) return;
+
+  const dentro = new Set();
+  const pintar = () => {
+    /* Puede haber dos secciones en pantalla a la vez; gana la de más arriba,
+       que es la que estás terminando de leer. */
+    let elegida = null;
+    for (const el of destinos.keys()) {
+      if (!dentro.has(el)) continue;
+      if (!elegida || el.getBoundingClientRect().top < elegida.getBoundingClientRect().top) elegida = el;
+    }
+    const enHome = document.body.dataset.vista !== 'interna';
+    for (const [el, a] of destinos) {
+      if (enHome && el === elegida) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    }
+  };
+
+  const ojo = new IntersectionObserver(entradas => {
+    for (const e of entradas) {
+      if (e.isIntersecting) dentro.add(e.target); else dentro.delete(e.target);
+    }
+    pintar();
+  }, { rootMargin: '-30% 0px -55% 0px' });
+  destinos.forEach((_, el) => ojo.observe(el));
+  window.addEventListener('hashchange', pintar);
 })();
 
 /* ---------------- Modos de visualización ----------------
@@ -2428,6 +2867,7 @@ navegar();
      todas las reglas de titulares a la vez. */
   function aplicarPeso(v){
     raiz.style.setProperty('--peso-display', v);
+    if (window.__ajustarPie) window.__ajustarPie();
     marcar('peso', v); guardar('relief.peso', v);
   }
 

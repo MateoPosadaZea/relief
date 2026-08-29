@@ -60,6 +60,21 @@ arco visual *es* el arco del catálogo.
 - **El copy describe el problema, nunca promete la cura.** "Llevas seis horas frente
   a la pantalla" es seguro y pega más fuerte que cualquier claim de salud.
 
+## El cierre y el pie
+- **«Elige el tuyo»** cierra el recorrido: los tres productos en fila, sin
+  descripción —esa la da la sección de los lentes—, solo foto, momento y precio.
+  Al pasar el cursor cruza la foto puesta y aparecen la píldora del momento y la
+  flecha. En táctil, donde no hay cursor, las dos quedan puestas siempre: si no,
+  el dedo nunca ve que la tarjeta lleva a alguna parte.
+- **El pie es el único bloque rojo del sitio**, y por eso cierra: después de una
+  noche entera en negro, el color del producto ocupa la pantalla. Ahí van el
+  wordmark a tamaño de cartel —el cuerpo lo mide el JS para que llene el ancho
+  exacto, porque depende de la cara, del peso y del tracking—, después los
+  enlaces en una línea baja, y al final la letra pequeña.
+- El rojo del pie **no participa de los cuatro modos**: se escribe en
+  hexadecimal fijo, igual que el botón de compra. Es la excepción declarada a la
+  regla de que ninguna regla CSS conoce un hex.
+
 ## Posicionamiento (la tesis del negocio)
 Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot está destruido:
 esperas de hasta 2 meses, envíos desde China, soporte que no responde. **La categoría entera
@@ -288,6 +303,16 @@ después de validar que antes.
 - **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
   Estatuto del Consumidor (Ley 1480). La sección existe vacía y dice que estamos
   empezando, hasta que haya clientes reales que hayan recibido el pedido.
+- ⚠ **La cinta de reseñas está montada con ejemplos de maqueta.** Existe para
+  ver el comportamiento (desfila sola, se detiene con el cursor, la tarjeta que
+  se mira se separa y las demás ceden), no para publicarse. Vive tras
+  `RESENAS_DE_MUESTRA = true`; **antes de que el sitio sea público hay que
+  bajarla a `false`**, y el bloque honesto de "todavía no tenemos" vuelve a ser
+  el único. Mientras esté encendida, el aviso ámbar de arriba y el rótulo
+  «ejemplo» de cada tarjeta no se quitan.
+- El texto de los ejemplos también respeta las reglas de la marca —habla de
+  comodidad, entrega y servicio, nunca de dormir ni de porcentajes—. Si la
+  maqueta se permite claims, alguien los copia cuando lleguen los reales.
 - **Cero estudios citados sin leer el estudio.** Si algún día se citan, se cita la
   fuente completa y jamás se traduce a una promesa ("dormirás mejor").
 - La sección **"Lo que no vamos a decirte"** convierte esa restricción en

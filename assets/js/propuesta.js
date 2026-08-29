@@ -159,11 +159,21 @@ export function iniciarEscena(canvas, contenedor, paneles) {
        alta es suya entera, así que puede ser bastante más grande de lo que era
        cuando compartía el ancho con el texto. */
     angosto = w < 900;
-    const CENTRO = angosto ? 0.30 : 0.28;      // dónde queda su centro, en alto
-    escalaHistoria = angosto ? encuadre(w * 0.88, h * 0.34)
-                             : encuadre(w * 0.62, h * 0.42);
+    /* La banda del modelo arranca al PIE del nav, no en el techo de la
+       ventana: encuadrar contra la pantalla entera lo dejaba con la frente
+       por debajo de la barra, y el nav se la comía. El pequeño respiro
+       encima es para los pasos con zoom, que se salen del encuadre base.
+       Abajo no pasa de la mitad larga de la pantalla, que es del texto.
+       Y en pantallas muy altas la banda se limita en píxeles: el modelo no
+       tiene por qué crecer hasta llenar un monitor de 1400 de alto. */
+    const RESPIRO = angosto ? 18 : 28;
+    const arriba  = techo + RESPIRO;
+    const abajo   = Math.min(h * (angosto ? 0.56 : 0.60),
+                             arriba + (angosto ? 340 : 400));
+    const banda   = Math.max(120, abajo - arriba);
+    escalaHistoria = encuadre(w * (angosto ? 0.78 : 0.44), banda * 0.82);
     desplazX = 0;
-    subeHist = (h / 2 - h * CENTRO) / porUnidad;
+    subeHist = (h / 2 - (arriba + abajo) / 2) / porUnidad;
   }
 
   function leerProgreso() {
@@ -216,13 +226,14 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   }
 
   const encendida = (an, nombre) => !an.piezas || an.piezas.includes(nombre);
-  const hablaDelLente = an => !!an.piezas && an.piezas.some(n => n.startsWith('cristal'));
-  /* El lente conserva su color salvo que el paso trate del lente. Atenuarlo en
-     modo día lo vuelve crema y deja de parecer ámbar: el color del lente es la
-     identidad del producto, no un detalle de la escena. */
+  /* Los dos lentes nunca se atenúan. Antes el paso del lente encendía solo el
+     derecho y dejaba el izquierdo pálido: no se leía como "mira este", se leía
+     como un lente descolorido, o sea como un defecto. El color del lente es la
+     identidad del producto y va siempre entero en los dos. */
+  const esLente = n => n.startsWith('cristal');
   function nivel(an, m) {
-    if (encendida(an, m.objeto.name)) return 1;
-    return (m.objeto.name.startsWith('cristal') && !hablaDelLente(an)) ? 1 : 0.38;
+    if (esLente(m.objeto.name)) return 1;
+    return encendida(an, m.objeto.name) ? 1 : 0.38;
   }
 
   function apuntar(paso) {
