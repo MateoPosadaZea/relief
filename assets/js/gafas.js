@@ -47,16 +47,29 @@ function perfilVarilla(largo) {
   return s;
 }
 
+/* Medidas leídas de las fotos del producto: aro bastante rectangular,
+   barra superior recta que cruza toda la frente, y un canto claro encima
+   — es la laminación de dos capas del acetato real.
+   Viven fuera de la función porque de ellas salen también las anclas del
+   despiece: los puntos a los que la cámara se acerca al explicar cada pieza. */
+const ANCHO = 1.02, ALTO = 0.52, RADIO = 0.055, GROSOR = 0.038;
+const SEPARACION = 0.575;
+const FONDO = 0.095;                       // profundidad del frente
+const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
+
+/* Cada ancla dice adónde mirar, desde qué giro y con cuánto acercamiento.
+   `piezas` nombra las mallas que quedan encendidas; el resto se atenúa. */
+export const ANCLAS = {
+  conjunto: { punto:[0, 0, 0],                            giroY:-0.55, giroX: 0.16, zoom:1.00, piezas:null },
+  montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.30, piezas:['aro-i','aro-d','barra','filo','puente'] },
+  lente:    { punto:[SEPARACION, 0, 0],                   giroY:-0.08, giroX: 0.04, zoom:2.00, piezas:['cristal-d','aro-d'] },
+  puente:   { punto:[0, ALTO/2 - 0.125, 0],               giroY:-0.12, giroX: 0.26, zoom:2.40, piezas:['puente','barra'] },
+  bisagra:  { punto:[MEDIO - 0.02, ALTO/2 - 0.10, 0],     giroY:-1.00, giroX: 0.20, zoom:2.60, piezas:['bisagra-d','aro-d'] },
+  varilla:  { punto:[MEDIO + 0.30, ALTO/2 - 0.28, -0.55], giroY:-1.35, giroX: 0.12, zoom:1.45, piezas:['varilla-d','bisagra-d'] }
+};
+
 export function construirGafas() {
   const gafas = new THREE.Group();
-
-  /* Medidas leídas de las fotos del producto: aro bastante rectangular,
-     barra superior recta que cruza toda la frente, y un canto claro
-     encima — es la laminación de dos capas del acetato real. */
-  const ANCHO = 1.02, ALTO = 0.52, RADIO = 0.055, GROSOR = 0.038;
-  const SEPARACION = 0.575;
-  const FONDO = 0.095;                       // profundidad del frente
-  const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
 
   const montura = new THREE.MeshPhysicalMaterial({
     color: 0x2F2F34, roughness: 0.45, metalness: 0.15, clearcoat: 0.5, clearcoatRoughness: 0.3
@@ -88,6 +101,7 @@ export function construirGafas() {
     aro.holes.push(rectangulo(ANCHO - GROSOR * 2, ALTO - GROSOR * 2, RADIO * 0.55));
     const mallaAro = new THREE.Mesh(extruir(aro, FONDO, true), montura);
     mallaAro.position.set(x, 0, -FONDO / 2);
+    mallaAro.name = lado < 0 ? 'aro-i' : 'aro-d';
     gafas.add(mallaAro);
 
     const mallaCristal = new THREE.Mesh(
@@ -95,11 +109,13 @@ export function construirGafas() {
       cristal
     );
     mallaCristal.position.set(x, 0, -0.02);
+    mallaCristal.name = lado < 0 ? 'cristal-i' : 'cristal-d';
     gafas.add(mallaCristal);
 
     /* Bisagra: el bloque que se ve en las fotos donde entra la varilla. */
     const bisagra = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.10, FONDO * 0.9), montura);
     bisagra.position.set(lado * (MEDIO - 0.02), ALTO / 2 - 0.10, -FONDO * 0.45);
+    bisagra.name = lado < 0 ? 'bisagra-i' : 'bisagra-d';
     gafas.add(bisagra);
 
     /* Varilla plana, no un tubo: en las fotos es una lámina que adelgaza. */
@@ -109,6 +125,7 @@ export function construirGafas() {
     varilla.rotation.y = Math.PI / 2;
     varilla.position.set(lado * (MEDIO - 0.008), ALTO / 2 - 0.105, -FONDO * 0.55);
     if (lado === -1) varilla.position.x -= 0.030;   // el grosor se extruye hacia +X
+    varilla.name = lado < 0 ? 'varilla-i' : 'varilla-d';
     gafas.add(varilla);
   }
 
@@ -117,6 +134,7 @@ export function construirGafas() {
     extruir(rectangulo(MEDIO * 2, 0.088, 0.022), FONDO, true), montura
   );
   barra.position.set(0, ALTO / 2 - 0.016, -FONDO / 2);
+  barra.name = 'barra';
   gafas.add(barra);
 
   /* El canto claro, encima de la barra. */
@@ -124,6 +142,7 @@ export function construirGafas() {
     extruir(rectangulo(MEDIO * 2 - 0.01, 0.020, 0.008), FONDO * 0.92, false), canto
   );
   filo.position.set(0, ALTO / 2 + 0.030, -FONDO * 0.46);
+  filo.name = 'filo';
   gafas.add(filo);
 
   /* Puente: el arco corto que baja entre los dos aros. */
@@ -132,6 +151,7 @@ export function construirGafas() {
     montura
   );
   puente.position.set(0, ALTO / 2 - 0.125, -FONDO * 0.30);
+  puente.name = 'puente';
   gafas.add(puente);
 
   return { gafas, cristal };
