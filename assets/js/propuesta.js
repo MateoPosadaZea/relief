@@ -100,7 +100,13 @@ export function iniciarEscena(canvas, contenedor, paneles) {
      Usar el máximo de x y z sería encuadrar por un giro que nunca ocurre y
      dejaría el modelo innecesariamente chico. */
   const anchoEn = g => dim.x * Math.abs(Math.cos(g)) + dim.z * Math.abs(Math.sin(g));
-  const anchoModelo = Math.max(anchoEn(GIRO - PARALAJE), anchoEn(GIRO + PARALAJE));
+  /* Se encuadra por el giro más abierto de todo el recorrido y no solo por el
+     de reposo: las vistas de perfil y la de la varilla pasan del radián, y con
+     el encuadre viejo el modelo se salía por los lados. */
+  const anchoModelo = Object.values(ANCLAS).reduce(
+    (peor, a) => Math.max(peor, anchoEn(Math.abs(a.giroY) - PARALAJE),
+                                anchoEn(Math.abs(a.giroY) + PARALAJE)),
+    Math.max(anchoEn(GIRO - PARALAJE), anchoEn(GIRO + PARALAJE)));
   const altoModelo  = dim.y;
 
   let escalaBanda = 1, escalaHistoria = 1, subida = 0;
@@ -199,7 +205,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
      y se lee, y hace el viaje en el tramo del medio. Interpolar lineal lo
      tendría moviéndose todo el rato, que ya probamos y molesta. */
   function mezcla(t) {
-    const x = Math.min(1, Math.max(0, (t - 0.28) / 0.44));
+    const x = Math.min(1, Math.max(0, (t - 0.20) / 0.62));
     return x * x * (3 - 2 * x);
   }
 

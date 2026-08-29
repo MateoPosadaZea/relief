@@ -60,7 +60,14 @@ const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
 /* Cada ancla dice adónde mirar, desde qué giro y con cuánto acercamiento.
    `piezas` nombra las mallas que quedan encendidas; el resto se atenúa. */
 export const ANCLAS = {
+  /* Vistas del conjunto. Son varias a propósito: con un solo "conjunto", los
+     cuatro paneles de relato seguidos compartían anclaje y el modelo se
+     quedaba quieto mientras pasaban tres textos. */
   conjunto: { punto:[0, 0, 0],                            giroY:-0.55, giroX: 0.16, zoom:1.00, piezas:null },
+  frente:   { punto:[0, 0, 0],                            giroY:-0.10, giroX: 0.05, zoom:1.06, piezas:null },
+  perfil:   { punto:[0, 0, 0],                            giroY:-0.98, giroX: 0.09, zoom:0.92, piezas:null },
+  alto:     { punto:[0, 0, 0],                            giroY:-0.42, giroX: 0.44, zoom:1.02, piezas:null },
+  bajo:     { punto:[0, 0, 0],                            giroY:-0.66, giroX:-0.14, zoom:1.00, piezas:null },
   montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.12, piezas:['aro-i','aro-d','barra','filo','puente'] },
   lente:    { punto:[SEPARACION, 0, 0],                   giroY:-0.08, giroX: 0.04, zoom:1.32, piezas:['cristal-d','aro-d'] },
   puente:   { punto:[0, ALTO/2 - 0.125, 0],               giroY:-0.12, giroX: 0.26, zoom:1.40, piezas:['puente','barra'] },
