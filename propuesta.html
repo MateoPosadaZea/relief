@@ -329,7 +329,11 @@
     font-family:var(--display); font-weight:600; font-size:clamp(24px,7vw,32px);
     letter-spacing:-.02em; text-transform:lowercase;
   }
-  .menu-movil-lista a:active{ color:var(--texto-tenue); }
+  /* Sin recuadro: en un titular de 32 px el color solo ya se ve, y el borde
+     partía la lista en cajas. */
+  .menu-movil-lista a:active,
+  .menu-movil-lista a:focus-visible{ color:var(--ambar-texto); outline:none; }
+  .menu-movil:focus{ outline:none; }
 
   .menu-movil-pie{ display:flex; flex-direction:column; gap:26px; }
   .menu-bloque{ display:flex; flex-direction:column; gap:6px; }
@@ -339,7 +343,8 @@
     color:var(--hueso); text-decoration:none; font-size:15px;
     display:flex; align-items:center; gap:8px; padding:3px 0;
   }
-  .menu-enlace:active{ color:var(--texto-tenue); }
+  .menu-enlace:active,
+  .menu-enlace:focus-visible{ color:var(--ambar-texto); outline:none; }
   .menu-pie-nota{ margin:0; color:var(--texto-tenue); font-size:12.5px; }
 
   /* Entrada escalonada de arriba abajo; salida escalonada al revés y más
@@ -976,7 +981,7 @@
   </div>
 </header>
 
-<nav class="menu-movil" id="menuMovil" data-abierto="false" aria-label="Menú">
+<nav class="menu-movil" id="menuMovil" data-abierto="false" aria-label="Menú" tabindex="-1">
   <div class="wrap menu-movil-caja">
     <ul class="menu-movil-lista" style="--n:5">
       <li style="--i:0"><a href="#lentes">Los lentes</a></li>
@@ -1586,8 +1591,10 @@ function cargar3D() {
     else delete document.body.dataset.menu;
     if (si) {
       devolverFoco = document.activeElement;
-      const primero = panel.querySelector('a');
-      if (primero) primero.focus({ preventScroll: true });
+      /* Al panel y no al primer enlace: el teclado entra igual —el siguiente
+         Tab cae en el primer destino— y abriendo con el dedo no se enciende
+         el indicador de foco sobre una palabra. */
+      panel.focus({ preventScroll: true });
     } else if (devolverFoco) {
       devolverFoco.focus({ preventScroll: true });
       devolverFoco = null;
