@@ -15,9 +15,9 @@ const AMBAR = 0xF2A93B;
 const ROJO  = 0xD91F26;
 
 /* Rectángulo de esquinas redondeadas, en el plano XY. */
-function rectangulo(ancho, alto, radio) {
+function rectangulo(ancho, alto, radio, dy) {
   const s = new THREE.Shape();
-  const x = -ancho / 2, y = -alto / 2;
+  const x = -ancho / 2, y = -alto / 2 + (dy || 0);
   s.moveTo(x + radio, y);
   s.lineTo(x + ancho - radio, y);
   s.quadraticCurveTo(x + ancho, y, x + ancho, y + radio);
@@ -52,10 +52,22 @@ function perfilVarilla(largo) {
    — es la laminación de dos capas del acetato real.
    Viven fuera de la función porque de ellas salen también las anclas del
    despiece: los puntos a los que la cámara se acerca al explicar cada pieza. */
-const ANCHO = 1.02, ALTO = 0.52, RADIO = 0.055, GROSOR = 0.038;
-const SEPARACION = 0.575;
-const FONDO = 0.095;                       // profundidad del frente
+const ANCHO = 0.96, ALTO = 0.66, RADIO = 0.075, GROSOR = 0.030;
+const SEPARACION = 0.545;
+const FONDO = 0.072;                       // profundidad del frente
 const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
+/* Curvatura del frente: los dos aros no están en un plano, se abren hacia
+   atrás siguiendo la cara. Un frente plano es la señal más delatora de un
+   modelo de juguete. */
+const ENVOLVENTE = 0.20;                   // radianes que gira cada aro
+
+/* Gira un punto alrededor del centro del puente para acompañar la envolvente.
+   Lo usan tanto las piezas como las anclas: si las anclas no se envuelven con
+   el modelo, la cámara apunta a donde la pieza ya no está. */
+function envuelto(x, y, z, lado) {
+  const t = lado * ENVOLVENTE;
+  return [x * Math.cos(t) + z * Math.sin(t), y, -x * Math.sin(t) + z * Math.cos(t)];
+}
 
 /* Cada ancla dice adónde mirar, desde qué giro y con cuánto acercamiento.
    `piezas` nombra las mallas que quedan encendidas; el resto se atenúa. */
@@ -68,32 +80,68 @@ export const ANCLAS = {
   perfil:   { punto:[0, 0, 0],                            giroY:-0.98, giroX: 0.09, zoom:0.92, piezas:null },
   alto:     { punto:[0, 0, 0],                            giroY:-0.42, giroX: 0.44, zoom:1.02, piezas:null },
   bajo:     { punto:[0, 0, 0],                            giroY:-0.66, giroX:-0.14, zoom:1.00, piezas:null },
-  montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.12, piezas:['aro-i','aro-d','barra','filo','puente'] },
-  lente:    { punto:[SEPARACION, 0, 0],                   giroY:-0.08, giroX: 0.04, zoom:1.32, piezas:['cristal-d','aro-d'] },
-  puente:   { punto:[0, ALTO/2 - 0.125, 0],               giroY:-0.12, giroX: 0.26, zoom:1.40, piezas:['puente','barra'] },
-  bisagra:  { punto:[MEDIO - 0.02, ALTO/2 - 0.10, 0],     giroY:-1.00, giroX: 0.20, zoom:1.40, piezas:['bisagra-d','aro-d'] },
-  varilla:  { punto:[MEDIO + 0.30, ALTO/2 - 0.28, -0.55], giroY:-1.35, giroX: 0.12, zoom:1.10, piezas:['varilla-d','bisagra-d'] }
+  montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.12, piezas:['aro-i','aro-d','filo-i','filo-d','puente'] },
+  lente:    { punto:envuelto(SEPARACION, 0, 0, 1),        giroY:-0.08, giroX: 0.04, zoom:1.32, piezas:['cristal-d','aro-d'] },
+  puente:   { punto:[0, ALTO/2 - 0.150, 0],               giroY:-0.12, giroX: 0.26, zoom:1.40, piezas:['puente','aro-i','aro-d'] },
+  bisagra:  { punto:envuelto(MEDIO - 0.02, ALTO/2 - 0.12, 0, 1), giroY:-1.00, giroX: 0.20, zoom:1.40, piezas:['bisagra-d','aro-d'] },
+  varilla:  { punto:envuelto(MEDIO + 0.28, ALTO/2 - 0.30, -0.55, 1), giroY:-1.35, giroX: 0.12, zoom:1.10, piezas:['varilla-d','bisagra-d'] }
 };
+
+/* Entorno de reflejo. Sin nada que reflejar, el acetato y el cristal se ven
+   como plástico plano: es lo que más separa un render de una foto. En vez de
+   cargar un HDRI —peso y una petición más— se pinta un degradado con una banda
+   clara arriba, que hace de fuente de luz y deja el reflejo largo del borde. */
+export function ambiente(renderer) {
+  const lienzo = document.createElement('canvas');
+  lienzo.width = 16; lienzo.height = 64;
+  const g = lienzo.getContext('2d');
+  const deg = g.createLinearGradient(0, 0, 0, 64);
+  deg.addColorStop(0.00, '#33363F');
+  deg.addColorStop(0.40, '#15161B');
+  deg.addColorStop(0.58, '#0B0C0F');
+  deg.addColorStop(1.00, '#050506');
+  g.fillStyle = deg; g.fillRect(0, 0, 16, 64);
+  g.fillStyle = '#A7AEBA'; g.fillRect(0, 5, 16, 9);   // la fuente
+
+  const tex = new THREE.CanvasTexture(lienzo);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const env = pmrem.fromEquirectangular(tex).texture;
+  pmrem.dispose(); tex.dispose();
+  return env;
+}
 
 export function construirGafas() {
   const gafas = new THREE.Group();
 
+  /* Acetato mate, no plástico barnizado: el brillo alto es lo que hace que un
+     modelo parezca de juguete. Un punto de clearcoat basta para el reflejo
+     largo del borde. */
   const montura = new THREE.MeshPhysicalMaterial({
-    color: 0x2F2F34, roughness: 0.45, metalness: 0.15, clearcoat: 0.5, clearcoatRoughness: 0.3
+    color: 0x25252A, roughness: 0.58, metalness: 0.05,
+    clearcoat: 0.25, clearcoatRoughness: 0.45,
+    /* El reflejo del entorno hace casi todo el trabajo; las luces directas
+       pasan a acompañar. Al revés, el acetato se ve encerado. */
+    envMapIntensity: 1.9
   });
   /* El canto claro del borde superior. No es un color de marca: es una
      característica física del producto, visible en las cuatro fotos. */
   const canto = new THREE.MeshPhysicalMaterial({
-    color: 0xB9C9DE, roughness: 0.3, metalness: 0.1, clearcoat: 0.6
+    color: 0x5E646E, roughness: 0.55, metalness: 0.10, clearcoat: 0.2,
+    envMapIntensity: 1.6
   });
 
   /* El material del lente es compartido: cambiarle el color mueve los dos
      lentes a la vez cuando avanza la historia. */
+  /* Lente teñido, no pantalla encendida: la emisión alta lo convertía en un
+     filtro de cine. El color vive en la transmisión y en la atenuación. */
   const cristal = new THREE.MeshPhysicalMaterial({
-    color: AMBAR, roughness: 0.06, metalness: 0,
-    transmission: 0.92, thickness: 0.4, ior: 1.52,
-    transparent: true, opacity: 0.6, side: THREE.DoubleSide,
-    emissive: AMBAR, emissiveIntensity: 0.14, specularIntensity: 1
+    color: AMBAR, roughness: 0.04, metalness: 0,
+    transmission: 0.96, thickness: 0.14, ior: 1.53,
+    attenuationColor: AMBAR, attenuationDistance: 1.6,
+    transparent: true, opacity: 0.38, side: THREE.DoubleSide,
+    emissive: AMBAR, emissiveIntensity: 0.02, specularIntensity: 0.9,
+    envMapIntensity: 1.5
   });
 
   const extruir = (forma, prof, bisel) => new THREE.ExtrudeGeometry(forma, {
@@ -101,67 +149,79 @@ export function construirGafas() {
     bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 2, curveSegments: 18
   });
 
+  /* Cada lado se gira sobre el centro del puente, así el frente deja de ser
+     una lámina plana y se abre siguiendo la cara. El puente queda en el
+     centro, que es el eje del giro, y une las dos mitades. */
+  const envolver = (malla, lado) => {
+    const [x, y, z] = envuelto(malla.position.x, malla.position.y, malla.position.z, lado);
+    malla.position.set(x, y, z);
+    malla.rotation.y += lado * ENVOLVENTE;
+  };
+
   for (const lado of [-1, 1]) {
     const x = lado * SEPARACION;
 
+    /* El hueco va desplazado hacia abajo: el borde de arriba queda grueso —la
+       ceja— y el de abajo fino, que es como está hecha la montura real. Con
+       eso sobra la ceja recta cruzando la frente, que era lo más delator. */
     const aro = rectangulo(ANCHO, ALTO, RADIO);
-    aro.holes.push(rectangulo(ANCHO - GROSOR * 2, ALTO - GROSOR * 2, RADIO * 0.55));
+    aro.holes.push(rectangulo(ANCHO - GROSOR * 2, ALTO - GROSOR * 2.4, RADIO * 0.62, -0.018));
     const mallaAro = new THREE.Mesh(extruir(aro, FONDO, true), montura);
     mallaAro.position.set(x, 0, -FONDO / 2);
     mallaAro.name = lado < 0 ? 'aro-i' : 'aro-d';
+    envolver(mallaAro, lado);
     gafas.add(mallaAro);
 
     const mallaCristal = new THREE.Mesh(
-      extruir(rectangulo(ANCHO - GROSOR * 1.5, ALTO - GROSOR * 1.5, RADIO * 0.6), 0.018, false),
+      extruir(rectangulo(ANCHO - GROSOR * 1.6, ALTO - GROSOR * 1.6, RADIO * 0.68), 0.014, false),
       cristal
     );
-    mallaCristal.position.set(x, 0, -0.02);
+    mallaCristal.position.set(x, 0, -0.016);
     mallaCristal.name = lado < 0 ? 'cristal-i' : 'cristal-d';
+    envolver(mallaCristal, lado);
     gafas.add(mallaCristal);
 
-    /* Bisagra: el bloque que se ve en las fotos donde entra la varilla. */
-    const bisagra = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.10, FONDO * 0.9), montura);
-    bisagra.position.set(lado * (MEDIO - 0.02), ALTO / 2 - 0.10, -FONDO * 0.45);
+    /* El canto claro: una línea sobre el borde superior de cada aro, del ancho
+       del aro y no de toda la frente. */
+    const filo = new THREE.Mesh(
+      extruir(rectangulo(ANCHO - 0.10, 0.007, 0.003), FONDO * 0.62, false), canto);
+    filo.position.set(x, ALTO / 2 - 0.006, -FONDO * 0.34);
+    filo.name = lado < 0 ? 'filo-i' : 'filo-d';
+    envolver(filo, lado);
+    gafas.add(filo);
+
+    /* Bisagra: el bloque donde entra la varilla. */
+    const bisagra = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.085, FONDO * 0.85), montura);
+    bisagra.position.set(lado * (MEDIO - 0.018), ALTO / 2 - 0.12, -FONDO * 0.45);
     bisagra.name = lado < 0 ? 'bisagra-i' : 'bisagra-d';
+    envolver(bisagra, lado);
     gafas.add(bisagra);
 
     /* Varilla plana, no un tubo: en las fotos es una lámina que adelgaza. */
-    const varilla = new THREE.Mesh(extruir(perfilVarilla(1.42), 0.030, true), montura);
+    const varilla = new THREE.Mesh(extruir(perfilVarilla(1.44), 0.024, true), montura);
     /* +90°, no -90°: rotando al otro lado el perfil apuntaba hacia adelante
        y la varilla cruzaba por encima del lente. */
     varilla.rotation.y = Math.PI / 2;
-    varilla.position.set(lado * (MEDIO - 0.008), ALTO / 2 - 0.105, -FONDO * 0.55);
-    if (lado === -1) varilla.position.x -= 0.030;   // el grosor se extruye hacia +X
+    varilla.position.set(lado * (MEDIO - 0.006), ALTO / 2 - 0.125, -FONDO * 0.55);
+    if (lado === -1) varilla.position.x -= 0.024;   // el grosor se extruye hacia +X
     varilla.name = lado < 0 ? 'varilla-i' : 'varilla-d';
+    envolver(varilla, lado);
     gafas.add(varilla);
   }
 
-  /* Barra superior recta que cruza toda la frente, incluido el puente. */
-  const barra = new THREE.Mesh(
-    extruir(rectangulo(MEDIO * 2, 0.088, 0.022), FONDO, true), montura
-  );
-  /* Medio milímetro por delante del aro. Con la misma z sus caras frontales
-     quedaban coplanares y el z-buffer las rayaba: ese era el glitch. */
-  barra.position.set(0, ALTO / 2 - 0.016, -FONDO / 2 + 0.004);
-  barra.name = 'barra';
-  gafas.add(barra);
 
-  /* El canto claro, encima de la barra. */
-  const filo = new THREE.Mesh(
-    extruir(rectangulo(MEDIO * 2 - 0.01, 0.020, 0.008), FONDO * 0.92, false), canto
-  );
-  /* El canto se apoya encima de la barra en vez de atravesarla: se cruzaban
-     entre y=+0.020 e y=+0.028 y ahí también se rayaban. */
-  filo.position.set(0, ALTO / 2 + 0.042, -FONDO * 0.46);
-  filo.name = 'filo';
-  gafas.add(filo);
-
-  /* Puente: el arco corto que baja entre los dos aros. */
-  const puente = new THREE.Mesh(
-    new THREE.TorusGeometry(SEPARACION - ANCHO / 2 - 0.004, 0.020, 10, 24, Math.PI),
-    montura
-  );
-  puente.position.set(0, ALTO / 2 - 0.125, -FONDO * 0.30);
+  /* Puente: un tramo de la propia montura, no un alambre. Va a la altura de la
+     ceja y con el grosor del frente, que es lo que lo integra al aro. */
+  const arco = new THREE.Shape();
+  const rp = SEPARACION - ANCHO / 2 + 0.012;      // medio ancho del puente
+  arco.moveTo(-rp, 0.050);
+  arco.lineTo(rp, 0.050);
+  arco.lineTo(rp, -0.004);
+  arco.quadraticCurveTo(rp * 0.55, -0.056, 0, -0.056);
+  arco.quadraticCurveTo(-rp * 0.55, -0.056, -rp, -0.004);
+  arco.closePath();
+  const puente = new THREE.Mesh(extruir(arco, FONDO * 0.86, true), montura);
+  puente.position.set(0, ALTO / 2 - 0.050, -FONDO / 2 + 0.004);
   puente.name = 'puente';
   gafas.add(puente);
 
@@ -177,6 +237,7 @@ export function iniciarGafas(canvas, contenedorProgreso, paneles) {
   renderer.toneMappingExposure = 1.15;
 
   const escena = new THREE.Scene();
+  escena.environment = ambiente(renderer);
   const camara = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
   camara.position.set(0, 0.05, 4.2);
 
@@ -185,7 +246,7 @@ export function iniciarGafas(canvas, contenedorProgreso, paneles) {
 
   /* Luz de estudio: una key cálida arriba y un rim frío atrás, que es el
      mismo esquema que pedimos en las fotos de producto. */
-  escena.add(new THREE.AmbientLight(0xffffff, 0.55));
+  escena.add(new THREE.AmbientLight(0xffffff, 0.28));
   const key = new THREE.DirectionalLight(0xfff2e0, 2.6);
   key.position.set(-2.2, 3.0, 2.6);
   escena.add(key);
@@ -354,13 +415,14 @@ export function iniciarVisor(canvas, opciones = {}) {
   renderer.toneMappingExposure = 1.15;
 
   const escena = new THREE.Scene();
+  escena.environment = ambiente(renderer);
   const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
   camara.position.set(0, 0, 4.35);
 
   const { gafas, cristal } = construirGafas();
   escena.add(gafas);
 
-  escena.add(new THREE.AmbientLight(0xffffff, 0.55));
+  escena.add(new THREE.AmbientLight(0xffffff, 0.28));
   const key = new THREE.DirectionalLight(0xfff2e0, 2.6);
   key.position.set(-2.2, 3.0, 2.6); escena.add(key);
   const rim = new THREE.DirectionalLight(0xbcd4ff, 3.4);

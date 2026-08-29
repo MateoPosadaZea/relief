@@ -8,7 +8,7 @@
    la puesta en escena.
 ------------------------------------------------------------------ */
 import * as THREE from './vendor/three.module.min.js';
-import { construirGafas, ANCLAS } from './gafas.js';
+import { construirGafas, ambiente, ANCLAS } from './gafas.js';
 
 /* Suavizado por tiempo, no por cuadro: con un factor fijo por frame la
    transición dura lo que dure el frame rate, y en un equipo lento el modelo
@@ -28,6 +28,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   renderer.toneMappingExposure = 1.18;
 
   const escena = new THREE.Scene();
+  escena.environment = ambiente(renderer);
   const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
   camara.position.set(0, 0, 4.2);
 
@@ -47,12 +48,12 @@ export function iniciarEscena(canvas, contenedor, paneles) {
                   translucida: o.material.transparent, atenuacion: 1 });
   });
 
-  escena.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const key = new THREE.DirectionalLight(0xfff2e0, 2.8);
+  escena.add(new THREE.AmbientLight(0xffffff, 0.28));
+  const key = new THREE.DirectionalLight(0xfff2e0, 1.7);
   key.position.set(-2.2, 3.0, 2.6); escena.add(key);
-  const rim = new THREE.DirectionalLight(0xbcd4ff, 3.6);
+  const rim = new THREE.DirectionalLight(0xbcd4ff, 1.9);
   rim.position.set(1.8, 1.4, -2.6); escena.add(rim);
-  const relleno = new THREE.DirectionalLight(0xffffff, 0.55);
+  const relleno = new THREE.DirectionalLight(0xffffff, 0.35);
   relleno.position.set(2.4, -1.2, 1.8); escena.add(relleno);
 
   /* Giro de reposo del modelo y cuánto más lo abre el paralaje del cursor.
