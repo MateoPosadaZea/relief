@@ -115,6 +115,13 @@ modelo 3D pegado, girable, con el lente del producto.
 El punto del centro del isotipo haciendo de puntero: punto lleno, y aro al
 acercarse a algo pulsable —el mismo gesto de los arcos—. Sobre el botón de
 compra el aro se pone rojo.
+- **El punto persigue al ratón, no va pegado a él.** Va detrás y llega: es lo
+  que lo hace sentir un objeto con peso y no un dibujo clavado al puntero. El
+  seguimiento es por tiempo (`1 - k^dt`), no por cuadro, para que el retardo se
+  sienta igual a 60 y a 120 Hz. Con «reducir movimiento» el retardo se apaga.
+- **La flecha del sistema desaparece entera**, con `!important`: había una
+  docena de `cursor:pointer` con selectores algo más específicos que la traían
+  de vuelta justo sobre botones y enlaces, que es donde más se nota.
 - Solo con **ratón fino**: en táctil no hay puntero que sustituir.
 - El atributo que apaga el cursor del sistema **lo pone el JS**, así que si el
   script falla nadie se queda sin cursor. Los campos de formulario conservan

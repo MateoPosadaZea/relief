@@ -1209,15 +1209,17 @@
      atributo lo pone él, así que sin JS nadie se queda sin cursor. */
   .cursor{ display:none; }
   @media (hover:hover) and (pointer:fine){
-    html[data-cursor="propio"], html[data-cursor="propio"] *{ cursor:none; }
+    /* `!important` porque la flecha del sistema tiene que desaparecer entera:
+       cualquier `cursor:pointer` con un selector algo más específico —y hay
+       una docena— la traía de vuelta sobre botones y enlaces, que es justo
+       donde más se nota. El lienzo además trae `grab` en estilo en línea. */
+    html[data-cursor="propio"], html[data-cursor="propio"] *{ cursor:none !important; }
     /* Salvo donde el cursor del sistema dice algo que el punto no puede
        decir: dónde va a caer el texto que escribes. */
     html[data-cursor="propio"] input,
     html[data-cursor="propio"] textarea,
     html[data-cursor="propio"] select,
-    html[data-cursor="propio"] [contenteditable]{ cursor:auto; }
-    /* El lienzo trae `grab` en estilo en línea, que le gana a la hoja. */
-    html[data-cursor="propio"] canvas{ cursor:none !important; }
+    html[data-cursor="propio"] [contenteditable]{ cursor:auto !important; }
 
     html[data-cursor="propio"] .cursor{
       display:block;
@@ -1245,6 +1247,7 @@
   @media (prefers-reduced-motion:reduce){
     html[data-cursor="propio"] .cursor{ transition:opacity .2s ease; }
   }
+
 
   /* ---------- Reseñas: la cinta ----------
      Una fila horizontal que desfila sola. No es un slider: no hay pasos ni
@@ -2705,17 +2708,46 @@ const RESENAS_EJEMPLO = [
      responde al cursor, aunque no sea un enlace. */
   const PULSABLE = 'a[href], button, summary, label, [role="button"], .opcion, .tira, .resena';
 
-  let x = 0, y = 0, pedido = false;
-  function pintar(){
-    pedido = false;
-    punto.style.transform = 'translate3d(' + (x - 0.5) + 'px,' + (y - 0.5) + 'px,0) translate(-50%,-50%)';
+  /* El punto no va pegado al ratón: lo persigue. Va detrás y llega, que es lo
+     que hace que se sienta un objeto con peso y no un dibujo clavado al
+     puntero. El seguimiento es por tiempo y no por cuadro —`1 - k^dt`— para
+     que el retardo se sienta igual a 60 y a 120 Hz; con un factor fijo por
+     cuadro, un monitor rápido lo vuelve instantáneo. */
+  /* Con «reducir movimiento» el punto va pegado: perseguir el puntero es
+     justo el tipo de movimiento del que la preferencia habla. */
+  const quieto = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const RETARDO = quieto.matches ? 0.001 : 0.055;   // s para recorrer el 63%
+  let x = 0, y = 0;             // a dónde va (el ratón)
+  let px = 0, py = 0;           // dónde está el punto
+  let corriendo = false, ultimo = 0, colocado = false;
+
+  function marco(ahora){
+    if (!corriendo) return;
+    const dt = ultimo ? Math.min(0.1, (ahora - ultimo) / 1000) : 0.016;
+    ultimo = ahora;
+    const k = 1 - Math.pow(0.001, dt / RETARDO);
+    px += (x - px) * k;
+    py += (y - py) * k;
+    punto.style.transform = 'translate3d(' + px.toFixed(2) + 'px,' + py.toFixed(2) + 'px,0) translate(-50%,-50%)';
+    /* Cuando ya alcanzó al ratón se para el bucle: no tiene sentido pintar
+       un punto quieto sesenta veces por segundo. */
+    if (Math.abs(x - px) < 0.1 && Math.abs(y - py) < 0.1) { corriendo = false; return; }
+    requestAnimationFrame(marco);
+  }
+  function arrancar(){
+    if (corriendo) return;
+    corriendo = true; ultimo = 0;
+    requestAnimationFrame(marco);
   }
 
   document.addEventListener('pointermove', ev => {
     if (ev.pointerType !== 'mouse' || !activo) return;
     x = ev.clientX; y = ev.clientY;
+    /* La primera vez aparece donde está el ratón, no viajando desde la
+       esquina superior izquierda. */
+    if (!colocado) { px = x; py = y; colocado = true; }
     if (punto.dataset.dentro !== 'true') punto.dataset.dentro = 'true';
-    if (!pedido) { pedido = true; requestAnimationFrame(pintar); }
+    arrancar();
 
     const sobre = ev.target instanceof Element ? ev.target.closest(PULSABLE) : null;
     /* El botón de compra abre el aro en rojo: es el único elemento del sitio
