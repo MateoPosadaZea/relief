@@ -31,7 +31,10 @@
   var MODOS = ['noche','dia','trabajo','descanso'];
   var m;
   try { m = localStorage.getItem('relief.modo.v1'); } catch (e) {}
-  document.documentElement.dataset.modo = MODOS.indexOf(m) > -1 ? m : 'noche';
+  /* Día es el defecto: la marca vive de noche, pero el visitante llega a
+     cualquier hora y un fondo negro de entrada le pide una decisión que no
+     ha tomado. El modo noche sigue a un clic. */
+  document.documentElement.dataset.modo = MODOS.indexOf(m) > -1 ? m : 'dia';
 })();
 </script>
 
@@ -47,17 +50,10 @@
      el token guarda el color que cumple ese rol.
      Todas las combinaciones texto/fondo verificadas contra WCAG AA (4.5:1).
   ------------------------------------------------------------------ */
-  :root,
-  :root[data-modo="noche"]{
-    /* NOCHE — por defecto. Tokens exactos de la tabla de CLAUDE.md. */
-    --noche:       #0B0B0C;
-    --superficie:  #16161A;
-    --hueso:       #EDEBE6;
-    --ambar:       #F2A93B;
-    --ambar-texto: #F2A93B;
-    --rojo-rlf:    #D91F26;
-    --linea:       #26262B;
-    --texto-tenue: #8A8A90;
+  /* Lo que no depende del modo: las caras y las medidas. Va en :root a
+     secas para que un data-modo desconocido —o ausente— no deje la página
+     sin tipografía. */
+  :root{
     /* Único color fuera de la tabla: la sigla del isotipo va en blanco
        sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
     --blanco:      #FFFFFF;
@@ -74,6 +70,21 @@
     --ancho-etiqueta: normal;
 
     --gutter: 20px;
+  }
+
+  /* NOCHE — tokens exactos de la tabla de CLAUDE.md. Ya no es el defecto:
+     la marca vive de noche, pero el visitante llega a cualquier hora y un
+     fondo negro de entrada le pide una decisión que no ha tomado. */
+  :root[data-modo="noche"]{
+    --noche:       #0B0B0C;
+    --superficie:  #16161A;
+    --tarjeta:     #16161A;
+    --hueso:       #EDEBE6;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #26262B;
+    --texto-tenue: #8A8A90;
   }
 
 
@@ -123,9 +134,16 @@
   /* DÍA — para quien entra a las 2pm. Fondo hueso, nunca blanco puro.
      El ámbar de la tabla no alcanza contraste como texto sobre claro:
      --ambar-texto lo oscurece manteniendo el tono. */
+  /* Día es el defecto, así que su paleta va también en :root a secas: si el
+     script del head no llega a correr, la página abre en claro y no en un
+     modo sin colores. --tarjeta es blanco puro y es la excepción: sobre un
+     fondo hueso, una tarjeta hueso no se despega; el blanco es lo que la
+     levanta. El texto de página sigue sin ser blanco puro nunca. */
+  :root,
   :root[data-modo="dia"]{
     --noche:       #EDEBE6;
     --superficie:  #E2DED6;
+    --tarjeta:     #FFFFFF;
     --hueso:       #16161A;
     --ambar:       #F2A93B;
     --ambar-texto: #8A5A0B;
@@ -138,6 +156,7 @@
   :root[data-modo="trabajo"]{
     --noche:       #100C07;
     --superficie:  #1C1610;
+    --tarjeta:     #1C1610;
     --hueso:       #F2E6D2;
     --ambar:       #F2A93B;
     --ambar-texto: #F2A93B;
@@ -151,6 +170,7 @@
   :root[data-modo="descanso"]{
     --noche:       #0D0708;
     --superficie:  #1A0F10;
+    --tarjeta:     #1A0F10;
     --hueso:       #EDD5D2;
     --ambar:       #F2A93B;
     --ambar-texto: #F2A93B;
@@ -242,16 +262,22 @@
      pantalla de alto y el texto de abajo quedaba fuera de alcance: había que
      hacer scroll a ciegas para saber que existía. El tope es del contenido que
      se lee; la escena 3D y el wordmark siguen yendo a sangre. */
-  .seccion > .wrap,
-  .footer > .wrap,
+  /* El tope es del contenido que se lee. El pie y las reseñas van a sangre:
+     el bloque rojo y la cinta son superficie, no lectura, y encajonados en
+     1180 px parecen una caja puesta encima de la página en vez de la página
+     misma. */
+  .seccion:not(.a-sangre) > .wrap,
   .vista > .wrap{ max-width:1180px; }
   /* La imagen del producto tampoco: es cuadrada, así que su ancho es su alto y
      una tarjeta de 560 px ya ocupa media pantalla ella sola. */
   .ficha-img, .combo-img, .galeria-principal{ max-width:440px; }
-  /* La marca se escribe en minuscula y los titulares la acompanan. Los
-     nombres propios se salvan con .propio: text-transform no sabe de
-     Bogota ni de Shenzhen. */
-  .seccion h2, .panel-texto{ text-transform:lowercase; }
+  /* El wordmark va en minúscula; los titulares de sección, no. Todo en
+     minúscula leía a manifiesto y le quitaba jerarquía a la única palabra
+     que de verdad se escribe así, que es la marca. Los titulares quedan en
+     tipo oración —mayúscula al inicio de cada frase, como ya están
+     escritos— así que basta con no transformarlos. El recorrido conserva la
+     minúscula: ahí el texto es voz, no rótulo. */
+  .panel-texto{ text-transform:lowercase; }
   .propio{ text-transform:none; }
 
   .seccion h2{
@@ -419,10 +445,11 @@
   /* Sin recuadro: encerrar el icono en una caja lo convierte en un botón de
      formulario y rompe la línea de hairlines del resto de la barra. */
   .carrito-btn{
+    position:relative;                 /* ancla del contador */
     background:none; border:0; color:var(--hueso);
     font-family:var(--etiqueta);
     padding:6px; margin-right:-6px; cursor:pointer;
-    display:flex; align-items:center; gap:7px; line-height:0;
+    display:flex; align-items:center; line-height:0;
   }
   .carrito-btn:hover{ color:var(--texto-tenue); }
   .carrito-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
@@ -443,12 +470,21 @@
   }
   .ico-aspa i:first-child{ transform:rotate(45deg); }
   .ico-aspa i:last-child{ transform:rotate(-45deg); }
+  /* El contador se posa sobre la esquina del icono, no al lado: una caja
+     junto a la bolsa rompía la línea de la barra y quedaba desalineada con
+     el dibujo. Círculo, no rectángulo — de un solo dígito es lo que se lee
+     como marca de notificación y no como etiqueta de precio. El borde del
+     color del fondo lo recorta contra el trazo del icono. */
   .carrito-cuenta{
-    font-family:var(--etiqueta); font-weight:600; font-size:10px;
-    font-variant-numeric:tabular-nums; letter-spacing:.02em;
-    min-width:15px; height:15px; padding:0 4px; margin-right:2px;
+    position:absolute; top:1px; right:0;
+    font-family:var(--etiqueta); font-weight:600; font-size:9px;
+    font-variant-numeric:tabular-nums; letter-spacing:0; line-height:1;
+    min-width:16px; height:16px; padding:0 4px;
+    border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
     background:var(--rojo-rlf); color:var(--blanco);
+    border:1.5px solid var(--noche);
+    pointer-events:none;
   }
   .carrito-cuenta[hidden]{ display:none; }
 
@@ -820,9 +856,19 @@
   }
 
   /* ---------- Honestidad ---------- */
-  .honestidad{ display:grid; gap:16px; max-width:56ch; }
-  .honestidad p{ margin:0; color:var(--texto-tenue); font-size:16px; line-height:1.65; }
-  .honestidad p:first-child{ color:var(--hueso); }
+  /* Tres columnas de «esto no lo decimos, y por qué». La frase tachada es el
+     gancho: se reconoce de inmediato porque es lo que dice la competencia. */
+  .honestidad{ display:grid; gap:28px; }
+  .honestidad article{ border-top:1px solid var(--linea); padding-top:18px; }
+  .honestidad p{ margin:0; color:var(--texto-tenue); font-size:15px; line-height:1.65; max-width:46ch; }
+  .honestidad .no-decimos{
+    color:var(--hueso); font-size:17px; margin-bottom:10px;
+    text-decoration:line-through; text-decoration-color:var(--rojo-rlf);
+    text-decoration-thickness:1.5px;
+  }
+  @media (min-width:900px){
+    .honestidad{ grid-template-columns:repeat(3, minmax(0,1fr)); gap:36px; }
+  }
 
   /* ---------- FAQ ---------- */
   details{ border-bottom:1px solid var(--linea); }
@@ -986,6 +1032,50 @@
     padding:8px 0; text-align:center;
   }
 
+  /* ---------- Los dos lentes: datos + visor ----------
+     Dos columnas. A la izquierda lo que se lee y se decide; a la derecha el
+     modelo, pegado, girando mientras se recorre la columna de al lado. En
+     móvil el visor va primero: sin él, la primera pantalla de la sección
+     serían dos filas de precio sin ninguna imagen. */
+  .lentes-grid{ display:grid; gap:32px; margin-top:32px; }
+  .lentes-visor{ order:-1; }
+  .lentes-visor canvas{
+    display:block; width:100%; aspect-ratio:1 / 1;
+    background:var(--superficie); border:1px solid var(--linea);
+  }
+  .lentes-visor .visor-pista{ margin:10px 0 0; text-align:center; }
+  @media (min-width:900px){
+    .lentes-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:56px; align-items:start; }
+    .lentes-visor{ order:0; position:sticky; top:calc(var(--alto-nav, 60px) + 24px); }
+    .lentes-visor canvas{ aspect-ratio:1 / 1; }
+  }
+
+  /* Cada lente es una fila, no una tarjeta con foto: la foto de esta sección
+     es el modelo de la derecha, y repetirla al lado la volvía redundante. */
+  .opcion{
+    border-top:1px solid var(--linea);
+    padding:22px 0;
+    display:grid; gap:12px;
+  }
+  .opcion:last-of-type{ border-bottom:1px solid var(--linea); }
+  .opcion-cima{ display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between; }
+  .opcion h3{
+    font-family:var(--titulo); font-weight:var(--peso-display); font-size:21px;
+    margin:0; letter-spacing:-.01em;
+  }
+  .opcion .momento{ margin:0; }
+  .opcion .descripcion{ margin:0; color:var(--texto-tenue); font-size:15px; max-width:46ch; }
+  .opcion-acciones{ display:flex; flex-wrap:wrap; gap:10px; }
+  .opcion-acciones .btn{ flex:0 1 auto; }
+  /* La fila que el visor está mostrando se marca: si no, cambiar el lente en
+     el modelo no tiene ninguna consecuencia visible en la columna de datos y
+     los dos bloques parecen dos cosas distintas puestas al lado. */
+  .opcion[data-activa="true"]{ border-left:2px solid var(--rojo-rlf); padding-left:16px; }
+  .opcion{ border-left:2px solid transparent; padding-left:16px; transition:border-color .25s ease; }
+
+  .medidas{ margin-top:28px; }
+  .medidas table{ margin-top:4px; }
+
   /* ---------- Reseñas: la cinta ----------
      Una fila horizontal que desfila sola. No es un slider: no hay pasos ni
      flechas ni un elemento "actual", es una cinta continua que se para
@@ -994,12 +1084,16 @@
      el bucle no tiene costura. Por eso la separación va en margin-right de
      cada tarjeta y no en gap: con gap la mitad de la pista no coincide con
      el inicio de la segunda copia y el salto se ve. */
+  /* La cinta se sale de la caja hasta el borde de la ventana, pero el
+     titular de la sección se queda alineado con el resto de la página: es
+     la fila la que va a sangre, no el bloque entero. El clip de la sección
+     evita que ese desbordamiento genere scroll horizontal cuando hay barra
+     de desplazamiento. */
+  #resenas{ overflow-x:clip; }
   .cinta{
     position:relative; overflow:hidden;
-    margin:0 calc(clamp(20px, 4vw, 72px) * -1);
-    padding:4px 0 8px;
-    -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-            mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    margin-inline:calc(50% - 50vw);
+    padding:4px 0 10px;
   }
   /* Sin padding en la pista: cualquier relleno propio rompe la cuenta del
      50 % y la costura del bucle se ve. El aire de los bordes lo pone la
@@ -1016,22 +1110,26 @@
     margin-right:16px;
     width:clamp(260px, 74vw, 340px);
     flex:0 0 auto;
-    background:var(--superficie);
+    /* Blanco, no superficie: sobre el fondo hueso del modo día una tarjeta
+       hueso no se despega. En los modos oscuros --tarjeta vuelve a ser la
+       superficie de siempre. */
+    background:var(--tarjeta);
     border:1px solid var(--linea);
-    padding:20px 20px 18px;
-    display:flex; flex-direction:column; gap:12px;
-    transition:opacity .25s ease, border-color .25s ease, transform .25s ease;
+    padding:20px;
+    display:flex; flex-direction:column; gap:14px;
+    transition:border-color .25s ease, transform .25s ease;
   }
-  /* Con el cursor encima, la que miras se separa y las demás ceden. Es el
-     mismo gesto de la cinta parándose: la fila deja de ser fondo y pasa a ser
-     algo que se lee. */
-  .cinta:hover .resena{ opacity:.38; }
+  /* Con el cursor encima, la que miras se separa y el borde se pone del rojo
+     de la marca. Antes las demás se apagaban; apagar seis tarjetas para
+     señalar una era demasiado gesto para una fila que ya se detuvo sola. */
   .cinta .resena:hover,
-  .cinta .resena:focus-within{ opacity:1; border-color:var(--texto-tenue); transform:translateY(-3px); }
+  .cinta .resena:focus-within{ border-color:var(--rojo-rlf); transform:translateY(-3px); }
   .resena-texto{ margin:0; font-size:15px; line-height:1.5; }
+  /* Sin divisor: el cambio de peso y de tamaño ya separa la firma del texto,
+     y la línea partía en dos una tarjeta que mide 340 px de ancho. */
   .resena-quien{
     display:flex; flex-wrap:wrap; gap:2px 10px; align-items:baseline;
-    margin-top:auto; padding-top:4px; border-top:1px solid var(--linea);
+    margin-top:auto;
   }
   .resena-nombre{ font-weight:600; font-size:13px; }
   .resena-dato{ font-size:12px; color:var(--texto-tenue); }
@@ -1116,7 +1214,7 @@
     display:flex; justify-content:space-between; align-items:baseline; gap:12px;
     padding-top:14px; margin-top:14px; border-top:1px solid var(--linea);
   }
-  .elige-nombre{ font-family:var(--titulo); font-weight:600; font-size:19px; text-transform:lowercase; margin:0; }
+  .elige-nombre{ font-family:var(--titulo); font-weight:600; font-size:19px; margin:0; }
   .elige-momento{ margin:6px 0 0; }
   @media (min-width:820px){
     .elige-fila{ grid-template-columns:repeat(3, minmax(0,1fr)); }
@@ -1131,7 +1229,9 @@
   .footer{
     border-top:1px solid var(--linea);
     background:#D91F26; color:#F7EFEE;
-    padding:56px 0 0;
+    /* Aire arriba: el rojo entraba pegado al contenido anterior y la
+       palabra parecía cortada por el borde de la sección. */
+    padding:clamp(72px, 9vw, 128px) 0 0;
     overflow:hidden;
   }
   /* La palabra va primero y ocupa el ancho; debajo, en una sola línea baja,
@@ -1459,37 +1559,49 @@
     </div>
   </div>
 
-  <!-- 3. LOS DOS LENTES -->
-  <!-- 4. FICHA — el dato duro, después del recorrido -->
-  <section class="seccion" id="ficha">
-    <div class="wrap">
-      <p class="label">Ficha</p>
-      <h2>Las medidas</h2>
-      <p class="bajada">Lo de arriba es lo que se ve; esto es lo que hay que confirmar
-        con el proveedor antes de vender. Con el pedido van también el estuche y el
-        paño: falta cerrar cuál estuche entra.</p>
-      <table>
-        <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
-        <tbody>
-          <tr><th scope="row">Material de la montura</th><td><span class="tbd" data-muestra="ficha-montura">Poliamida TR90 · por confirmar</span></td></tr>
-          <tr><th scope="row">Material del lente</th><td><span class="tbd" data-muestra="ficha-lente">[TBD]</span></td></tr>
-          <tr><th scope="row">Ancho del frente</th><td><span class="tbd" data-muestra="ficha-frente">[TBD]</span></td></tr>
-          <tr><th scope="row">Largo de la varilla</th><td><span class="tbd" data-muestra="ficha-varilla">[TBD]</span></td></tr>
-          <tr><th scope="row">Puente</th><td><span class="tbd" data-muestra="ficha-puente">[TBD]</span></td></tr>
-          <tr><th scope="row">Peso</th><td><span class="tbd" data-muestra="ficha-peso">[TBD]</span></td></tr>
-          <tr><th scope="row">Incluye estuche</th><td><span class="tbd" data-muestra="ficha-estuche">[TBD]</span></td></tr>
-          <tr><th scope="row">Incluye paño de limpieza</th><td><span class="tbd" data-muestra="ficha-pano">[TBD]</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
+  <!-- 3. LOS DOS LENTES — la ficha a la izquierda, el modelo a la derecha.
+       Aquí se decide la compra, así que aquí es donde el 3D deja de ser
+       ambiente y pasa a ser el producto: se gira, se le cambia el lente y
+       se agrega al carrito sin salir de la sección. Las medidas dejaron de
+       tener sección propia y viven en esta columna: son el dato que se
+       consulta al decidir, no un capítulo del recorrido. -->
   <section class="seccion" id="lentes">
     <div class="wrap">
       <p class="label">Los dos lentes</p>
       <h2>Uno para trabajar. Uno para apagar.</h2>
-      <p class="bajada">La rutina nocturna tiene dos momentos y cada uno pide un filtro distinto.</p>
-      <div class="fichas" id="fichasLentes"></div>
+      <p class="bajada">La rutina nocturna tiene dos momentos y cada uno pide un
+        filtro distinto. Gíralas, cámbiales el lente y llévate el que te sirva.</p>
+
+      <div class="lentes-grid">
+        <div class="lentes-datos">
+          <div class="opciones" id="opcionesLentes"></div>
+
+          <details class="medidas">
+            <summary>Las medidas</summary>
+            <table>
+              <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
+              <tbody>
+                <tr><th scope="row">Material de la montura</th><td><span class="tbd" data-muestra="ficha-montura">Poliamida TR90 · por confirmar</span></td></tr>
+                <tr><th scope="row">Material del lente</th><td><span class="tbd" data-muestra="ficha-lente">[TBD]</span></td></tr>
+                <tr><th scope="row">Ancho del frente</th><td><span class="tbd" data-muestra="ficha-frente">[TBD]</span></td></tr>
+                <tr><th scope="row">Largo de la varilla</th><td><span class="tbd" data-muestra="ficha-varilla">[TBD]</span></td></tr>
+                <tr><th scope="row">Puente</th><td><span class="tbd" data-muestra="ficha-puente">[TBD]</span></td></tr>
+                <tr><th scope="row">Peso</th><td><span class="tbd" data-muestra="ficha-peso">[TBD]</span></td></tr>
+                <tr><th scope="row">Incluye estuche</th><td><span class="tbd" data-muestra="ficha-estuche">[TBD]</span></td></tr>
+                <tr><th scope="row">Incluye paño de limpieza</th><td><span class="tbd" data-muestra="ficha-pano">[TBD]</span></td></tr>
+              </tbody>
+            </table>
+          </details>
+        </div>
+
+        <!-- El visor se monta solo si el navegador puede con WebGL; si no,
+             el bloque entero se retira y la columna de datos se queda con
+             toda la sección. Nada de la compra depende de la escena. -->
+        <div class="lentes-visor" id="lentesVisor" hidden>
+          <canvas id="visorLentes"></canvas>
+          <p class="visor-pista">Arrástralo para girarlo</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1509,14 +1621,28 @@
     <div class="wrap">
       <p class="label">Transparencia</p>
       <h2>Lo que no vamos a decirte</h2>
+      <p class="bajada">Media categoría vende con cifras que nadie ha medido. Estas
+        son las tres cosas que no vas a leer en esta página, y por qué.</p>
       <div class="honestidad">
-        <p>No vamos a publicar que estos lentes bloquean 97% de la luz azul. Todavía
-          no tenemos el reporte de transmitancia espectral del lote que estamos
-          vendiendo, y sin ese papel el número sería inventado.</p>
-        <p>Cuando lo tengamos, lo publicamos completo: el reporte entero, no la
-          cifra que mejor nos quede.</p>
-        <p>Tampoco vamos a decirte que vas a dormir mejor. Vendemos lentes con
-          filtro, no promesas de salud.</p>
+        <article>
+          <p class="no-decimos">«Bloquea el 97% de la luz azul»</p>
+          <p>Todavía no tenemos el reporte de transmitancia espectral del lote que
+            estamos vendiendo. Sin ese papel el número sería inventado, y publicarlo
+            solo porque lo dice el proveedor no lo vuelve cierto. Cuando lo tengamos
+            publicamos el reporte entero, no la cifra que mejor nos quede.</p>
+        </article>
+        <article>
+          <p class="no-decimos">«Vas a dormir mejor»</p>
+          <p>Vendemos lentes con filtro, no promesas de salud. Lo que sí podemos
+            decirte es para qué momento es cada uno: el ámbar para las horas de
+            trabajo, el rojo para la última hora. De ahí en adelante decides tú.</p>
+        </article>
+        <article>
+          <p class="no-decimos">«Grado médico»</p>
+          <p>No lo son, y la frase no significa nada fuera de un registro sanitario
+            que estos lentes no tienen ni necesitan. Son un accesorio, y se venden
+            como tal.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -1912,28 +2038,28 @@ function activarImagenes(raiz){
   });
 }
 
-/* ---------------- Render: los dos lentes ---------------- */
-const fichasLentes = document.getElementById('fichasLentes');
-fichasLentes.innerHTML = PRODUCTOS
+/* ---------------- Render: los dos lentes ----------------
+   Filas, no tarjetas con foto: la imagen de esta sección es el modelo 3D de
+   la columna de al lado. Cada fila lleva su lente, y al pulsarla el visor
+   cambia de color — es la misma decisión mirada desde los dos lados. */
+const opcionesLentes = document.getElementById('opcionesLentes');
+opcionesLentes.innerHTML = PRODUCTOS
   .filter(p => p.id !== 'rlf-combo')
-  .map(p => `
-    <article class="ficha">
-      <a class="ficha-enlace" href="#/producto/${p.id}">
-        <div class="ficha-img">${imagenHTML(p)}</div>
+  .map((p, i) => `
+    <article class="opcion" data-lente="${p.lente}" data-activa="${i === 0}">
+      <div class="opcion-cima">
         <h3>${esc(p.nombre)}</h3>
-      </a>
+        <div class="precio-fila">${precioHTML(p.precio)}</div>
+      </div>
       <p class="momento label">${esc(p.momento)}</p>
       <p class="descripcion">${esc(p.descripcion)}</p>
-      <div class="precio-fila">${precioHTML(p.precio)}</div>
-      <div class="acciones">
-        <a class="btn btn--block" href="#/producto/${p.id}">Ver detalles</a>
-        <button class="btn btn--ghost btn--block" data-agregar="${p.id}">Agregar al carrito</button>
+      <div class="opcion-acciones">
+        <button class="btn" type="button" data-agregar="${p.id}">Agregar al carrito</button>
+        <a class="btn btn--ghost" href="#/producto/${p.id}">Ver detalles</a>
       </div>
       <p class="aviso" data-aviso="${p.id}"></p>
     </article>
   `).join('');
-
-activarImagenes(fichasLentes);
 
 /* ---------------- Render: el combo ---------------- */
 const combo = porId('rlf-combo');
@@ -2009,6 +2135,59 @@ function cargar3D() {
   if (!modulo3D) modulo3D = import('./assets/js/gafas.js');
   return modulo3D;
 }
+
+/* ---------------- Visor de la sección de lentes ----------------
+   Segundo visor en la home. No compite con la escena del recorrido: los dos
+   se paran solos cuando salen de pantalla, así que en la práctica solo hay
+   uno dibujando. Se monta perezosamente —al acercarse la sección— para no
+   pagar un contexto WebGL en la primera pantalla.
+   Sin WebGL o si el módulo falla, el bloque se retira y la columna de datos
+   se queda con la sección entera. Nada de la compra depende de esto.
+---------------------------------------------------------------- */
+(function(){
+  const caja  = document.getElementById('lentesVisor');
+  const filas = [...document.querySelectorAll('#opcionesLentes .opcion')];
+  if (!caja || !filas.length || !HAY_WEBGL) return;
+
+  let visorLentes = null;
+
+  /* Marcar la fila y pintar el lente son la misma acción vista desde los dos
+     lados: pulsar una fila cambia el modelo, y no hay forma de que queden
+     desincronizados porque solo existe este camino. */
+  function elegir(lente) {
+    for (const f of filas) f.dataset.activa = String(f.dataset.lente === lente);
+    if (visorLentes) visorLentes.pintarLente(lente);
+  }
+
+  filas.forEach(f => {
+    /* En el botón no: pulsar «agregar al carrito» no es pedir ver ese lente,
+       y robarle el clic al botón sería peor que no marcar nada. */
+    f.addEventListener('click', ev => {
+      if (ev.target.closest('button, a')) return;
+      elegir(f.dataset.lente);
+    });
+  });
+
+  function montar() {
+    caja.hidden = false;
+    cargar3D()
+      .then(m => {
+        visorLentes = m.iniciarVisor(document.getElementById('visorLentes'),
+                                     { color: filas[0].dataset.lente });
+        visorLentes.medir();
+        visorLentes.dibujar();
+      })
+      .catch(e => { caja.hidden = true; console.warn('visor de lentes:', e); });
+  }
+
+  if (!('IntersectionObserver' in window)) { montar(); return; }
+  const ojo = new IntersectionObserver(entradas => {
+    if (!entradas[0].isIntersecting) return;
+    ojo.disconnect();
+    montar();
+  }, { rootMargin: '400px 0px' });
+  ojo.observe(caja.parentElement || caja);
+})();
 
 /* ---------------- Escena 3D ----------------
    Se carga en diferido y solo si el navegador puede. Sin WebGL, o si el
@@ -2273,7 +2452,7 @@ const MODOS = {
 const botonesModo = [...document.querySelectorAll('[data-modo-set]')];
 
 function aplicarModo(modo, persistir){
-  if (!MODOS[modo]) modo = 'noche';
+  if (!MODOS[modo]) modo = 'dia';
   document.documentElement.dataset.modo = modo;
 
   botonesModo.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modoSet === modo)));

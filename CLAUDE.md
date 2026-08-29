@@ -32,7 +32,10 @@ Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
 - **Cero porcentajes sin certificado.** No publicar "bloquea 97%" salvo que tengamos el
   reporte de transmitancia espectral del lote exacto que vendemos. Warblue publica
   84/97/99% — no copiar esos números.
-- **Modo oscuro por defecto.** La marca vive de noche; el cliente navega de noche.
+- **La marca vive de noche, pero el sitio abre de día.** El modo día es el
+  defecto: el visitante llega a cualquier hora y un fondo negro de entrada le
+  pide una decisión que no ha tomado. Noche queda a un clic, y es donde el
+  producto se ve mejor.
 - **Todo lo inmersivo es una capa encima, nunca un requisito.** El 3D se carga solo
   si el navegador puede; sin WebGL, sin JS o con el módulo caído, la página vende
   igual. Nada de la compra depende de la escena.
@@ -60,12 +63,34 @@ arco visual *es* el arco del catálogo.
 - **El copy describe el problema, nunca promete la cura.** "Llevas seis horas frente
   a la pantalla" es seguro y pega más fuerte que cualquier claim de salud.
 
+## Los dos lentes (donde se decide la compra)
+Una sola sección en dos columnas: a la izquierda los datos, a la derecha el
+modelo 3D pegado, girable, con el lente del producto.
+
+- Cada lente es una **fila, no una tarjeta con foto**: la imagen de esa sección
+  es el modelo de al lado, y repetirla en la columna la volvía redundante.
+  Pulsar una fila cambia el lente del visor y marca la fila — es la misma
+  decisión mirada desde los dos lados.
+- **«Las medidas» dejó de tener sección propia** y vive en un acordeón de esa
+  columna. Es el dato que se consulta al decidir, no un capítulo del recorrido:
+  como sección aparte cortaba la historia justo después del scroll inmersivo.
+  La ficha completa sigue estando en la página de producto.
+- Es el **segundo visor de la home**. No compite con la escena del recorrido:
+  los dos se paran solos al salir de pantalla, así que solo hay uno dibujando.
+  Se monta al acercarse la sección, no en la primera pantalla. Sin WebGL el
+  bloque se retira y la columna de datos se queda con la sección entera.
+
 ## El cierre y el pie
 - **«Elige el tuyo»** cierra el recorrido: los tres productos en fila, sin
   descripción —esa la da la sección de los lentes—, solo foto, momento y precio.
   Al pasar el cursor cruza la foto puesta y aparecen la píldora del momento y la
   flecha. En táctil, donde no hay cursor, las dos quedan puestas siempre: si no,
   el dedo nunca ve que la tarjeta lleva a alguna parte.
+- **La cinta de reseñas va a sangre, pero su titular no**: se sale de la caja
+  hasta el borde de la ventana solo la fila de tarjetas; el encabezado se queda
+  alineado con el resto de la página. Sin difuminado en los extremos —cortaba
+  la primera y la última tarjeta y parecía un fallo de carga—. La tarjeta usa
+  `--tarjeta` y el borde se pone rojo al pasar el cursor.
 - **El pie es el único bloque rojo del sitio**, y por eso cierra: después de una
   noche entera en negro, el color del producto ocupa la pantalla. Ahí van el
   wordmark a tamaño de cartel —el cuerpo lo mide el JS para que llene el ancho
@@ -126,6 +151,10 @@ Es el único riesgo de capital aprobado del proyecto.
   - `--peso-display` calibra el grosor de los titulares grandes (300–700).
   - Los precios llevan `font-variant-numeric: tabular-nums`.
   - El **logotipo** va en Epilogue, minúscula: `relief`.
+  - **Solo el wordmark va en minúscula.** Los titulares de sección van en tipo
+    oración. Todo en minúscula leía a manifiesto y le quitaba jerarquía a la
+    única palabra que de verdad se escribe así. El texto del recorrido sí
+    conserva la minúscula: ahí es voz, no rótulo.
   ⚠ Descartadas por el camino: **Lora** (serif, se probó para los supergrandes —
   con la escena 3D encima, dos caras eran ruido de más), Archivo + Instrument
   Sans, Sora, y Geist. **Supply Mono** es de pago para uso comercial: NO usar.
@@ -138,13 +167,19 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 
 | Modo | Qué es | Fondo |
 |---|---|---|
-| **Noche** | Por defecto. Tokens exactos de la tabla de arriba. | `#0B0B0C` |
-| **Día** | Para quien entra a las 2pm. Fondo hueso, nunca blanco puro. | `#EDEBE6` |
+| **Noche** | Tokens exactos de la tabla de arriba. | `#0B0B0C` |
+| **Día** | **Por defecto.** Fondo hueso, nunca blanco puro. | `#EDEBE6` |
 | **Trabajo** | Aproximación del lente ámbar: azules fuera, todo cálido. | `#100C07` |
 | **Descanso** | Aproximación del lente rojo: la página baja de intensidad. | `#0D0708` |
 
-- Se implementan como `:root[data-modo="..."]` redefiniendo los mismos siete
-  tokens. Ninguna regla CSS conoce un hex.
+- Se implementan como `:root[data-modo="..."]` redefiniendo los mismos ocho
+  tokens. Ninguna regla CSS conoce un hex. Las caras y las medidas van en
+  `:root` a secas: un `data-modo` desconocido no puede dejar la página sin
+  tipografía. La paleta de día va también ahí, porque es el defecto.
+- `--tarjeta` es el octavo: el fondo de una tarjeta que tiene que despegarse
+  del fondo de página. En día es **blanco puro** —sobre hueso, una tarjeta
+  hueso no se ve— y en los tres modos oscuros es idéntico a `--superficie`.
+  Es la única excepción a "nunca blanco puro", y es de superficie, no de texto.
 - Los nombres de token describen el **rol**, no el color literal: en modo día,
   `--noche` guarda el color de fondo claro y `--hueso` el texto oscuro.
 - `--ambar-texto` es un token derivado: el ámbar de la tabla no alcanza 4.5:1
