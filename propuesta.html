@@ -303,6 +303,10 @@
   .menu-btn[aria-expanded="true"] .menu-icono i:first-child{ transform:translateY(4px) rotate(45deg); }
   .menu-btn[aria-expanded="true"] .menu-icono i:last-child{ transform:translateY(-4px) rotate(-45deg); }
   .menu-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
+  /* Con el carrito abierto el botón del menú se retira: dos aspas juntas en la
+     misma barra no dicen cuál cierra qué. Hay que cerrar el carrito primero. */
+  .menu-btn{ transition:opacity .2s ease; }
+  body[data-carrito="abierto"] .menu-btn{ opacity:0; pointer-events:none; }
   @media (max-width:759px){ .menu-btn{ display:block; } }
 
   .menu-movil{
@@ -1820,6 +1824,10 @@ const carritoPanel = document.getElementById('carritoPanel');
    igual, se cierran igual y bloquean el fondo igual. `marca` es lo que el CSS
    lee en <body> para subir la barra por encima de la lámina. */
 function laminaFlotante(btn, panel, marca){
+  /* El registro cuelga de la propia función porque las declaraciones de
+     función se izan y las de const no: el menú llama a esto antes de que se
+     ejecute esta línea, y con un const suelto arriba reventaba. */
+  const laminas = laminaFlotante.abiertas || (laminaFlotante.abiertas = []);
   let devolver = null;
   function abrir(si){
     panel.dataset.abierto = String(si);
@@ -1837,10 +1845,17 @@ function laminaFlotante(btn, panel, marca){
       devolver = null;
     }
   }
-  btn.addEventListener('click', () => abrir(panel.dataset.abierto !== 'true'));
+  btn.addEventListener('click', () => {
+    const querido = panel.dataset.abierto !== 'true';
+    /* Abrir una cierra la otra. Con las dos abiertas se pelean el bloqueo del
+       scroll: cerrar una lo liberaba con la otra todavía puesta. */
+    if (querido) laminas.forEach(otra => { if (otra.panel !== panel) otra.abrir(false); });
+    abrir(querido);
+  });
   document.addEventListener('keydown', ev => {
     if (ev.key === 'Escape' && panel.dataset.abierto === 'true') abrir(false);
   });
+  laminas.push({ panel, abrir });
   return abrir;
 }
 
