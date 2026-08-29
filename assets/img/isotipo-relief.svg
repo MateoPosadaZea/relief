@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 19 72 62" role="img" aria-label="Isotipo RELIEF">
+  <title>RELIEF — isotipo</title>
+  <!-- Las manos: dos arcos que sostienen un punto sin tocarlo.
+       Vocabulario de la marca: punto, arco y linea. Nada mas.
+       Version principal, para 40 px en adelante. Debajo de eso va la
+       reducida, que engorda el trazo. -->
+  <g fill="none" stroke="#0B0B0C" stroke-width="5.5" stroke-linecap="round">
+    <path d="M36 22 A30 30 0 0 0 36 78"/>
+    <path d="M64 22 A30 30 0 0 1 64 78"/>
+  </g>
+  <circle cx="50" cy="50" r="8" fill="#0B0B0C"/>
+</svg>

@@ -71,7 +71,23 @@ soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 Es el único riesgo de capital aprobado del proyecto.
 
 ## Marca
-- Nombre: **RELIEF** · Sigla/isotipo: **RLF** (cuadro rojo redondeado, sigla en blanco)
+- Nombre: **RELIEF** · Wordmark en **minúscula**: `relief`
+- **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
+  Vocabulario de la marca: **punto, arco y línea recta**. Nada más.
+  - Archivos: `assets/img/isotipo-relief.svg` (principal, de 40 px en adelante)
+    y `assets/img/isotipo-relief-reducido.svg` (trazo grueso, de 40 px hacia
+    abajo: favicon, bordado, grabado). Son el mismo dibujo en dos tamaños ópticos.
+  - **El isotipo no dibuja la categoría**, por la misma razón que el dominio: nada
+    de gafas, ojos, pantallas, lunas ni zzz. El catálogo de mañana puede incluir
+    antifaces o tapones, y una marca con el producto adentro lo contradice. La luna
+    y las zzz además son una promesa de sueño de contrabando.
+  - «El punto que baja» (tres puntos decrecientes) queda como **elemento del
+    sistema, no como marca**: viñeta, separador, patrón del papel de la caja.
+    Comparte el átomo —el punto del centro de las manos— así que se lee de la
+    misma familia. No se usa como logo: junto a WhatsApp lee a «escribiendo…»
+    y en una barra lee a menú de tres puntos.
+  - La sigla **RLF** sigue sirviendo para nombrar producto (RLF Ámbar, RLF Rojo),
+    no como isotipo.
 - **Los lentes SON la paleta.** No hay colores de marca aparte del producto.
   Ámbar = trabajo. Rojo = dormir. Nada más.
 
