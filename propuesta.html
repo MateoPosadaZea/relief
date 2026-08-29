@@ -220,77 +220,6 @@
     color:var(--texto-tenue);
   }
 
-  /* Desglose de piezas. Rejilla de hairlines, como el resto del sitio:
-     bloques planos separados por una linea de 1 px. */
-  /* ---------- Despiece guiado ----------
-     El texto baja y el modelo, pegado al lado, va a la pieza que se está
-     leyendo. Sin WebGL el visor no existe y los pasos se leen como lo que
-     son: una lista de materiales. */
-  .despiece{ position:relative; }
-  .despiece-visor{
-    position:sticky; top:var(--alto-nav, 60px);
-    height:min(56vh, 420px);
-    display:none;                       /* lo enciende el JS si hay WebGL */
-    border:1px solid var(--linea); background:var(--noche);
-    margin-bottom:24px;
-  }
-  .despiece[data-visor="si"] .despiece-visor{ display:block; }
-  .despiece-visor canvas{
-    display:block; width:100%; height:100%;
-    opacity:0; transition:opacity .6s ease;
-  }
-  .despiece-visor canvas[data-listo="true"]{ opacity:1; }
-
-  .paso{ padding:22px 0; border-top:1px solid var(--linea); }
-  .paso:first-child{ border-top:0; }
-  .paso-cab{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
-  .paso h3{
-    font-family:var(--titulo); font-weight:var(--peso-display); font-size:17px;
-    letter-spacing:-.01em; margin:0;
-  }
-  .paso p{ margin:0; color:var(--texto-tenue); font-size:15px; line-height:1.62; max-width:46ch; }
-  /* La pieza que se está leyendo se marca; las otras se retiran. Es la misma
-     jerarquía que hace el modelo, dicha en texto. */
-  .despiece[data-visor="si"] .paso{ opacity:.42; transition:opacity .4s ease; }
-  .despiece[data-visor="si"] .paso[data-activo="true"]{ opacity:1; }
-  .despiece[data-visor="si"] .paso[data-activo="true"] h3{ color:var(--hueso); }
-  .paso--aviso{ border-left:2px solid var(--rojo-rlf); padding-left:16px; }
-
-  @media (min-width:900px){
-    .despiece{
-      display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-      gap:clamp(28px, 5vw, 72px); align-items:start;
-    }
-    .despiece-visor{
-      height:calc(100vh - var(--alto-nav, 60px) - 40px);
-      max-height:640px; margin-bottom:0;
-    }
-    /* Cada paso ocupa casi una pantalla: es lo que le da tiempo al modelo a
-       llegar a la pieza antes de que se lea la siguiente. */
-    .paso{ min-height:72vh; display:flex; flex-direction:column; justify-content:center; }
-  }
-  @media (prefers-reduced-motion:reduce){
-    .despiece-visor canvas, .despiece[data-visor="si"] .paso{ transition:none; }
-  }
-
-  /* Seis piezas: las columnas van fijas y no por auto-fit, que a pantalla
-     ancha las partia en cinco de 28 caracteres y dejaba una huerfana abajo. */
-  .piezas{
-    display:grid; grid-template-columns:minmax(0,1fr);
-    gap:1px; background:var(--linea); border:1px solid var(--linea);
-    margin:0 0 32px;
-  }
-  @media (min-width:640px){ .piezas{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
-  @media (min-width:1040px){ .piezas{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
-  .pieza{ background:var(--superficie); padding:22px 20px; min-width:0; }
-  .pieza-cab{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
-  .pieza h3{
-    font-family:var(--titulo); font-weight:var(--peso-display); font-size:16px;
-    letter-spacing:-.01em; margin:0;
-  }
-  .pieza p{ margin:0; color:var(--texto-tenue); font-size:14.5px; line-height:1.6; }
-  .pieza--aviso{ border-left:2px solid var(--rojo-rlf); }
-
   .tbd{
     font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
     font-size:11px;
@@ -401,6 +330,14 @@
   .escena-fija{
     position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
   }
+  /* Ya instalada en su mitad, la escena se recorta ahí. Sin esto, acercarse a
+     una pieza derrama el resto del modelo sobre el texto de la izquierda.
+     En angosto no hay mitades: el lienzo sigue entero. */
+  @media (min-width:900px){
+    .escena-fija{ transition:clip-path .55s ease; }
+    .escena-fija[data-mitad="si"]{ clip-path:inset(0 0 0 50%); }
+  }
+  @media (prefers-reduced-motion:reduce){ .escena-fija{ transition:none; } }
   #gafas3d{
     position:absolute; inset:0; width:100%; height:100%; display:block;
     opacity:0; transition:opacity 1s ease; pointer-events:auto;
@@ -476,17 +413,26 @@
   /* La primera pantalla es el escenario del wordmark: va vacía a propósito. */
   .panel--apertura{ min-height:190vh; align-items:flex-end; padding-bottom:16vh; }
 
-  /* El reparto de la pantalla en los paneles. Ancho: el texto toma una mitad
-     y el modelo la otra, alternando de lado panel a panel —.panel--dcha
-     existía en el marcado pero nunca tuvo regla, así que todo el texto caía a
-     la izquierda y el modelo centrado se le montaba encima.
-     Angosto: no hay dos mitades, así que el texto baja y el modelo se queda
+  /* El reparto de la pantalla. El texto va SIEMPRE a la izquierda y el modelo
+     fijo a la derecha: alternando lados el ojo tiene que buscar dónde empieza a
+     leer en cada panel, y eso interrumpe más que cualquier movimiento.
+     En angosto no hay dos mitades, así que el texto baja y el modelo se queda
      arriba. La escena lee esto y se encuadra en lo que le queda. */
   @media (min-width:900px){
     .panel > .wrap{ display:flex; flex-direction:column; align-items:flex-start; }
     .panel > .wrap > *{ max-width:min(44%, 480px); }
-    .panel--dcha > .wrap{ align-items:flex-end; text-align:right; }
   }
+  @media (max-width:899px){
+    .panel{ align-items:flex-end; padding-top:46vh; padding-bottom:14vh; }
+    .panel--apertura{ padding-top:14vh; }
+  }
+
+  /* Los paneles de pieza son un tramo más rápido dentro del mismo recorrido:
+     el titular pesa menos y ocupan menos pantalla, para que mirar de cerca no
+     alargue la historia el doble. */
+  .panel--pieza{ min-height:78vh; }
+  .panel--pieza .panel-texto{ font-size:clamp(24px,3.6vw,34px); max-width:18ch; }
+  .panel--pieza .hora{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   @media (max-width:899px){
     .panel{ align-items:flex-end; padding-top:46vh; padding-bottom:14vh; }
     .panel--apertura{ padding-top:14vh; }
@@ -926,11 +872,11 @@
   <div class="historia" id="historia">
     <div class="historia-paneles">
 
-      <section class="panel panel--apertura" data-lente="ambar">
+      <section class="panel panel--apertura" data-pieza="conjunto" data-lente="ambar">
         <div class="wrap"><p class="pista">Baja para ver</p></div>
       </section>
 
-      <section class="panel" data-lente="ambar" data-lado="izq">
+      <section class="panel" data-pieza="conjunto" data-lente="ambar">
         <div class="wrap">
           <p class="hora">11:47 PM</p>
           <p class="panel-texto">Le pasas horas a la pantalla.</p>
@@ -939,7 +885,7 @@
         </div>
       </section>
 
-      <section class="panel panel--dcha" data-lente="ambar" data-lado="dcha">
+      <section class="panel" data-pieza="conjunto" data-lente="ambar">
         <div class="wrap">
           <p class="hora">Somos RELIEF</p>
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
@@ -948,42 +894,114 @@
 
           <div class="modos">
             <span class="label" id="modosLabel">Ver el sitio con cada lente</span>
-            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
-              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
-              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
-              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
-              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
+            <div class="modos-fila" role="group" aria-labelledby="modosLabel">
+              <button type="button" data-modo-set="noche">Noche</button>
+              <button type="button" data-modo-set="dia">Día</button>
+              <button type="button" data-modo-set="trabajo">Trabajo</button>
+              <button type="button" data-modo-set="descanso">Descanso</button>
             </div>
-            <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
+            <p class="modos-nota">Aproximación visual de cada lente, no una medición.</p>
           </div>
         </div>
       </section>
 
-      <section class="panel" data-lente="ambar" data-lado="izq">
+      <!-- De aquí en adelante se desarma: el mismo recorrido, mirando de cerca. -->
+      <section class="panel panel--pieza" id="materiales" data-pieza="conjunto" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">De qué está hecha</p>
+          <p class="panel-texto">Seis piezas, y cada una decide algo.</p>
+          <p class="panel-apoyo">Cuánto pesa, cuánto aguanta y qué ves a través de ella.
+            Lo que todavía no está confirmado con el proveedor va marcado, y no lo
+            publicamos como si lo estuviera.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--pieza" data-pieza="montura" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">La montura <span class="tbd">Por confirmar</span></p>
+          <p class="panel-texto">Poliamida TR90.</p>
+          <p class="panel-apoyo">Pesa poco y se dobla sin quedarse doblada, que es lo que
+            importa en unas gafas que te vas a poner seis horas seguidas. La barra recta
+            de arriba cruza toda la frente: es lo que le da la línea.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--pieza" data-pieza="puente" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">El puente</p>
+          <p class="panel-texto">Lo único que sostiene el peso.</p>
+          <p class="panel-apoyo">El arco corto entre los dos aros. De su ancho depende que
+            a las tres horas no te esté marcando la nariz.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--pieza" data-pieza="bisagra" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">La bisagra <span class="tbd">Por confirmar</span></p>
+          <p class="panel-texto">La pieza que primero falla.</p>
+          <p class="panel-apoyo">En unas gafas baratas es siempre esta. Estamos pidiendo
+            bisagra metálica con tornillo, no plástico moldeado de una sola pieza: la
+            diferencia se nota al año, no en la foto.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--pieza" data-pieza="varilla" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">La varilla</p>
+          <p class="panel-texto">Lámina plana, no un tubo.</p>
+          <p class="panel-apoyo">Adelgaza hacia la punta y apoya en plano contra la sien
+            en vez de clavarse en un punto. Es lo que hace que aguantes un turno entero
+            con ellas puestas.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--pieza" data-pieza="lente" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">El lente</p>
+          <p class="panel-texto">El color <em>es</em> el filtro.</p>
+          <p class="panel-apoyo">No lleva fórmula: no corrige la vista ni reemplaza a tus
+            gafas si usas graduación. Y como el filtro es el material y no una capa
+            encima, no hay nada que se pueda rayar ni despegar.</p>
+        </div>
+      </section>
+
+      <!-- Y vuelve la noche: las mismas dos piezas, ahora en su momento. -->
+      <section class="panel" data-pieza="lente" data-lente="ambar">
         <div class="wrap">
           <p class="hora hora--ambar">12:30 AM</p>
           <p class="panel-texto">El ámbar es el del turno.</p>
-          <p class="panel-apoyo">Filtra parte de la luz azul de la pantalla y deja el color
-            utilizable: puedes seguir viendo lo que estás haciendo.</p>
+          <p class="panel-apoyo">Recorta parte del rango corto del espectro y deja pasar
+            el resto, así que los colores siguen siendo utilizables para trabajar.</p>
         </div>
       </section>
 
-      <section class="panel panel--dcha" data-lente="rojo" data-lado="dcha">
+      <section class="panel" data-pieza="lente" data-lente="rojo">
         <div class="wrap">
           <p class="hora hora--rojo">2:10 AM</p>
           <p class="panel-texto">El rojo es el del final.</p>
-          <p class="panel-apoyo">Para la última hora, cuando ya vas a cerrar. Filtra el rango
-            corto del espectro. No es para trabajar ni para conducir.</p>
+          <p class="panel-apoyo">Recorta bastante más, verde incluido. Por eso el mundo se
+            ve distinto con él puesto, y por eso no es para trabajar ni para conducir: es
+            para la última hora.</p>
         </div>
       </section>
 
-      <section class="panel" data-lente="rojo" data-lado="izq">
+      <section class="panel panel--pieza" data-pieza="conjunto" data-lente="rojo">
+        <div class="wrap">
+          <p class="hora">Cuánto filtra</p>
+          <p class="panel-texto">Ese número todavía no lo tenemos.</p>
+          <p class="panel-apoyo">Y no lo vamos a publicar hasta tener el reporte de
+            transmitancia espectral del lote exacto que estemos vendiendo. Se ven
+            porcentajes por todas partes en esta categoría; ninguno viene con el ensayo
+            adjunto.</p>
+        </div>
+      </section>
+
+      <section class="panel" data-pieza="conjunto" data-lente="ambar">
         <div class="wrap">
           <p class="hora">Mañana, 9:00 AM</p>
           <p class="panel-texto">Sale de <span class="propio">Bogotá</span>, no de <span class="propio">Shenzhen</span>.</p>
-          <p class="panel-apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
-            Esa es toda la diferencia, y es la única que importa.</p>
-          <div style="margin-top:28px"><a class="btn" href="#combo">Ver el combo</a></div>
+          <p class="panel-apoyo">Stock propio, entrega en 2-3 días y soporte por WhatsApp
+            el mismo día. Es la única ventaja que no se puede copiar con pauta.</p>
         </div>
       </section>
 
@@ -991,92 +1009,14 @@
   </div>
 
   <!-- 3. LOS DOS LENTES -->
-  <!-- 4. MATERIALES — va antes de las tarjetas: la informacion primero,
-       el precio despues. -->
-  <section class="seccion" id="materiales">
+  <!-- 4. FICHA — el dato duro, después del recorrido -->
+  <section class="seccion" id="ficha">
     <div class="wrap">
-      <p class="label">Materiales</p>
-      <h2>De qué está hecha</h2>
-      <p class="bajada">Nada de esto sale de un catálogo: es lo que le estamos
-        pidiendo al proveedor. Lo que todavía no está confirmado va marcado, y no
-        lo vamos a publicar como si lo estuviera.</p>
-
-      <div class="despiece" id="despiece">
-        <div class="despiece-visor"><canvas id="materiales3d"></canvas></div>
-
-        <div class="despiece-pasos">
-          <article class="paso" data-pieza="conjunto">
-            <div class="paso-cab"><h3>Lo que tienes en la mano</h3></div>
-            <p>Un frente, dos varillas y dos lentes de filtro. Seis piezas en
-               total, y cada una decide algo distinto: cuánto pesa, cuánto
-               aguanta, y qué ves a través de ella.</p>
-          </article>
-
-          <article class="paso" data-pieza="montura">
-            <div class="paso-cab"><h3>La montura</h3><span class="tbd">Por confirmar</span></div>
-            <p>Poliamida TR90. Pesa poco y se dobla sin quedarse doblada, que es
-               lo que importa en unas gafas que te vas a poner seis horas
-               seguidas. La barra recta de arriba cruza toda la frente: es lo
-               que le da la línea.</p>
-          </article>
-
-          <article class="paso" data-pieza="puente">
-            <div class="paso-cab"><h3>El puente</h3></div>
-            <p>El arco corto entre los dos aros. Es lo único que sostiene el
-               peso sobre la nariz, así que de su ancho depende que a las tres
-               horas no te esté marcando.</p>
-          </article>
-
-          <article class="paso" data-pieza="bisagra">
-            <div class="paso-cab"><h3>La bisagra</h3><span class="tbd">Por confirmar</span></div>
-            <p>Es la pieza que primero falla en unas gafas baratas. Estamos
-               pidiendo bisagra metálica con tornillo, no plástico moldeado de
-               una sola pieza: la diferencia se nota al año, no en la foto.</p>
-          </article>
-
-          <article class="paso" data-pieza="varilla">
-            <div class="paso-cab"><h3>La varilla</h3></div>
-            <p>Lámina plana que adelgaza hacia la punta, no un tubo. Apoya en
-               plano contra la sien en vez de clavarse en un punto — es lo que
-               hace que aguantes un turno entero con ellas puestas.</p>
-          </article>
-
-          <article class="paso" data-pieza="lente">
-            <div class="paso-cab"><h3>El lente</h3></div>
-            <p>No lleva fórmula: no corrige la vista ni reemplaza a tus gafas si
-               usas graduación. Es un lente de filtro, y el color <em>es</em> el
-               filtro: no hay una capa aparte que se pueda rayar o despegar.</p>
-          </article>
-
-          <article class="paso" data-pieza="lente" data-lente="ambar">
-            <div class="paso-cab"><h3>Ámbar, el del turno</h3></div>
-            <p>Recorta parte del rango corto del espectro y deja pasar el resto,
-               así que los colores siguen siendo utilizables para trabajar. Es
-               el que te pones a las once de la noche.</p>
-          </article>
-
-          <article class="paso" data-pieza="lente" data-lente="rojo">
-            <div class="paso-cab"><h3>Rojo, el del final</h3></div>
-            <p>Recorta bastante más, verde incluido. Por eso el mundo se ve
-               distinto con él puesto, y por eso no es para trabajar ni para
-               conducir: es para la última hora, cuando ya no vas a hacer nada
-               que exija distinguir colores.</p>
-          </article>
-
-          <article class="paso paso--aviso" data-pieza="conjunto">
-            <div class="paso-cab"><h3>Cuánto filtra</h3></div>
-            <p>Ese número no lo vamos a publicar hasta tener el reporte de
-               transmitancia espectral del lote exacto que estemos vendiendo. Se
-               ven porcentajes por todas partes en esta categoría; ninguno viene
-               con el ensayo adjunto.</p>
-          </article>
-        </div>
-      </div>
-
-      <p class="bajada" style="margin-top:40px">Con el pedido van también el
-        estuche y el paño. Falta cerrar cuál estuche entra: es lo que decide si
-        el paquete llega presentable o llega en una bolsa.</p>
-
+      <p class="label">Ficha</p>
+      <h2>Las medidas</h2>
+      <p class="bajada">Lo de arriba es lo que se ve; esto es lo que hay que confirmar
+        con el proveedor antes de vender. Con el pedido van también el estuche y el
+        paño: falta cerrar cuál estuche entra.</p>
       <table>
         <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
         <tbody>
@@ -1434,23 +1374,6 @@ function cargar3D() {
     .catch(e => console.warn('RELIEF: la escena 3D no cargó.', e));
 })();
 
-/* ---------------- Despiece de materiales ----------------
-   Segundo visor, independiente del de la historia: el texto de cada pieza
-   baja y el modelo va hacia ella. Solo se enciende si el navegador puede;
-   si no, la sección se queda con sus pasos, que se leen igual.
-------------------------------------------------------- */
-(function(){
-  const caja   = document.getElementById('despiece');
-  const canvas = document.getElementById('materiales3d');
-  if (!caja || !canvas || !HAY_WEBGL) return;
-
-  import('./assets/js/propuesta.js')
-    .then(m => {
-      caja.dataset.visor = 'si';
-      m.iniciarDespiece(canvas, caja.querySelectorAll('.paso[data-pieza]'));
-    })
-    .catch(e => console.warn('RELIEF: el despiece no cargó.', e));
-})();
 
 /* ---------------- Modos de visualización ----------------
    El catálogo son dos lentes y el sitio son los mismos dos modos: el

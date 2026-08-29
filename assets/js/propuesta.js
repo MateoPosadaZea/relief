@@ -31,8 +31,18 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
   camara.position.set(0, 0, 4.2);
 
-  const { gafas, cristal } = construirGafas();
+  const { gafas } = construirGafas();
   escena.add(gafas);
+
+  /* Cada malla con su propio material: el modelo los comparte para ahorrar
+     memoria, y así no se puede atenuar ni recolorear una pieza sola. */
+  const mallas = [];
+  gafas.traverse(o => {
+    if (!o.isMesh) return;
+    o.material = o.material.clone();
+    o.material.transparent = true;
+    mallas.push({ objeto: o, plena: o.material.opacity, atenuacion: 1 });
+  });
 
   escena.add(new THREE.AmbientLight(0xffffff, 0.5));
   const key = new THREE.DirectionalLight(0xfff2e0, 2.8);
@@ -50,6 +60,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const colorRojo  = new THREE.Color(ROJO);
   const colorActual = new THREE.Color(AMBAR);
 
+  const marco3D = canvas.parentElement;
   const quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
   let progreso = 0;
   let visible = true, animando = false;
@@ -92,9 +103,16 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
   let escalaBanda = 1, escalaHistoria = 1, subida = 0;
   let desplazX = 0, subeHist = 0, angosto = false;
-  /* El lado se persigue, no se salta: cambiar de panel mueve el modelo. */
-  let lado = 0, ladoSuave = 0;
+  /* El modelo no se mueve de lado a lado: solo gira y se acerca a la pieza que
+     nombra el panel. Todo se persigue con lerp; los saltos se sienten como
+     cortes de cámara. */
+  const foco = new THREE.Vector3(), focoObj = new THREE.Vector3();
+  const desplaz = new THREE.Vector3();
+  let giroPieza = 0, giroPiezaObj = 0;
+  let inclina = 0, inclinaObj = 0;
+  let zoom = 1, zoomObj = 1;
   let objetivoColor = null;
+  let panelPrevio = null;
 
   function medir() {
     const r = canvas.getBoundingClientRect();
@@ -147,7 +165,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   }
 
   /* El panel que se esté leyendo manda dos cosas: qué lente lleva el cristal
-     y de qué lado está su texto, para que el modelo se ponga al otro. */
+     y a qué pieza mira la cámara. */
   function panelActual() {
     if (!paneles || !paneles.length) return null;
     const medio = window.innerHeight / 2;
@@ -166,10 +184,20 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     return p.dataset.lente === 'rojo' ? colorRojo : colorAmbar;
   }
 
-  /* +1 lleva el modelo a la derecha. Sin lado declarado se queda al centro. */
-  function ladoDelPanel(p) {
-    if (!p || !p.dataset.lado) return 0;
-    return p.dataset.lado === 'dcha' ? -1 : 1;
+  function apuntar(p) {
+    if (p === panelPrevio) return;
+    panelPrevio = p;
+    const a = anclaDelPanel(p);
+    focoObj.set(a.punto[0], a.punto[1], a.punto[2]);
+    giroPiezaObj = a.giroY; inclinaObj = a.giroX; zoomObj = a.zoom;
+    for (const m of mallas) {
+      m.atenuacion = !a.piezas || a.piezas.includes(m.objeto.name) ? 1 : 0.3;
+    }
+  }
+
+  /* Adónde mirar. Sin pieza declarada, el conjunto. */
+  function anclaDelPanel(p) {
+    return ANCLAS[(p && p.dataset.pieza) || 'conjunto'] || ANCLAS.conjunto;
   }
 
   let ultimoCuadro = 0;
@@ -179,7 +207,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     const dt = ultimoCuadro ? Math.min(0.1, (t - ultimoCuadro) / 1000) : 1;
     ultimoCuadro = t;
     const kMano  = suavizar(dt, 0.35);
-    const kLado  = suavizar(dt, 0.60);
+    const kPieza = suavizar(dt, 0.55);
     const kColor = suavizar(dt, 0.90);
 
     progreso += (leerProgreso() - progreso) * suavizar(dt, 0.35);
@@ -187,33 +215,62 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
     manualSuave.x += (manual.x - manualSuave.x) * kMano;
     manualSuave.y += (manual.y - manualSuave.y) * kMano;
-    /* 1 mientras la palabra ocupa la pantalla, 0 cuando ya es logotipo. */
-    const cede = 1 - (window.__morfo || 0);
-    const escala = escalaHistoria + (escalaBanda - escalaHistoria) * cede;
-    gafas.scale.setScalar(escala);
-    ladoSuave += (lado - ladoSuave) * kLado;
-    /* En el hero el modelo va centrado; el reparto en mitades solo aplica
-       cuando la palabra ya soltó la pantalla. */
-    gafas.position.x = ladoSuave * desplazX * (1 - cede);
-    /* El modelo no está centrado en su origen: se compensa su propio centro
-       antes de moverlo a su banda. */
-    gafas.position.y = -centro.y * escala
-                     + subida * cede
-                     + subeHist * (1 - cede);
     ratonSuave.x += (raton.x - ratonSuave.x) * kMano;
     ratonSuave.y += (raton.y - ratonSuave.y) * kMano;
-    gafas.rotation.y = -0.72 + progreso * 0.72 + manualSuave.y + ratonSuave.y;
-    gafas.rotation.x = 0.20 - progreso * 0.14 + manualSuave.x + ratonSuave.x;
-    gafas.rotation.z = 0.05 - progreso * 0.05;
-    cristal.color.copy(colorActual);
-    cristal.emissive.copy(colorActual);
+
+    foco.lerp(focoObj, kPieza);
+    giroPieza += (giroPiezaObj - giroPieza) * kPieza;
+    inclina   += (inclinaObj   - inclina)   * kPieza;
+    zoom      += (zoomObj      - zoom)      * kPieza;
+
+    /* 1 mientras la palabra ocupa la pantalla, 0 cuando ya es logotipo. */
+    const cede = 1 - (window.__morfo || 0);
+    const dentro = 1 - cede;                    // 1 ya dentro del recorrido
+    const escala = (escalaHistoria + (escalaBanda - escalaHistoria) * cede) * zoom;
+    gafas.scale.setScalar(escala);
+
+    /* El giro del hero cede el mando al de la pieza en cuanto la palabra suelta
+       la pantalla. Encima van siempre el arrastre y el cursor. */
+    gafas.rotation.y = (-0.72 + progreso * 0.72) * cede + giroPieza * dentro
+                     + manualSuave.y + ratonSuave.y;
+    gafas.rotation.x = (0.20 - progreso * 0.14) * cede + inclina * dentro
+                     + manualSuave.x + ratonSuave.x;
+    gafas.rotation.z = (0.05 - progreso * 0.05) * cede;
+
+    /* En el hero va centrado sobre la palabra. Después se instala en la mitad
+       derecha y no se mueve más de ahí: lo único que cambia es a qué pieza
+       mira. El desplazamiento del foco va rotado —three.js posiciona en el
+       espacio del padre pero gira alrededor del origen del objeto—, si no la
+       pieza se sale de cuadro en cuanto hay giro. */
+    desplaz.copy(foco).multiplyScalar(escala).applyEuler(gafas.rotation);
+    gafas.position.x = (desplazX - desplaz.x) * dentro;
+    gafas.position.y = (-centro.y * escala + subida) * cede
+                     + (subeHist - desplaz.y) * dentro;
+    gafas.position.z = -desplaz.z * dentro;
+
+    for (const m of mallas) {
+      /* La atenuación solo cuenta dentro del recorrido: en el hero se ve el
+         modelo entero, sin piezas apagadas. */
+      const meta = m.plena * (1 - (1 - m.atenuacion) * dentro);
+      m.objeto.material.opacity += (meta - m.objeto.material.opacity) * kPieza;
+      if (m.objeto.name.startsWith('cristal')) {
+        m.objeto.material.color.copy(colorActual);
+        m.objeto.material.emissive.copy(colorActual);
+      }
+    }
+
+    /* Ya instalado en su mitad, el lienzo se recorta ahí: acercarse a una pieza
+       hace que el resto del modelo se salga de cuadro, y sin recorte ese
+       derrame cae encima del texto. */
+    if (marco3D) marco3D.dataset.mitad = dentro > 0.98 ? 'si' : 'no';
+
     renderer.render(escena, camara);
   }
 
   function marco(ahora) {
     if (!animando) return;
     const actual = panelActual();
-    lado = ladoDelPanel(actual);
+    apuntar(actual);
     objetivoColor = colorDelPanel(actual);
     dibujar(ahora);
     requestAnimationFrame(marco);
@@ -267,7 +324,9 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   progreso = leerProgreso();
   const primero = panelActual();
   colorActual.copy(colorDelPanel(primero));
-  lado = ladoSuave = ladoDelPanel(primero);
+  objetivoColor = colorDelPanel(primero);
+  apuntar(primero);
+  foco.copy(focoObj); giroPieza = giroPiezaObj; inclina = inclinaObj; zoom = zoomObj;
   dibujar();
 
   if (quietud.matches) {
@@ -275,7 +334,8 @@ export function iniciarEscena(canvas, contenedor, paneles) {
       progreso = leerProgreso();
       const p = panelActual();
       colorActual.copy(colorDelPanel(p));
-      lado = ladoSuave = ladoDelPanel(p);
+      objetivoColor = colorDelPanel(p);
+      apuntar(p);
       dibujar();
     }, { passive: true });
   } else {
@@ -285,183 +345,3 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   canvas.dataset.listo = 'true';
 }
 
-/* ------------------------------------------------------------------
-   Despiece guiado.
-
-   El texto y el modelo van en paralelo: cada paso del scroll nombra una
-   pieza, y el modelo gira, se acerca a ella y apaga las demás. Sin esto
-   la sección seguía siendo una lista de materiales; con esto se ve lo
-   que se está leyendo.
-
-   Es una capa encima, como el resto del 3D: sin WebGL los pasos se leen
-   igual y el visor no existe.
------------------------------------------------------------------- */
-export function iniciarDespiece(canvas, pasos) {
-  if (!canvas || !pasos || !pasos.length) return;
-
-  const renderer = new THREE.WebGLRenderer({
-    canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.18;
-
-  const escena = new THREE.Scene();
-  const camara = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camara.position.set(0, 0, 4.2);
-
-  const { gafas } = construirGafas();
-  escena.add(gafas);
-
-  escena.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const key = new THREE.DirectionalLight(0xfff2e0, 2.8);
-  key.position.set(-2.2, 3.0, 2.6); escena.add(key);
-  const rim = new THREE.DirectionalLight(0xbcd4ff, 3.6);
-  rim.position.set(1.8, 1.4, -2.6); escena.add(rim);
-  const relleno = new THREE.DirectionalLight(0xffffff, 0.55);
-  relleno.position.set(2.4, -1.2, 1.8); escena.add(relleno);
-
-  /* Para poder atenuar o recolorear una pieza sin tocar las demás, cada malla
-     necesita su propio material: el modelo los comparte para ahorrar memoria. */
-  const mallas = [];
-  gafas.traverse(o => {
-    if (!o.isMesh) return;
-    o.material = o.material.clone();
-    o.material.transparent = true;
-    mallas.push({ objeto: o, opacidadPlena: o.material.opacity, atenuacion: 1 });
-  });
-
-  const quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let visible = false, animando = false;
-
-  /* Estado actual y objetivo. Todo se persigue con lerp: los saltos entre
-     piezas se sienten como cortes de cámara y marean. */
-  const foco = new THREE.Vector3(), focoObj = new THREE.Vector3();
-  const desplaz = new THREE.Vector3();
-  let giroY = -0.55, giroX = 0.16, zoom = 1;
-  let giroYObj = -0.55, giroXObj = 0.16, zoomObj = 1;
-  let base = 1;                     // escala que hace caber el modelo entero
-  let pasoActivo = null;
-
-  const caja = new THREE.Box3().setFromObject(gafas);
-  const dim  = caja.getSize(new THREE.Vector3());
-
-  function medir() {
-    const r = canvas.getBoundingClientRect();
-    const w = Math.max(1, Math.round(r.width));
-    const h = Math.max(1, Math.round(r.height));
-    renderer.setSize(w, h, false);
-    camara.aspect = w / h;
-    camara.updateProjectionMatrix();
-
-    const alturaMundo = 2 * Math.tan(camara.fov * Math.PI / 360) * camara.position.z;
-    const porUnidad = h / alturaMundo;
-    /* Cabe por lo ancho o por lo alto, lo que primero se agote. El giro más
-       abierto del despiece llega a 1.35 rad, así que se encuadra por ahí. */
-    const ancho = dim.x * Math.abs(Math.cos(1.35)) + dim.z * Math.abs(Math.sin(1.35));
-    base = Math.max(0.3, Math.min((w * 0.78) / (ancho * porUnidad),
-                                  (h * 0.62) / (dim.y * porUnidad)));
-  }
-
-  /* El paso cuyo centro esté más cerca del centro de la pantalla es el que se
-     está leyendo. Mismo criterio que usan los paneles de la historia. */
-  function pasoDelScroll() {
-    const medio = window.innerHeight / 2;
-    let elegido = null, cerca = Infinity;
-    for (const p of pasos) {
-      const r = p.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > window.innerHeight) continue;
-      const d = Math.abs((r.top + r.bottom) / 2 - medio);
-      if (d < cerca) { cerca = d; elegido = p; }
-    }
-    return elegido;
-  }
-
-  function apuntar(paso) {
-    if (paso === pasoActivo) return;
-    pasoActivo = paso;
-    const ancla = ANCLAS[(paso && paso.dataset.pieza) || 'conjunto'] || ANCLAS.conjunto;
-    focoObj.set(ancla.punto[0], ancla.punto[1], ancla.punto[2]);
-    giroYObj = ancla.giroY; giroXObj = ancla.giroX; zoomObj = ancla.zoom;
-
-    for (const m of mallas) {
-      m.atenuacion = !ancla.piezas || ancla.piezas.includes(m.objeto.name) ? 1 : 0.3;
-    }
-    /* El color del lente sale del paso, siempre: sin esto el rojo se quedaba
-       puesto al avanzar al paso siguiente y al volver hacia arriba, porque el
-       color era estado acumulado y no una propiedad de lo que se está leyendo. */
-    const hex = (paso && paso.dataset.lente) === 'rojo' ? 0xD91F26 : 0xF2A93B;
-    for (const m of mallas) {
-      if (!m.objeto.name.startsWith('cristal')) continue;
-      m.objeto.material.color.set(hex);
-      m.objeto.material.emissive.set(hex);
-    }
-    for (const p of pasos) p.dataset.activo = String(p === paso);
-  }
-
-  /* Suavizado por tiempo y no por cuadro: con un lerp de factor fijo la
-     transición dura lo que dure el frame rate, y en un equipo lento el modelo
-     tardaba segundos en llegar a la pieza que ya se estaba leyendo. */
-  const VIAJE = 0.55;                        // segundos hasta prácticamente llegar
-  let ultimo = 0;
-
-  function dibujar(ahora) {
-    const t = typeof ahora === 'number' ? ahora : performance.now();
-    const dt = ultimo ? Math.min(0.1, (t - ultimo) / 1000) : 1;
-    ultimo = t;
-    const k = quietud.matches ? 1 : 1 - Math.pow(0.001, dt / VIAJE);
-    foco.lerp(focoObj, k);
-    giroY += (giroYObj - giroY) * k;
-    giroX += (giroXObj - giroX) * k;
-    zoom  += (zoomObj  - zoom)  * k;
-
-    const escala = base * zoom;
-    gafas.scale.setScalar(escala);
-    gafas.rotation.set(giroX, giroY, 0);
-    /* Se traslada el modelo para que el punto enfocado quede en el centro;
-       mover la cámara obligaría a recalcular la proyección en cada cuadro.
-       El desplazamiento va rotado: three.js aplica posición en el espacio del
-       padre pero gira alrededor del origen del objeto, así que trasladar sin
-       rotar dejaba la pieza fuera de cuadro en cuanto había giro. */
-    desplaz.copy(foco).multiplyScalar(escala).applyEuler(gafas.rotation);
-    gafas.position.set(-desplaz.x, -desplaz.y, -desplaz.z);
-
-    for (const m of mallas) {
-      const objetivo = m.opacidadPlena * m.atenuacion;
-      m.objeto.material.opacity += (objetivo - m.objeto.material.opacity) * k;
-    }
-    renderer.render(escena, camara);
-  }
-
-  function marco(ahora) {
-    if (!animando) return;
-    apuntar(pasoDelScroll());
-    dibujar(ahora);
-    requestAnimationFrame(marco);
-  }
-  const arrancar = () => { if (!animando && visible) { animando = true; ultimo = 0; requestAnimationFrame(marco); } };
-  const parar = () => { animando = false; };
-
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(e => {
-      visible = e[0].isIntersecting;
-      visible ? arrancar() : parar();
-    }, { threshold: 0 }).observe(canvas);
-  } else {
-    visible = true;
-  }
-  window.addEventListener('resize', () => { medir(); dibujar(); });
-
-  medir();
-  apuntar(pasoDelScroll());
-  foco.copy(focoObj); giroY = giroYObj; giroX = giroXObj; zoom = zoomObj;
-  dibujar();
-
-  if (quietud.matches) {
-    window.addEventListener('scroll', () => { apuntar(pasoDelScroll()); dibujar(); }, { passive: true });
-  } else {
-    arrancar();
-  }
-
-  canvas.dataset.listo = 'true';
-}
