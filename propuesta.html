@@ -1326,7 +1326,6 @@
      ahora es texto y tiene que seguir legible en los cuatro: verificado, los
      cuatro pasan 3:1 de texto grande y día pasa incluso 4.5:1. */
   .footer{
-    border-top:1px solid var(--linea);
     background:var(--noche); color:var(--hueso);
     /* Aire arriba: entraba pegado al contenido anterior y la palabra parecía
        cortada por el borde de la sección. */
@@ -1377,13 +1376,13 @@
     user-select:none;
   }
   .footer[data-pie="rojo"] .footer-palabra{ color:#F7EFEE; }
+  /* Sin líneas: el pie ya está separado del resto por el aire de arriba y
+     por la palabra, y dos divisores más lo convertían en una tabla. */
   .footer-pie{
     display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between;
-    border-top:1px solid var(--linea);
-    padding:18px 0 28px; margin-top:24px;
+    padding:14px 0 34px; margin-top:20px;
   }
   .footer small{ color:var(--texto-tenue); font-size:12px; display:block; }
-  .footer[data-pie="rojo"] .footer-pie{ border-top-color:rgba(255,255,255,.28); }
   .footer[data-pie="rojo"] small{ color:rgba(255,255,255,.72); }
   .footer[data-pie="rojo"] .tbd{ color:rgba(255,255,255,.8); border-color:rgba(255,255,255,.4); }
 
@@ -2193,7 +2192,8 @@ const opcionesLentes = document.getElementById('opcionesLentes');
 opcionesLentes.innerHTML = PRODUCTOS
   .filter(p => p.id !== 'rlf-combo')
   .map((p, i) => `
-    <article class="opcion" data-lente="${p.lente}" data-activa="${i === 0}">
+    <article class="opcion" data-lente="${p.lente}"
+             data-puesta="${esc(p.puesta || '')}" data-activa="${i === 0}">
       <div class="opcion-cima">
         <h3>${esc(p.nombre)}</h3>
         <div class="precio-fila">${precioHTML(p.precio)}</div>
@@ -2306,12 +2306,15 @@ function cargar3D() {
   const marcar = (attr, valor) => caja.querySelectorAll('[data-' + attr + '-set]')
     .forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
 
-  /* La foto puesta de cada lente sale del catálogo, así que cuando llegue la
-     del combo o se reemplacen las actuales esto la toma sin tocar nada. Si
-     algún lente no tiene foto, el grupo de vista entero desaparece: media
-     opción no sirve de nada. */
+  /* La foto puesta la trae cada fila, no un mapa por color. Recorrer el
+     catálogo buscando por `lente` metía la del combo —que también declara
+     lente 'ambar'— encima de la del ámbar, y como ese archivo todavía no
+     existe, «Puestas» cargaba una imagen rota. Cada fila sabe de qué
+     producto es; el color no identifica a nadie. */
   const puestas = {};
-  for (const p of PRODUCTOS) if (p.lente && p.puesta) puestas[p.lente] = p.puesta;
+  for (const f of filas) if (f.dataset.puesta) puestas[f.dataset.lente] = f.dataset.puesta;
+  /* Si a algún lente le falta la foto, el par de botones desaparece entero:
+     media opción no sirve de nada. */
   const hayPuestas = filas.every(f => puestas[f.dataset.lente]);
   if (!hayPuestas && vistas) vistas.remove();
 
@@ -2354,12 +2357,15 @@ function cargar3D() {
   });
 
   filas.forEach(f => {
-    /* En el botón no: pulsar «agregar al carrito» no es pedir ver ese lente,
-       y robarle el clic al botón sería peor que no marcar nada. */
-    f.addEventListener('click', ev => {
-      if (ev.target.closest('button, a')) return;
-      elegir(f.dataset.lente);
-    });
+    /* Con el cursor encima basta: acercarse a una fila ya es preguntar por
+       ese lente, y obligar a pulsar añadía un paso a algo que no decide
+       nada. El clic se queda para el dedo y el teclado, donde no hay
+       cursor que pasar por encima. En el botón no, ni con cursor ni con
+       clic: acercarse a «agregar al carrito» no es pedir ver ese lente. */
+    const pedir = ev => { if (!ev.target.closest('button, a')) elegir(f.dataset.lente); };
+    f.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') pedir(ev); });
+    f.addEventListener('click', pedir);
+    f.addEventListener('focusin', ev => { if (!ev.target.closest('button, a')) elegir(f.dataset.lente); });
   });
 
   function montar() {
@@ -2597,8 +2603,14 @@ const RESENAS_EJEMPLO = [
     else document.body.dataset.recorrido = 'fuera';
   };
   if (!('IntersectionObserver' in window)) return;
-  new IntersectionObserver(e => marcar(e[0].isIntersecting), { threshold: 0 })
-    .observe(historia);
+  /* El margen superior negativo es lo que hace que se retire A TIEMPO. Sin
+     él, el recorrido sigue "dentro" mientras le quede un pixel abajo de la
+     pantalla, así que el modelo seguía puesto —y enorme— encima de la
+     sección de los lentes. Con la raíz recortada al 45% inferior, el
+     recorrido se da por terminado en cuanto su final sube por encima de esa
+     línea, que es cuando el último panel ya se leyó. */
+  new IntersectionObserver(e => marcar(e[0].isIntersecting),
+    { threshold: 0, rootMargin: '-55% 0px 0px 0px' }).observe(historia);
 })();
 
 /* ---------------- La marca de la barra ----------------
