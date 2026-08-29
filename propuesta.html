@@ -37,7 +37,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..700&family=Instrument+Sans:wght@400;500;600&family=Lora:wght@400..700&family=Sora:wght@200..800&family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -62,38 +62,24 @@
        sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
     --blanco:      #FFFFFF;
 
-    /* Dos familias, las dos sans y las dos SIL OFL.
-       Archivo trae eje de ancho: expandida (125%) para las etiquetas en
-       mayúsculas, y algo menos abierta (112%) para los titulares. */
-    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
-    --etiqueta: "Archivo", "Helvetica Neue", Arial, sans-serif;
-    --ancho-display: 112%;
-    --ancho-etiqueta: 125%;
-    /* Grosor de los titulares. Es un token porque cada cara pesa distinto:
-       el 600 de Lora se ve mas liviano que el 600 de Epilogue. */
-    --peso-display: 600;
-    --texto:   "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* Dos familias, las dos SIL OFL. Lora (serif) solo para los titulares
+       supergrandes —el hero, el logotipo, los cierres—; Epilogue para todo lo
+       demás: titulares de sección, párrafos, rótulos, botones y formularios.
+       Ninguna de las dos tiene eje de ancho, así que los tokens de stretch
+       quedan en normal y siguen ahí solo para el banco de pruebas. */
+    --display:  "Lora", Georgia, "Times New Roman", serif;
+    --titulo:   "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --etiqueta: "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --texto:    "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --ancho-display: normal;
+    --ancho-etiqueta: normal;
 
     --gutter: 20px;
   }
 
-  /* Candidatas de tipografía. Solo cambia la cara de los titulares; el texto
-     corrido se queda en Instrument Sans, para no pasar de dos familias. */
-  :root[data-tipo="lora"]{
-    --display:"Lora", Georgia, "Times New Roman", serif;
-    --etiqueta:"Instrument Sans", system-ui, sans-serif;
-    --ancho-display:normal; --ancho-etiqueta:normal;
-  }
-  :root[data-tipo="sora"]{
-    --display:"Sora", system-ui, sans-serif;
-    --etiqueta:"Sora", system-ui, sans-serif;
-    --ancho-display:normal; --ancho-etiqueta:normal;
-  }
-  :root[data-tipo="epilogue"]{
-    --display:"Epilogue", system-ui, sans-serif;
-    --etiqueta:"Epilogue", system-ui, sans-serif;
-    --ancho-display:normal; --ancho-etiqueta:normal;
-  }
+  /* Lo único que queda por decidir es con cuál cara va el titular grande y,
+     con él, el logotipo. El resto del sitio es Epilogue en los dos casos. */
+  :root[data-tipo="epilogue"]{ --display:"Epilogue", system-ui, sans-serif; }
 
   /* Fondos candidatos. Solo aplican al modo noche: los otros tres modos ya
      traen su propio fondo por definición. Los cuatro verificados AA. */
@@ -256,7 +242,7 @@
   .propio{ text-transform:none; }
 
   .seccion h2{
-    font-family:var(--display); font-stretch:var(--ancho-display);
+    font-family:var(--titulo);
     font-weight:var(--peso-display);
     font-size:clamp(24px, 3.4vw, 32px);
     letter-spacing:-.01em;
@@ -349,6 +335,31 @@
   /* Solo recibe clics cuando ya es logotipo: a pantalla completa taparia
      todo lo que hay debajo. */
   .wordmark-fijo[data-posado="true"] span{ pointer-events:auto; cursor:pointer; }
+
+  /* Indicio de scroll. Vive en la franja que la escena le reserva entre las
+     gafas y la palabra, y se apaga apenas empieza el recorrido. */
+  .pista-scroll{
+    position:fixed; left:0; right:0; z-index:44;
+    top:calc(var(--palabra-cima, 70vh) - 46px);
+    display:flex; justify-content:center; align-items:center; gap:11px;
+    pointer-events:none;
+    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
+    font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--texto-tenue);
+    transition:opacity .3s ease;
+  }
+  .pista-scroll[hidden]{ display:none; }
+  .pista-scroll .riel{
+    position:relative; width:1px; height:22px; background:var(--linea); overflow:hidden;
+  }
+  .pista-scroll .riel::after{
+    content:""; position:absolute; left:0; top:0; width:1px; height:9px;
+    background:var(--hueso); animation:pista-baja 1.9s ease-in-out infinite;
+  }
+  @keyframes pista-baja{ 0%{transform:translateY(-9px)} 62%,100%{transform:translateY(22px)} }
+  @media (prefers-reduced-motion:reduce){
+    .pista-scroll .riel::after{ animation:none; height:22px; background:var(--texto-tenue); }
+  }
   /* El carrito queda anclado a la derecha aunque el logotipo del nav esté
      oculto: con space-between y un solo hijo se iría a la izquierda. */
   .carrito-btn{ margin-left:auto; }
@@ -473,7 +484,7 @@
   .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
   .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
   .ficha h3{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:19px;
+    font-family:var(--titulo); font-weight:var(--peso-display); font-size:19px;
     letter-spacing:-.01em;
     margin:0 0 4px;
   }
@@ -481,7 +492,7 @@
   .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
   .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
   .precio{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
+    font-family:var(--titulo); font-weight:var(--peso-display);
     font-size:23px; letter-spacing:-.01em;
     font-variant-numeric:tabular-nums;
   }
@@ -495,7 +506,7 @@
   .combo{ background:var(--noche); }
   .combo .combo-grid{ display:grid; gap:24px; }
   .combo h3{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:26px;
+    font-family:var(--titulo); font-weight:var(--peso-display); font-size:26px;
     letter-spacing:0; margin:0 0 8px;
   }
   .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
@@ -633,7 +644,7 @@
   .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
 
   .producto-titulo{
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display); font-size:clamp(28px, 6vw, 42px);
+    font-family:var(--titulo); font-weight:var(--peso-display); font-size:clamp(28px, 6vw, 42px);
     letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance;
   }
   .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
@@ -763,17 +774,16 @@
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
 <div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
+<div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span class="riel"></span><span>Desliza</span></div>
 
 <div class="banco" id="banco">
   <button class="banco-cerrar" id="bancoCerrar" type="button" aria-label="Ocultar el banco de pruebas">&times;</button>
-  <h4>Titulares</h4>
-  <div class="banco-fila" role="group" aria-label="Tipografia de titulares">
+  <h4>Titular grande y logotipo</h4>
+  <div class="banco-fila" role="group" aria-label="Cara del titular grande">
     <button type="button" data-tipo-set="lora">Lora</button>
-    <button type="button" data-tipo-set="sora">Sora</button>
     <button type="button" data-tipo-set="epilogue">Epilogue</button>
-    <button type="button" data-tipo-set="archivo">Archivo</button>
   </div>
-  <h4>Grosor de los titulares</h4>
+  <h4>Grosor del titular grande</h4>
   <div class="banco-fila" role="group" aria-label="Grosor de los titulares">
     <button type="button" data-peso-set="300">300</button>
     <button type="button" data-peso-set="400">400</button>
@@ -1217,7 +1227,9 @@ function cargar3D() {
   import('./assets/js/propuesta.js')
     .then(m => m.iniciarEscena(canvas, document.getElementById('historia'),
                                 document.querySelectorAll('.panel[data-lente]')))
-    .catch(() => {});
+    /* Se traga el fallo a propósito —el 3D es una capa encima— pero deja
+       rastro: un error dentro del módulo mataba la escena sin decir nada. */
+    .catch(e => console.warn('RELIEF: la escena 3D no cargó.', e));
 })();
 
 /* ---------------- Modos de visualización ----------------
@@ -1413,6 +1425,7 @@ function navegar() {
      aparece el logotipo estático del nav. */
   const enHome = nueva === 'home';
   document.getElementById('wordmarkFijo').hidden = !enHome;
+  document.getElementById('pistaScroll').hidden = !enHome;
   document.getElementById('escenaFija').hidden = !enHome;
   document.getElementById('marcaNav').hidden = enHome;
   document.body.dataset.vista = enHome ? 'home' : 'interna';
@@ -1906,6 +1919,7 @@ navegar();
   const marco   = document.getElementById('wordmarkFijo');
   const palabra = document.getElementById('palabraHero');
   const nav     = document.querySelector('.nav');
+  const pista   = document.getElementById('pistaScroll');
   if (!marco || !palabra) return;
 
   const BASE      = 100;   // tamaño de referencia solo para medir
@@ -1995,6 +2009,11 @@ navegar();
     /* La escena 3D sigue este mismo avance para bajar y crecer a medida que
        la palabra le devuelve la pantalla. */
     window.__morfo = t;
+    /* El indicio ya cumplió apenas el recorrido arranca. Se apaga contra el
+       scroll crudo y no contra t: la curva suave arranca casi plana y el
+       indicio se quedaba encendido medio viewport. */
+    if (pista) pista.style.opacity =
+      String(Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.18)));
     const escala = escalaGrande + (escalaChica - escalaGrande) * t;
     const y      = yInicio + (yFin - yInicio) * t;
     palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;

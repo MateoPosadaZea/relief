@@ -36,6 +36,10 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const relleno = new THREE.DirectionalLight(0xffffff, 0.55);
   relleno.position.set(2.4, -1.2, 1.8); escena.add(relleno);
 
+  /* Giro de reposo del modelo y cuánto más lo abre el paralaje del cursor.
+     Van juntas y arriba porque las usan tanto el giro como el encuadre. */
+  const GIRO = 0.72, PARALAJE = 0.13;
+
   const colorAmbar = new THREE.Color(AMBAR);
   const colorRojo  = new THREE.Color(ROJO);
   const colorActual = new THREE.Color(AMBAR);
@@ -49,6 +53,13 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const manual = { x: 0, y: 0 };
   const manualSuave = { x: 0, y: 0 };
   let arrastrando = false, ultimoX = 0, ultimoY = 0;
+
+  /* Paralaje de cursor: el modelo acompaña al puntero apenas unos grados, lo
+     suficiente para que se sienta vivo antes de que nadie haga scroll. Se
+     suma al giro por scroll y al arrastre, no los reemplaza. */
+  const raton = { x: 0, y: 0 };
+  const ratonSuave = { x: 0, y: 0 };
+  const GIRO_RATON_Y = PARALAJE, GIRO_RATON_X = 0.08;
 
   /* Composición: las gafas arriba, la palabra abajo. La palabra publica en
      --palabra-cima dónde empieza su tinta; el modelo se ajusta a la banda que
@@ -65,11 +76,12 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const dim  = caja.getSize(new THREE.Vector3());
   const centro = caja.getCenter(new THREE.Vector3());
   /* Girado sobre Y, el ancho aparente mezcla las dos dimensiones
-     horizontales. Se encuadra por el giro de reposo (-0.72 rad), que es el
-     más abierto del recorrido; usar el máximo de las dos sería encuadrar por
-     un giro que nunca ocurre y dejaría el modelo innecesariamente chico. */
-  const GIRO = 0.72;
-  const anchoModelo = dim.x * Math.cos(GIRO) + dim.z * Math.sin(GIRO);
+     horizontales. Se encuadra por el giro más ancho que el modelo llega a
+     tener: el de reposo (0.72 rad) más lo que le suma el paralaje del cursor.
+     Usar el máximo de x y z sería encuadrar por un giro que nunca ocurre y
+     dejaría el modelo innecesariamente chico. */
+  const anchoEn = g => dim.x * Math.abs(Math.cos(g)) + dim.z * Math.abs(Math.sin(g));
+  const anchoModelo = Math.max(anchoEn(GIRO - PARALAJE), anchoEn(GIRO + PARALAJE));
   const altoModelo  = dim.y;
 
   let escalaBanda = 1, escalaPlena = 1, subida = 0;
@@ -89,7 +101,10 @@ export function iniciarEscena(canvas, contenedor, paneles) {
        de la palabra. Sin palabra medida todavía llega hasta abajo, y la escena
        se compone como si el wordmark no existiera. */
     const techo = parseFloat(raiz.getPropertyValue('--alto-nav')) || 0;
-    const piso  = (cima > 40 && cima < h) ? cima : h;
+    /* Entre las gafas y la palabra va el indicio de scroll: esa franja no es
+       espacio de la escena. */
+    const PISTA = 56;
+    const piso  = (cima > 40 && cima < h) ? cima - PISTA : h;
     const util  = Math.max(80, piso - techo);
 
     const alturaMundo = 2 * Math.tan(camara.fov * Math.PI / 360) * camara.position.z;
@@ -141,8 +156,10 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     /* El modelo no está centrado en su origen: se compensa su propio centro
        antes de subirlo a la banda. */
     gafas.position.y = -centro.y * escala + subida * cede;
-    gafas.rotation.y = -0.72 + progreso * 0.72 + manualSuave.y;
-    gafas.rotation.x = 0.20 - progreso * 0.14 + manualSuave.x;
+    ratonSuave.x += (raton.x - ratonSuave.x) * 0.06;
+    ratonSuave.y += (raton.y - ratonSuave.y) * 0.06;
+    gafas.rotation.y = -0.72 + progreso * 0.72 + manualSuave.y + ratonSuave.y;
+    gafas.rotation.x = 0.20 - progreso * 0.14 + manualSuave.x + ratonSuave.x;
     gafas.rotation.z = 0.05 - progreso * 0.05;
     cristal.color.copy(colorActual);
     cristal.emissive.copy(colorActual);
@@ -171,6 +188,19 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     ultimoX = ev.clientX; ultimoY = ev.clientY;
     if (quietud.matches) dibujar();
   });
+  /* Solo donde hay puntero de verdad, y nunca con movimiento reducido: es
+     movimiento decorativo y nadie lo pidió. En táctil, además, pointermove
+     solo llega mientras se toca, que ya es el arrastre. */
+  if (!quietud.matches && window.matchMedia('(hover: hover)').matches) {
+    window.addEventListener('pointermove', ev => {
+      if (arrastrando) return;
+      raton.y = ((ev.clientX / window.innerWidth)  - 0.5) * 2 * GIRO_RATON_Y;
+      raton.x = ((ev.clientY / window.innerHeight) - 0.5) * 2 * GIRO_RATON_X;
+    }, { passive: true });
+    /* Si el puntero se va de la ventana, el modelo vuelve a su sitio. */
+    document.addEventListener('pointerleave', () => { raton.x = raton.y = 0; });
+  }
+
   const soltar = () => { arrastrando = false; };
   canvas.addEventListener('pointerup', soltar);
   canvas.addEventListener('pointercancel', soltar);

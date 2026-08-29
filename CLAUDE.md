@@ -86,16 +86,22 @@ Es el único riesgo de capital aprobado del proyecto.
 | Texto tenue | `#8A8A90` | Secundario |
 
 - ⚠ El rojo `#D91F26` es aproximado del JPEG. **Confirmar el hex exacto del SVG/AI del logo.**
-- **Tipografía**: dos familias, las dos sans y las dos SIL OFL, desde Google Fonts.
-  - **Archivo** (display): titulares, nav, etiquetas y precios. Tiene eje de ancho:
-    `font-stretch:125%` para las etiquetas en mayúsculas (lee a rotulación técnica)
-    y `112%` con peso 600 para los titulares.
-  - **Instrument Sans** (texto): párrafos, descripciones, formularios.
+- **Tipografía**: dos familias, las dos SIL OFL, desde Google Fonts.
+  - **Lora** (serif, display): solo los titulares **supergrandes** — el hero, el
+    logotipo y los cierres. Es lo que le da clase a la marca y la saca del molde
+    sans-serif de toda la categoría.
+  - **Epilogue** (sans): todo lo demás — titulares de sección, párrafos,
+    descripciones, rótulos en mayúscula, botones y formularios.
+  - Se implementan como tres tokens: `--display` (Lora), `--titulo` y `--texto`
+    (Epilogue). `--peso-display` calibra el grosor de los titulares: cada cara
+    pesa distinto y el 600 de una no es el 600 de la otra.
   - Los precios llevan `font-variant-numeric: tabular-nums` para que las cifras
     alineen en columna.
+  - ⚠ Falta decidir con cuál de las dos va el **logotipo**. El banco de pruebas
+    de la propuesta deja alternarlo.
   ⚠ Supply Mono (Pangram Pangram) fue el referente visual pero es **de pago** para uso
-  comercial. NO usar. Geist Mono + Geist Sans fue el par anterior: se descartó por
-  falta de carácter.
+  comercial. NO usar. Geist Mono + Geist Sans se descartó por falta de carácter, y
+  Archivo + Instrument Sans fue el par intermedio: se reemplazó por este.
 - Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
 - Favicon / app icon: isotipo RLF rojo.
 
