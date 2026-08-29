@@ -282,6 +282,96 @@
      home ya lleva a todas estas secciones por scroll. */
   @media (max-width:760px){ .menu{ display:none; } }
 
+  /* ---------- Menú móvil ----------
+     El botón es dos líneas rectas que se cruzan: mismo vocabulario que el
+     isotipo, y una sola pieza que gira en vez de tres que se recolocan. */
+  .menu-btn{
+    display:none; background:none; border:0; padding:8px; margin-left:-8px;
+    cursor:pointer; color:var(--hueso); line-height:0;
+  }
+  .menu-icono{ display:block; width:22px; height:14px; position:relative; }
+  .menu-icono i{
+    position:absolute; left:0; right:0; height:1.5px; background:currentColor;
+    transition:transform .34s cubic-bezier(.5,0,.2,1), opacity .2s ease;
+  }
+  .menu-icono i:first-child{ top:0; }
+  .menu-icono i:last-child{ bottom:0; }
+  /* Las dos líneas se juntan y giran: la de arriba baja, la de abajo sube. */
+  .menu-btn[aria-expanded="true"] .menu-icono i:first-child{ transform:translateY(6.25px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] .menu-icono i:last-child{ transform:translateY(-6.25px) rotate(-45deg); }
+  .menu-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
+  @media (max-width:759px){ .menu-btn{ display:block; } }
+
+  .menu-movil{
+    position:fixed; inset:0; z-index:80;
+    background:var(--noche);
+    display:flex; flex-direction:column;
+    padding:calc(var(--alto-nav, 60px) + 20px) 0 44px;
+    /* Sin justify-content:flex-end. Con el contenido más alto que la pantalla,
+       alinear al final deja el principio de la lista fuera del alcance del
+       scroll —el primer enlace no se podía ver ni tocar. */
+    overflow-y:auto; overscroll-behavior:contain;
+    opacity:0; visibility:hidden;
+    /* La visibilidad espera a que termine el desvanecido para no cortarlo. */
+    transition:opacity .28s ease, visibility 0s .28s;
+  }
+  .menu-movil[data-abierto="true"]{
+    opacity:1; visibility:visible;
+    transition:opacity .28s ease, visibility 0s 0s;
+  }
+  .menu-movil-caja{ display:flex; flex-direction:column; gap:36px; }
+
+  .menu-movil-lista{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+  .menu-movil-lista li{ border-bottom:1px solid var(--linea); }
+  .menu-movil-lista li:first-child{ border-top:1px solid var(--linea); }
+  .menu-movil-lista a{
+    display:block; padding:16px 0; text-decoration:none; color:var(--hueso);
+    font-family:var(--display); font-weight:600; font-size:clamp(24px,7vw,32px);
+    letter-spacing:-.02em; text-transform:lowercase;
+  }
+  .menu-movil-lista a:active{ color:var(--texto-tenue); }
+
+  .menu-movil-pie{ display:flex; flex-direction:column; gap:26px; }
+  .menu-bloque{ display:flex; flex-direction:column; gap:6px; }
+  .menu-bloque .label{ margin:0 0 4px; }
+  .menu-dato{ margin:0 0 6px; color:var(--texto-tenue); font-size:14px; max-width:40ch; }
+  .menu-enlace{
+    color:var(--hueso); text-decoration:none; font-size:15px;
+    display:flex; align-items:center; gap:8px; padding:3px 0;
+  }
+  .menu-enlace:active{ color:var(--texto-tenue); }
+  .menu-pie-nota{ margin:0; color:var(--texto-tenue); font-size:12.5px; }
+
+  /* Entrada escalonada de arriba abajo; salida escalonada al revés y más
+     rápida, para que cerrar no se sienta lento. */
+  .menu-movil-lista li, .menu-bloque, .menu-pie-nota{
+    opacity:0; transform:translateY(14px);
+    transition:opacity .2s ease, transform .2s ease;
+    transition-delay:calc(.018s * (7 - var(--i, 0)));
+  }
+  .menu-movil[data-abierto="true"] .menu-movil-lista li,
+  .menu-movil[data-abierto="true"] .menu-bloque,
+  .menu-movil[data-abierto="true"] .menu-pie-nota{
+    opacity:1; transform:none;
+    transition:opacity .42s ease, transform .42s cubic-bezier(.22,.61,.36,1);
+    transition-delay:calc(.055s * var(--i, 0) + .06s);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .menu-icono i, .menu-movil, .menu-movil *{ transition:none !important; }
+  }
+  /* Por encima de 760 px el menú de la barra ya está: el panel no existe. */
+  @media (min-width:760px){ .menu-movil{ display:none; } }
+
+  /* La barra sube por encima del panel mientras está abierto. No basta con
+     subirle el z-index al botón: la barra tiene su propio contexto de apilado
+     y sus hijos no pueden salir de él, así que el botón quedaba tapado y en un
+     teléfono no había forma de cerrar. Y el wordmark gigante y el indicio de
+     scroll no pintan nada encima de un menú a pantalla completa. */
+  body[data-menu="abierto"] .nav{ z-index:90; }
+  body[data-menu="abierto"] .nav[data-posado="false"]{ background:var(--noche); }
+  body[data-menu="abierto"] .wordmark-fijo,
+  body[data-menu="abierto"] .pista-scroll{ display:none; }
+
   /* Solo el icono: la palabra "carrito" no dice nada que el dibujo no diga. */
   .carrito-btn{
     background:none; border:1px solid var(--linea); color:var(--hueso);
@@ -851,6 +941,10 @@
 <!-- 1. NAV -->
 <header class="nav">
   <div class="wrap">
+    <button class="menu-btn" id="menuBtn" type="button"
+            aria-expanded="false" aria-controls="menuMovil" aria-label="Abrir el menú">
+      <span class="menu-icono" aria-hidden="true"><i></i><i></i></span>
+    </button>
     <nav class="menu" aria-label="Secciones del sitio">
       <a href="#lentes">Los lentes</a>
       <a href="#materiales">Materiales</a>
@@ -881,6 +975,33 @@
     </div>
   </div>
 </header>
+
+<nav class="menu-movil" id="menuMovil" data-abierto="false" aria-label="Menú">
+  <div class="wrap menu-movil-caja">
+    <ul class="menu-movil-lista" style="--n:5">
+      <li style="--i:0"><a href="#lentes">Los lentes</a></li>
+      <li style="--i:1"><a href="#materiales">Materiales</a></li>
+      <li style="--i:2"><a href="#combo">El combo</a></li>
+      <li style="--i:3"><a href="#envios">Envíos y pagos</a></li>
+      <li style="--i:4"><a href="#faq">Preguntas</a></li>
+    </ul>
+
+    <div class="menu-movil-pie">
+      <div class="menu-bloque" style="--i:5">
+        <p class="label">Soporte</p>
+        <p class="menu-dato">Escribimos por WhatsApp el mismo día, de 9 a 7.</p>
+        <a class="menu-enlace" data-contacto="whatsapp">WhatsApp</a>
+        <a class="menu-enlace" data-contacto="correo">Correo</a>
+      </div>
+      <div class="menu-bloque" style="--i:6">
+        <p class="label">Redes</p>
+        <a class="menu-enlace" data-contacto="instagram">Instagram</a>
+        <a class="menu-enlace" data-contacto="tiktok">TikTok</a>
+      </div>
+      <p class="menu-pie-nota" style="--i:7">RELIEF · Bogotá · Envíos a todo el país en 2-3 días</p>
+    </div>
+  </div>
+</nav>
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
 <div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
@@ -1197,9 +1318,9 @@
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
-      <a href="#" id="linkWhatsapp" rel="noopener">WhatsApp <span class="tbd">[TBD]</span></a>
-      <a href="#" id="linkInstagram" rel="noopener">Instagram <span class="tbd">[TBD]</span></a>
-      <a href="#" id="linkCorreo">Correo <span class="tbd">[TBD]</span></a>
+      <a data-contacto="whatsapp">WhatsApp</a>
+      <a data-contacto="instagram">Instagram</a>
+      <a data-contacto="correo">Correo</a>
     </div>
     <small>RELIEF · Bogotá, Colombia · <span class="tbd">[TBD] Razón social y NIT</span></small>
   </div>
@@ -1442,6 +1563,54 @@ function cargar3D() {
 })();
 
 
+/* ---------------- Menú móvil ----------------
+   Panel a pantalla completa. Se cierra al elegir un destino, con Escape y al
+   pasar a escritorio, donde el menú de la barra lo reemplaza.
+------------------------------------------------- */
+(function(){
+  const btn   = document.getElementById('menuBtn');
+  const panel = document.getElementById('menuMovil');
+  if (!btn || !panel) return;
+
+  let devolverFoco = null;
+
+  function abrir(si) {
+    panel.dataset.abierto = String(si);
+    btn.setAttribute('aria-expanded', String(si));
+    btn.setAttribute('aria-label', si ? 'Cerrar el menú' : 'Abrir el menú');
+    /* El fondo no debe poder desplazarse detrás del panel. */
+    document.body.style.overflow = si ? 'hidden' : '';
+    /* Lo lee el CSS para subir la barra por encima del panel y esconder el
+       wordmark mientras el menú está abierto. */
+    if (si) document.body.dataset.menu = 'abierto';
+    else delete document.body.dataset.menu;
+    if (si) {
+      devolverFoco = document.activeElement;
+      const primero = panel.querySelector('a');
+      if (primero) primero.focus({ preventScroll: true });
+    } else if (devolverFoco) {
+      devolverFoco.focus({ preventScroll: true });
+      devolverFoco = null;
+    }
+  }
+
+  btn.addEventListener('click', () => abrir(panel.dataset.abierto !== 'true'));
+
+  /* Elegir un destino cierra: son anclas de la misma página y si no, el panel
+     se queda encima de lo que acabas de pedir. */
+  panel.addEventListener('click', ev => { if (ev.target.closest('a')) abrir(false); });
+
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape' && panel.dataset.abierto === 'true') abrir(false);
+  });
+
+  /* Al ensanchar la ventana el panel desaparece por CSS; si se quedara
+     "abierto" el scroll del cuerpo seguiría bloqueado. */
+  window.matchMedia('(min-width:760px)').addEventListener('change', e => {
+    if (e.matches && panel.dataset.abierto === 'true') abrir(false);
+  });
+})();
+
 /* ---------------- Entrada de los paneles ----------------
    El texto aparece con su panel en vez de estar ya puesto. Sin JS o sin
    IntersectionObserver el CSS deja todo visible, así que no hay riesgo de
@@ -1611,6 +1780,34 @@ if (PRECIOS_PROVISIONALES) {
    Número en formato internacional sin +, para wa.me. Vacío = todavía no
    hay número: los botones de WhatsApp lo dicen en vez de romperse. */
 const WHATSAPP = '';
+
+/* Los demás contactos, vacíos hasta que existan. Un enlace con href="#" no es
+   un enlace pendiente: el router lo lee como "ir al inicio", así que mientras
+   no haya destino el elemento deja de ser enlace y se marca [TBD]. */
+const INSTAGRAM = '';                 // usuario, sin arroba
+const TIKTOK    = '';                 // usuario, sin arroba
+const CORREO    = '';
+
+function pintarContactos(){
+  const destino = {
+    whatsapp:  WHATSAPP  ? 'https://wa.me/' + WHATSAPP : '',
+    instagram: INSTAGRAM ? 'https://instagram.com/' + INSTAGRAM : '',
+    tiktok:    TIKTOK    ? 'https://tiktok.com/@' + TIKTOK : '',
+    correo:    CORREO    ? 'mailto:' + CORREO : ''
+  };
+  document.querySelectorAll('[data-contacto]').forEach(a => {
+    const url = destino[a.dataset.contacto] || '';
+    if (url) {
+      a.href = url;
+      if (a.dataset.contacto !== 'correo') { a.target = '_blank'; a.rel = 'noopener'; }
+      a.querySelectorAll('.tbd').forEach(t => t.remove());
+    } else {
+      a.removeAttribute('href');
+      if (!a.querySelector('.tbd')) a.insertAdjacentHTML('beforeend', ' <span class="tbd">[TBD]</span>');
+    }
+  });
+}
+pintarContactos();
 
 /* La altura del nav alimenta el scroll-margin de las anclas. Se remide al
    cambiar el tamaño porque el aviso pasa de una línea a dos. */
