@@ -233,6 +233,12 @@ de WhatsApp el paso 4 lo marca `[TBD]`.
 - [ ] Reporte de transmitancia espectral del proveedor (habilita o no las claims técnicas).
 - [ ] Fotos extra para la galería de cada producto (`*-frente`, `*-lateral`,
       `*-detalle`). La galería ya tiene los slots y cae al `[TBD]` sin ellas.
+- [ ] Foto del combo puesto (`combo-puesta.webp`). Las de ámbar y rojo ya están:
+      aparecen al pasar el cursor sobre la tarjeta, cruzándose con la foto de
+      producto. El slot del combo existe y espera el archivo.
+      ⚠ Las dos actuales son generadas: la montura no es la real. Sirven de
+      ambiente, no de foto de producto. Rehacerlas con las gafas reales cuando
+      llegue el pedido.
 - [ ] Fotos de producto (`ambar.webp`, `rojo.webp`, `combo.webp`) y de marca
       (`hero.webp`, `trabajo.webp`, `dormir.webp`, `og.png`). Los slots ya
       existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
