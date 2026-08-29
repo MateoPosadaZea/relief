@@ -40,8 +40,11 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   gafas.traverse(o => {
     if (!o.isMesh) return;
     o.material = o.material.clone();
-    o.material.transparent = true;
-    mallas.push({ objeto: o, plena: o.material.opacity, atenuacion: 1 });
+    /* Se recuerda si la pieza YA era translúcida (el cristal lo es). A las
+       opacas no se les toca `transparent` mientras no estén atenuadas:
+       marcarlas todas rompía el orden de dibujo y rayaba los bordes. */
+    mallas.push({ objeto: o, plena: o.material.opacity,
+                  translucida: o.material.transparent, atenuacion: 1 });
   });
 
   escena.add(new THREE.AmbientLight(0xffffff, 0.5));
@@ -60,7 +63,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   const colorRojo  = new THREE.Color(ROJO);
   const colorActual = new THREE.Color(AMBAR);
 
-  const marco3D = canvas.parentElement;
   const quietud = window.matchMedia('(prefers-reduced-motion: reduce)');
   let progreso = 0;
   let visible = true, animando = false;
@@ -113,6 +115,9 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   let zoom = 1, zoomObj = 1;
   let objetivoColor = null;
   let panelPrevio = null;
+  /* Giro que acompaña al scroll dentro de cada panel. */
+  let deriva = 0, derivaSuave = 0;
+  const DERIVA = 0.30;
 
   function medir() {
     const r = canvas.getBoundingClientRect();
@@ -147,13 +152,15 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     escalaBanda = encuadre(w * 0.86, util * 0.62);
     subida = (h / 2 - (techo + piso) / 2) / porUnidad;
 
-    /* Historia: en ancho comparte la pantalla con el texto —una mitad cada
-       uno— y en angosto se queda arriba mientras el texto baja. */
+    /* Historia: el modelo va centrado y arriba, y el texto abajo. La banda
+       alta es suya entera, así que puede ser bastante más grande de lo que era
+       cuando compartía el ancho con el texto. */
     angosto = w < 900;
-    escalaHistoria = angosto ? encuadre(w * 0.86, h * 0.34)
-                             : encuadre(w * 0.42, h * 0.62);
-    desplazX  = angosto ? 0 : (w * 0.25) / porUnidad;
-    subeHist  = angosto ? (h / 2 - h * 0.23) / porUnidad : 0;
+    const CENTRO = angosto ? 0.30 : 0.34;      // dónde queda su centro, en alto
+    escalaHistoria = angosto ? encuadre(w * 0.88, h * 0.34)
+                             : encuadre(w * 0.62, h * 0.42);
+    desplazX = 0;
+    subeHist = (h / 2 - h * CENTRO) / porUnidad;
   }
 
   function leerProgreso() {
@@ -169,13 +176,18 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   function panelActual() {
     if (!paneles || !paneles.length) return null;
     const medio = window.innerHeight / 2;
-    let elegido = null, cerca = Infinity;
+    let elegido = null, cerca = Infinity, dist = 0;
     for (const p of paneles) {
       const r = p.getBoundingClientRect();
       if (r.bottom < 0 || r.top > window.innerHeight) continue;
-      const d = Math.abs((r.top + r.bottom) / 2 - medio);
-      if (d < cerca) { cerca = d; elegido = p; }
+      const centro = (r.top + r.bottom) / 2;
+      const d = Math.abs(centro - medio);
+      if (d < cerca) { cerca = d; elegido = p; dist = (centro - medio) / window.innerHeight; }
     }
+    /* Cuánto falta o sobra para que el panel esté centrado, de -0.5 a 0.5. De
+       ahí sale el giro que acompaña al scroll: sin él el modelo se queda
+       congelado entre panel y panel y el scroll no parece hacer nada. */
+    deriva = Math.max(-0.5, Math.min(0.5, dist));
     return elegido;
   }
 
@@ -190,8 +202,15 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     const a = anclaDelPanel(p);
     focoObj.set(a.punto[0], a.punto[1], a.punto[2]);
     giroPiezaObj = a.giroY; inclinaObj = a.giroX; zoomObj = a.zoom;
+    /* El lente conserva su color salvo que el paso trate del lente. Atenuarlo
+       en modo día lo vuelve crema y deja de parecer ámbar: el color del lente
+       es la identidad del producto, no un detalle de la escena. */
+    const hablaDelLente = !!a.piezas && a.piezas.some(n => n.startsWith('cristal'));
     for (const m of mallas) {
-      m.atenuacion = !a.piezas || a.piezas.includes(m.objeto.name) ? 1 : 0.3;
+      const esLente = m.objeto.name.startsWith('cristal');
+      const encendida = !a.piezas || a.piezas.includes(m.objeto.name);
+      m.atenuacion = encendida ? 1
+                   : (esLente && !hablaDelLente) ? 1 : 0.38;
     }
   }
 
@@ -218,6 +237,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     ratonSuave.x += (raton.x - ratonSuave.x) * kMano;
     ratonSuave.y += (raton.y - ratonSuave.y) * kMano;
 
+    derivaSuave += (deriva - derivaSuave) * kMano;
     foco.lerp(focoObj, kPieza);
     giroPieza += (giroPiezaObj - giroPieza) * kPieza;
     inclina   += (inclinaObj   - inclina)   * kPieza;
@@ -231,7 +251,8 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
     /* El giro del hero cede el mando al de la pieza en cuanto la palabra suelta
        la pantalla. Encima van siempre el arrastre y el cursor. */
-    gafas.rotation.y = (-0.72 + progreso * 0.72) * cede + giroPieza * dentro
+    gafas.rotation.y = (-0.72 + progreso * 0.72) * cede
+                     + (giroPieza + derivaSuave * DERIVA) * dentro
                      + manualSuave.y + ratonSuave.y;
     gafas.rotation.x = (0.20 - progreso * 0.14) * cede + inclina * dentro
                      + manualSuave.x + ratonSuave.x;
@@ -252,17 +273,18 @@ export function iniciarEscena(canvas, contenedor, paneles) {
       /* La atenuación solo cuenta dentro del recorrido: en el hero se ve el
          modelo entero, sin piezas apagadas. */
       const meta = m.plena * (1 - (1 - m.atenuacion) * dentro);
-      m.objeto.material.opacity += (meta - m.objeto.material.opacity) * kPieza;
+      const mat = m.objeto.material;
+      mat.opacity += (meta - mat.opacity) * kPieza;
+      const conAlfa = m.translucida || mat.opacity < 0.995;
+      if (mat.transparent !== conAlfa) { mat.transparent = conAlfa; mat.needsUpdate = true; }
+      /* Se sigue escribiendo profundidad aunque haya alfa: sin esto las caras
+         que se tocan (la barra sobre el aro) se dibujan en orden arbitrario. */
+      mat.depthWrite = true;
       if (m.objeto.name.startsWith('cristal')) {
-        m.objeto.material.color.copy(colorActual);
-        m.objeto.material.emissive.copy(colorActual);
+        mat.color.copy(colorActual);
+        mat.emissive.copy(colorActual);
       }
     }
-
-    /* Ya instalado en su mitad, el lienzo se recorta ahí: acercarse a una pieza
-       hace que el resto del modelo se salga de cuadro, y sin recorte ese
-       derrame cae encima del texto. */
-    if (marco3D) marco3D.dataset.mitad = dentro > 0.98 ? 'si' : 'no';
 
     renderer.render(escena, camara);
   }

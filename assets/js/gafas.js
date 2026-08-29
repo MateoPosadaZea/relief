@@ -61,11 +61,11 @@ const MEDIO = SEPARACION + ANCHO / 2;      // borde exterior del frente
    `piezas` nombra las mallas que quedan encendidas; el resto se atenúa. */
 export const ANCLAS = {
   conjunto: { punto:[0, 0, 0],                            giroY:-0.55, giroX: 0.16, zoom:1.00, piezas:null },
-  montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.30, piezas:['aro-i','aro-d','barra','filo','puente'] },
-  lente:    { punto:[SEPARACION, 0, 0],                   giroY:-0.08, giroX: 0.04, zoom:2.00, piezas:['cristal-d','aro-d'] },
-  puente:   { punto:[0, ALTO/2 - 0.125, 0],               giroY:-0.12, giroX: 0.26, zoom:2.40, piezas:['puente','barra'] },
-  bisagra:  { punto:[MEDIO - 0.02, ALTO/2 - 0.10, 0],     giroY:-1.00, giroX: 0.20, zoom:2.60, piezas:['bisagra-d','aro-d'] },
-  varilla:  { punto:[MEDIO + 0.30, ALTO/2 - 0.28, -0.55], giroY:-1.35, giroX: 0.12, zoom:1.45, piezas:['varilla-d','bisagra-d'] }
+  montura:  { punto:[0, 0, 0],                            giroY:-0.34, giroX: 0.12, zoom:1.12, piezas:['aro-i','aro-d','barra','filo','puente'] },
+  lente:    { punto:[SEPARACION, 0, 0],                   giroY:-0.08, giroX: 0.04, zoom:1.32, piezas:['cristal-d','aro-d'] },
+  puente:   { punto:[0, ALTO/2 - 0.125, 0],               giroY:-0.12, giroX: 0.26, zoom:1.40, piezas:['puente','barra'] },
+  bisagra:  { punto:[MEDIO - 0.02, ALTO/2 - 0.10, 0],     giroY:-1.00, giroX: 0.20, zoom:1.40, piezas:['bisagra-d','aro-d'] },
+  varilla:  { punto:[MEDIO + 0.30, ALTO/2 - 0.28, -0.55], giroY:-1.35, giroX: 0.12, zoom:1.10, piezas:['varilla-d','bisagra-d'] }
 };
 
 export function construirGafas() {
@@ -133,7 +133,9 @@ export function construirGafas() {
   const barra = new THREE.Mesh(
     extruir(rectangulo(MEDIO * 2, 0.088, 0.022), FONDO, true), montura
   );
-  barra.position.set(0, ALTO / 2 - 0.016, -FONDO / 2);
+  /* Medio milímetro por delante del aro. Con la misma z sus caras frontales
+     quedaban coplanares y el z-buffer las rayaba: ese era el glitch. */
+  barra.position.set(0, ALTO / 2 - 0.016, -FONDO / 2 + 0.004);
   barra.name = 'barra';
   gafas.add(barra);
 
@@ -141,7 +143,9 @@ export function construirGafas() {
   const filo = new THREE.Mesh(
     extruir(rectangulo(MEDIO * 2 - 0.01, 0.020, 0.008), FONDO * 0.92, false), canto
   );
-  filo.position.set(0, ALTO / 2 + 0.030, -FONDO * 0.46);
+  /* El canto se apoya encima de la barra en vez de atravesarla: se cruzaban
+     entre y=+0.020 e y=+0.028 y ahí también se rayaban. */
+  filo.position.set(0, ALTO / 2 + 0.042, -FONDO * 0.46);
   filo.name = 'filo';
   gafas.add(filo);
 

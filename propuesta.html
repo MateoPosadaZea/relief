@@ -330,14 +330,6 @@
   .escena-fija{
     position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
   }
-  /* Ya instalada en su mitad, la escena se recorta ahí. Sin esto, acercarse a
-     una pieza derrama el resto del modelo sobre el texto de la izquierda.
-     En angosto no hay mitades: el lienzo sigue entero. */
-  @media (min-width:900px){
-    .escena-fija{ transition:clip-path .55s ease; }
-    .escena-fija[data-mitad="si"]{ clip-path:inset(0 0 0 50%); }
-  }
-  @media (prefers-reduced-motion:reduce){ .escena-fija{ transition:none; } }
   #gafas3d{
     position:absolute; inset:0; width:100%; height:100%; display:block;
     opacity:0; transition:opacity 1s ease; pointer-events:auto;
@@ -413,18 +405,34 @@
   /* La primera pantalla es el escenario del wordmark: va vacía a propósito. */
   .panel--apertura{ min-height:190vh; align-items:flex-end; padding-bottom:16vh; }
 
-  /* El reparto de la pantalla. El texto va SIEMPRE a la izquierda y el modelo
-     fijo a la derecha: alternando lados el ojo tiene que buscar dónde empieza a
-     leer en cada panel, y eso interrumpe más que cualquier movimiento.
-     En angosto no hay dos mitades, así que el texto baja y el modelo se queda
-     arriba. La escena lee esto y se encuadra en lo que le queda. */
-  @media (min-width:900px){
-    .panel > .wrap{ display:flex; flex-direction:column; align-items:flex-start; }
-    .panel > .wrap > *{ max-width:min(44%, 480px); }
-  }
+  /* El reparto de la pantalla. El modelo va centrado y arriba; el texto abajo,
+     en una columna lateral. La separación es VERTICAL y no horizontal: así el
+     modelo puede ser grande y acercarse a una pieza sin invadir la lectura.
+     El lado del texto cambia por grupos de dos o tres paneles, no en cada uno:
+     saltar de lado doce veces marea más que cualquier movimiento. */
+  .panel{ align-items:flex-end; padding-top:44vh; padding-bottom:11vh; }
+  .panel--apertura{ padding-top:14vh; }
+  .panel > .wrap{ display:flex; flex-direction:column; align-items:flex-start; }
+  .panel > .wrap > *{ max-width:min(38%, 440px); }
+  .panel[data-lado="dcha"] > .wrap{ align-items:flex-end; text-align:right; }
   @media (max-width:899px){
-    .panel{ align-items:flex-end; padding-top:46vh; padding-bottom:14vh; }
-    .panel--apertura{ padding-top:14vh; }
+    .panel > .wrap > *{ max-width:100%; }
+    /* En angosto no hay lados: todo el texto se lee desde el mismo margen. */
+    .panel[data-lado="dcha"] > .wrap{ align-items:flex-start; text-align:left; }
+  }
+
+  /* Entrada del texto. Aparece con el panel, escalonado, y sin desplazamiento
+     lateral: el movimiento horizontal es el que marea. */
+  .panel > .wrap > *{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1);
+  }
+  .panel[data-visible="true"] > .wrap > *{ opacity:1; transform:none; }
+  .panel[data-visible="true"] > .wrap > :nth-child(2){ transition-delay:.09s; }
+  .panel[data-visible="true"] > .wrap > :nth-child(3){ transition-delay:.18s; }
+  .panel[data-visible="true"] > .wrap > :nth-child(4){ transition-delay:.27s; }
+  @media (prefers-reduced-motion:reduce){
+    .panel > .wrap > *{ opacity:1; transform:none; transition:none; }
   }
 
   /* Los paneles de pieza son un tramo más rápido dentro del mismo recorrido:
@@ -876,7 +884,7 @@
         <div class="wrap"><p class="pista">Baja para ver</p></div>
       </section>
 
-      <section class="panel" data-pieza="conjunto" data-lente="ambar">
+      <section class="panel" data-pieza="conjunto" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">11:47 PM</p>
           <p class="panel-texto">Le pasas horas a la pantalla.</p>
@@ -885,7 +893,7 @@
         </div>
       </section>
 
-      <section class="panel" data-pieza="conjunto" data-lente="ambar">
+      <section class="panel" data-pieza="conjunto" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">Somos RELIEF</p>
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
@@ -906,7 +914,7 @@
       </section>
 
       <!-- De aquí en adelante se desarma: el mismo recorrido, mirando de cerca. -->
-      <section class="panel panel--pieza" id="materiales" data-pieza="conjunto" data-lente="ambar">
+      <section class="panel panel--pieza" id="materiales" data-pieza="conjunto" data-lente="ambar" data-lado="dcha">
         <div class="wrap">
           <p class="hora">De qué está hecha</p>
           <p class="panel-texto">Seis piezas, y cada una decide algo.</p>
@@ -916,7 +924,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="montura" data-lente="ambar">
+      <section class="panel panel--pieza" data-pieza="montura" data-lente="ambar" data-lado="dcha">
         <div class="wrap">
           <p class="hora">La montura <span class="tbd">Por confirmar</span></p>
           <p class="panel-texto">Poliamida TR90.</p>
@@ -926,7 +934,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="puente" data-lente="ambar">
+      <section class="panel panel--pieza" data-pieza="puente" data-lente="ambar" data-lado="dcha">
         <div class="wrap">
           <p class="hora">El puente</p>
           <p class="panel-texto">Lo único que sostiene el peso.</p>
@@ -935,7 +943,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="bisagra" data-lente="ambar">
+      <section class="panel panel--pieza" data-pieza="bisagra" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">La bisagra <span class="tbd">Por confirmar</span></p>
           <p class="panel-texto">La pieza que primero falla.</p>
@@ -945,7 +953,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="varilla" data-lente="ambar">
+      <section class="panel panel--pieza" data-pieza="varilla" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">La varilla</p>
           <p class="panel-texto">Lámina plana, no un tubo.</p>
@@ -955,7 +963,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="lente" data-lente="ambar">
+      <section class="panel panel--pieza" data-pieza="lente" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">El lente</p>
           <p class="panel-texto">El color <em>es</em> el filtro.</p>
@@ -966,7 +974,7 @@
       </section>
 
       <!-- Y vuelve la noche: las mismas dos piezas, ahora en su momento. -->
-      <section class="panel" data-pieza="lente" data-lente="ambar">
+      <section class="panel" data-pieza="lente" data-lente="ambar" data-lado="dcha">
         <div class="wrap">
           <p class="hora hora--ambar">12:30 AM</p>
           <p class="panel-texto">El ámbar es el del turno.</p>
@@ -975,7 +983,7 @@
         </div>
       </section>
 
-      <section class="panel" data-pieza="lente" data-lente="rojo">
+      <section class="panel" data-pieza="lente" data-lente="rojo" data-lado="dcha">
         <div class="wrap">
           <p class="hora hora--rojo">2:10 AM</p>
           <p class="panel-texto">El rojo es el del final.</p>
@@ -985,7 +993,7 @@
         </div>
       </section>
 
-      <section class="panel panel--pieza" data-pieza="conjunto" data-lente="rojo">
+      <section class="panel panel--pieza" data-pieza="conjunto" data-lente="rojo" data-lado="izq">
         <div class="wrap">
           <p class="hora">Cuánto filtra</p>
           <p class="panel-texto">Ese número todavía no lo tenemos.</p>
@@ -996,7 +1004,7 @@
         </div>
       </section>
 
-      <section class="panel" data-pieza="conjunto" data-lente="ambar">
+      <section class="panel" data-pieza="conjunto" data-lente="ambar" data-lado="izq">
         <div class="wrap">
           <p class="hora">Mañana, 9:00 AM</p>
           <p class="panel-texto">Sale de <span class="propio">Bogotá</span>, no de <span class="propio">Shenzhen</span>.</p>
@@ -1374,6 +1382,28 @@ function cargar3D() {
     .catch(e => console.warn('RELIEF: la escena 3D no cargó.', e));
 })();
 
+
+/* ---------------- Entrada de los paneles ----------------
+   El texto aparece con su panel en vez de estar ya puesto. Sin JS o sin
+   IntersectionObserver el CSS deja todo visible, así que no hay riesgo de
+   una página en blanco.
+------------------------------------------------------- */
+(function(){
+  const paneles = document.querySelectorAll('.panel');
+  if (!paneles.length) return;
+  if (!('IntersectionObserver' in window)) {
+    paneles.forEach(p => p.dataset.visible = 'true');
+    return;
+  }
+  const ojo = new IntersectionObserver(entradas => {
+    for (const e of entradas) {
+      /* Se marca al entrar y no se desmarca: releer hacia arriba no debería
+         volver a animar el texto que ya viste. */
+      if (e.isIntersecting) { e.target.dataset.visible = 'true'; ojo.unobserve(e.target); }
+    }
+  }, { rootMargin: '0px 0px -22% 0px' });
+  paneles.forEach(p => ojo.observe(p));
+})();
 
 /* ---------------- Modos de visualización ----------------
    El catálogo son dos lentes y el sitio son los mismos dos modos: el
