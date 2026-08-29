@@ -263,8 +263,8 @@
      sitio —centrado— porque el centro de la barra es suyo. */
   .marca{
     position:absolute; left:50%; transform:translateX(-50%);
-    font-family:var(--display); font-weight:600; font-size:17px;
-    letter-spacing:-.01em; text-transform:lowercase;
+    font-family:var(--display); font-weight:600; font-size:26px;
+    letter-spacing:-.01em; text-transform:lowercase; line-height:1;
     color:var(--hueso); text-decoration:none;
   }
   .marca:hover{ color:var(--texto-tenue); }
@@ -2170,7 +2170,7 @@ navegar();
   if (!marco || !palabra) return;
 
   const BASE      = 100;   // tamaño de referencia solo para medir
-  const ANCHO_NAV = 104;   // ancho final del logotipo, en px (techo)
+  const ANCHO_NAV = 76;    // ancho final del logotipo, en px (techo)
   const HUECO     = 12;    // aire minimo entre el logotipo y el carrito
   const MARGEN    = 28;    // aire lateral cuando ocupa la pantalla
   const PIE       = 40;    // aire bajo la palabra en su posición inicial

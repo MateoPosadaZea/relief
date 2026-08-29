@@ -114,7 +114,6 @@ export function iniciarEscena(canvas, contenedor, paneles) {
   let inclina = 0, inclinaObj = 0;
   let zoom = 1, zoomObj = 1;
   let objetivoColor = null;
-  let panelPrevio = null;
 
   function medir() {
     const r = canvas.getBoundingClientRect();
@@ -168,22 +167,40 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     return Math.min(1, Math.max(0, -r.top / recorrido));
   }
 
-  /* El panel que se esté leyendo manda dos cosas: qué lente lleva el cristal
-     y a qué pieza mira la cámara. */
-  function panelActual() {
-    if (!paneles || !paneles.length) return null;
+  const lista = Array.prototype.slice.call(paneles || []);
+  const mezclar = (u, v, k) => u + (v - u) * k;
+
+  /* Entre qué dos paneles va el scroll, y cuánto. En vez de saltar de objetivo
+     al cambiar el panel más cercano —que es lo que se sentía brusco—, el
+     modelo interpola entre el panel que dejas y el que viene. */
+  /* Se reutiliza el mismo arreglo en cada cuadro: esto corre 60 veces por
+     segundo y no hace falta darle basura al recolector. */
+  const centros = new Array(lista.length);
+
+  function tramo() {
+    if (!lista.length) return null;
     const medio = window.innerHeight / 2;
-    let elegido = null, cerca = Infinity;
-    for (const p of paneles) {
-      const r = p.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > window.innerHeight) continue;
-      const d = Math.abs((r.top + r.bottom) / 2 - medio);
-      if (d < cerca) { cerca = d; elegido = p; }
+    for (let i = 0; i < lista.length; i++) {
+      const r = lista[i].getBoundingClientRect();
+      centros[i] = (r.top + r.bottom) / 2;
     }
-    /* El modelo solo se mueve al cambiar de pieza. Llegó a acompañar al scroll
-       dentro de cada panel y era demasiado: con la escena moviéndose todo el
-       tiempo no se puede leer. */
-    return elegido;
+    if (medio <= centros[0]) return { a: 0, b: 0, t: 0 };
+    for (let i = 0; i < centros.length - 1; i++) {
+      if (medio <= centros[i + 1]) {
+        const hueco = centros[i + 1] - centros[i];
+        return { a: i, b: i + 1, t: hueco > 0 ? (medio - centros[i]) / hueco : 0 };
+      }
+    }
+    const u = lista.length - 1;
+    return { a: u, b: u, t: 0 };
+  }
+
+  /* Con zona muerta: el modelo se queda quieto mientras el panel está centrado
+     y se lee, y hace el viaje en el tramo del medio. Interpolar lineal lo
+     tendría moviéndose todo el rato, que ya probamos y molesta. */
+  function mezcla(t) {
+    const x = Math.min(1, Math.max(0, (t - 0.28) / 0.44));
+    return x * x * (3 - 2 * x);
   }
 
   function colorDelPanel(p) {
@@ -191,22 +208,33 @@ export function iniciarEscena(canvas, contenedor, paneles) {
     return p.dataset.lente === 'rojo' ? colorRojo : colorAmbar;
   }
 
-  function apuntar(p) {
-    if (p === panelPrevio) return;
-    panelPrevio = p;
-    const a = anclaDelPanel(p);
-    focoObj.set(a.punto[0], a.punto[1], a.punto[2]);
-    giroPiezaObj = a.giroY; inclinaObj = a.giroX; zoomObj = a.zoom;
-    /* El lente conserva su color salvo que el paso trate del lente. Atenuarlo
-       en modo día lo vuelve crema y deja de parecer ámbar: el color del lente
-       es la identidad del producto, no un detalle de la escena. */
-    const hablaDelLente = !!a.piezas && a.piezas.some(n => n.startsWith('cristal'));
-    for (const m of mallas) {
-      const esLente = m.objeto.name.startsWith('cristal');
-      const encendida = !a.piezas || a.piezas.includes(m.objeto.name);
-      m.atenuacion = encendida ? 1
-                   : (esLente && !hablaDelLente) ? 1 : 0.38;
-    }
+  const encendida = (an, nombre) => !an.piezas || an.piezas.includes(nombre);
+  const hablaDelLente = an => !!an.piezas && an.piezas.some(n => n.startsWith('cristal'));
+  /* El lente conserva su color salvo que el paso trate del lente. Atenuarlo en
+     modo día lo vuelve crema y deja de parecer ámbar: el color del lente es la
+     identidad del producto, no un detalle de la escena. */
+  function nivel(an, m) {
+    if (encendida(an, m.objeto.name)) return 1;
+    return (m.objeto.name.startsWith('cristal') && !hablaDelLente(an)) ? 1 : 0.38;
+  }
+
+  function apuntar(paso) {
+    if (!paso) return;
+    const A = anclaDelPanel(lista[paso.a]), B = anclaDelPanel(lista[paso.b]);
+    const k = mezcla(paso.t);
+
+    focoObj.set(mezclar(A.punto[0], B.punto[0], k),
+                mezclar(A.punto[1], B.punto[1], k),
+                mezclar(A.punto[2], B.punto[2], k));
+    giroPiezaObj = mezclar(A.giroY, B.giroY, k);
+    inclinaObj   = mezclar(A.giroX, B.giroX, k);
+    zoomObj      = mezclar(A.zoom,  B.zoom,  k);
+    for (const m of mallas) m.atenuacion = mezclar(nivel(A, m), nivel(B, m), k);
+
+    /* El color también se mezcla: el ámbar pasa a rojo durante el viaje y no
+       de golpe al cruzar el centro de un panel. */
+    objetivoColor = colorDelPanel(lista[paso.a]).clone()
+                      .lerp(colorDelPanel(lista[paso.b]), k);
   }
 
   /* Adónde mirar. Sin pieza declarada, el conjunto. */
@@ -284,9 +312,7 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
   function marco(ahora) {
     if (!animando) return;
-    const actual = panelActual();
-    apuntar(actual);
-    objetivoColor = colorDelPanel(actual);
+    apuntar(tramo());
     dibujar(ahora);
     requestAnimationFrame(marco);
   }
@@ -337,20 +363,17 @@ export function iniciarEscena(canvas, contenedor, paneles) {
 
   medir();
   progreso = leerProgreso();
-  const primero = panelActual();
-  colorActual.copy(colorDelPanel(primero));
-  objetivoColor = colorDelPanel(primero);
-  apuntar(primero);
+  apuntar(tramo());
+  if (objetivoColor) colorActual.copy(objetivoColor);
   foco.copy(focoObj); giroPieza = giroPiezaObj; inclina = inclinaObj; zoom = zoomObj;
+  for (const m of mallas) m.objeto.material.opacity = m.plena * m.atenuacion;
   dibujar();
 
   if (quietud.matches) {
     window.addEventListener('scroll', () => {
       progreso = leerProgreso();
-      const p = panelActual();
-      colorActual.copy(colorDelPanel(p));
-      objetivoColor = colorDelPanel(p);
-      apuntar(p);
+      apuntar(tramo());
+      if (objetivoColor) colorActual.copy(objetivoColor);
       dibujar();
     }, { passive: true });
   } else {
