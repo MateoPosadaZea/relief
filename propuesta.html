@@ -3,267 +3,1781 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RELIEF — propuesta de hero</title>
-<meta name="description" content="Propuesta: el wordmark ocupa la pantalla y se convierte en el logotipo del nav al hacer scroll, dejándole el protagonismo al modelo 3D.">
-<meta name="theme-color" content="#0B0B0C">
-<meta name="robots" content="noindex">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3C/svg%3E">
+<title>RELIEF — Gafas con lente protector para trabajar y dormir</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="canonical" href="https://mateoposadazea.github.io/relief/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RELIEF">
+<meta property="og:title" content="RELIEF — Gafas con lente protector">
+<meta property="og:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta property="og:image" content="assets/img/og.png">
+<meta property="og:url" content="https://mateoposadazea.github.io/relief/">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RELIEF — Gafas con lente protector">
+<meta name="twitter:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
+<meta name="twitter:image" content="assets/img/og.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23D91F26'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='11' font-weight='500' letter-spacing='0.5' text-anchor='middle' fill='%23fff'%3ERLF%3C/text%3E%3C/svg%3E">
+
+<script>
+/* Antes del primer paint: sin esto la página parpadea en noche y luego
+   salta al modo guardado. Es el único JS que no vive al final. */
+(function(){
+  var MODOS = ['noche','dia','trabajo','descanso'];
+  var m;
+  try { m = localStorage.getItem('relief.modo.v1'); } catch (e) {}
+  document.documentElement.dataset.modo = MODOS.indexOf(m) > -1 ? m : 'noche';
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* Tokens de RELIEF (CLAUDE.md § Marca). La propuesta se queda en modo
-     noche: es donde vive la marca y donde el modelo se ve mejor. */
-  :root{
-    --noche:#0B0B0C; --superficie:#16161A; --hueso:#EDEBE6;
-    --ambar:#F2A93B; --rojo:#D91F26; --linea:#26262B; --tenue:#8A8A90;
-    --display:"Archivo","Helvetica Neue",Arial,sans-serif;
-    --texto:"Instrument Sans",system-ui,-apple-system,sans-serif;
-    --nav:56px;
+  /* ------------------------------------------------------------------
+     MODOS. El catálogo son dos lentes; el sitio son los mismos dos modos.
+     Los nombres de token vienen de CLAUDE.md § Marca y describen el rol
+     (--noche = fondo, --hueso = texto), no el color literal: en cada modo
+     el token guarda el color que cumple ese rol.
+     Todas las combinaciones texto/fondo verificadas contra WCAG AA (4.5:1).
+  ------------------------------------------------------------------ */
+  :root,
+  :root[data-modo="noche"]{
+    /* NOCHE — por defecto. Tokens exactos de la tabla de CLAUDE.md. */
+    --noche:       #0B0B0C;
+    --superficie:  #16161A;
+    --hueso:       #EDEBE6;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #26262B;
+    --texto-tenue: #8A8A90;
+    /* Único color fuera de la tabla: la sigla del isotipo va en blanco
+       sobre el rojo (CLAUDE.md § Marca). El texto de página usa --hueso. */
+    --blanco:      #FFFFFF;
+
+    /* Dos familias, las dos sans y las dos SIL OFL.
+       Archivo trae eje de ancho: expandida (125%) para las etiquetas en
+       mayúsculas, y algo menos abierta (112%) para los titulares. */
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --texto:   "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    --ancho: 1080px;
+    --gutter: 20px;
   }
+
+  /* DÍA — para quien entra a las 2pm. Fondo hueso, nunca blanco puro.
+     El ámbar de la tabla no alcanza contraste como texto sobre claro:
+     --ambar-texto lo oscurece manteniendo el tono. */
+  :root[data-modo="dia"]{
+    --noche:       #EDEBE6;
+    --superficie:  #E2DED6;
+    --hueso:       #16161A;
+    --ambar:       #F2A93B;
+    --ambar-texto: #8A5A0B;
+    --rojo-rlf:    #C41A20;
+    --linea:       #D2CEC5;
+    --texto-tenue: #5F5F66;
+  }
+
+  /* TRABAJO — aproximación del lente ámbar: azules fuera, todo cálido. */
+  :root[data-modo="trabajo"]{
+    --noche:       #100C07;
+    --superficie:  #1C1610;
+    --hueso:       #F2E6D2;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #2E2519;
+    --texto-tenue: #A08F73;
+  }
+
+  /* DESCANSO — aproximación del lente rojo: el rango corto del espectro
+     fuera, la página entera baja de intensidad. */
+  :root[data-modo="descanso"]{
+    --noche:       #0D0708;
+    --superficie:  #1A0F10;
+    --hueso:       #EDD5D2;
+    --ambar:       #F2A93B;
+    --ambar-texto: #F2A93B;
+    --rojo-rlf:    #D91F26;
+    --linea:       #2F1B1C;
+    --texto-tenue: #A47F7C;
+  }
+
   *,*::before,*::after{ box-sizing:border-box; }
-  body{
-    margin:0; background:var(--noche); color:var(--hueso);
-    font-family:var(--texto); font-size:16px; line-height:1.65;
-    -webkit-text-size-adjust:100%; overflow-x:clip;
+
+  /* El cambio de modo se siente, no se salta. */
+  .nav, .ficha, .combo, .ficha-img, .combo-img, .btn, .badge, .tbd,
+  .carrito-panel, .carrito-btn, details, th, td, .carrito-linea{
+    transition:background-color .45s ease, color .45s ease,
+               border-color .45s ease;
   }
-  img{ max-width:100%; }
-  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{ transition:none !important; animation:none !important; }
+  }
+
+  /* Guarda contra el desborde horizontal. Va `clip`, NO `hidden`:
+     overflow-x:hidden convierte al elemento en contenedor de scroll y eso
+     rompe el position:sticky de la escena 3D — probado, la escena se iba
+     con el scroll. `clip` recorta sin crear contenedor de scroll. */
+  body{ overflow-x:clip; max-width:100%; }
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    margin:0;
+    background:var(--noche);
+    transition:background-color .45s ease, color .45s ease;
+    color:var(--hueso);
+    font-family:var(--texto);
+    font-weight:300;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* display:block es regla de autor y pisaría el display:none que el
+     navegador da a [hidden]; sin el :not(), las fotos que aún no existen
+     se renderizan como imagen rota a tamaño completo. */
+  img{ max-width:100%; height:auto; }
+  img:not([hidden]){ display:block; }
+
+  a{ color:inherit; }
+
+  .wrap{
+    width:100%;
+    max-width:var(--ancho);
+    margin:0 auto;
+    padding:0 var(--gutter);
+  }
+
+  /* Label mono en mayúsculas con tracking abierto */
+  .label{
+    font-family:var(--display); font-stretch:125%;
+    font-weight:500;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--texto-tenue);
+  }
+
+  .tbd{
+    font-family:var(--display); font-stretch:125%;
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--texto-tenue);
+    border:1px solid var(--linea);
+    padding:1px 6px;
+  }
+
+  /* El nav es sticky: sin esto un salto a #combo o #faq deja el título
+     debajo de la barra. --alto-nav lo mide el JS, porque el aviso de
+     precios provisionales cambia la altura. */
+  [id]{ scroll-margin-top:calc(var(--alto-nav, 60px) + 20px); }
+
+  .seccion{ padding:64px 0; border-top:1px solid var(--linea); }
+  .seccion h2{
+    font-family:var(--display); font-stretch:112%;
+    font-weight:600;
+    font-size:clamp(24px, 3.4vw, 32px);
+    letter-spacing:-.01em;
+    margin:0 0 8px;
+  }
+  .seccion .bajada{ color:var(--texto-tenue); margin:0 0 32px; max-width:52ch; }
 
   /* ---------- Nav ---------- */
   .nav{
-    position:fixed; top:0; left:0; right:0; height:var(--nav); z-index:40;
-    border-bottom:1px solid transparent;
-    display:flex; align-items:center; justify-content:flex-end;
-    padding:0 24px;
-    transition:background-color .4s ease, border-color .4s ease;
+    position:sticky; top:0; z-index:50;
+    background:var(--noche);
+    border-bottom:1px solid var(--linea);
   }
-  /* La barra solo se materializa cuando el wordmark ya aterrizó en ella. */
-  .nav[data-posado="true"]{ background:var(--noche); border-bottom-color:var(--linea); }
-  .carrito{
-    font-family:var(--display); font-stretch:125%; font-weight:600;
-    font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+  /* > directo: no debe alcanzar al .wrap del panel de carrito */
+  .nav > .wrap{
+    height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .marca{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:14px;
+    letter-spacing:.26em; text-transform:uppercase;
     color:var(--hueso); text-decoration:none;
-    border:1px solid var(--linea); padding:7px 12px;
+    /* el tracking abre a la derecha; se compensa para que el bloque
+       óptico quede alineado con el borde del gutter */
+    margin-right:-.26em;
   }
-  .carrito:hover{ border-color:var(--tenue); }
+  .marca:hover{ color:var(--texto-tenue); }
+  .carrito-btn{
+    background:none; border:1px solid var(--linea); color:var(--hueso);
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
+    padding:7px 12px; cursor:pointer;
+  }
+  .carrito-btn:hover{ border-color:var(--texto-tenue); }
 
-  /* ---------- El wordmark que se encoge ----------
-     Va fijo y a lo ancho, centrado por flex: al escalar sobre su propio
-     centro, el centrado horizontal se mantiene solo y basta con animar
-     la escala y el desplazamiento vertical. Solo se tocan `transform` y
-     `opacity`, que no provocan reflow. */
-  .wordmark{
+  /* Panel de carrito */
+  .carrito-panel{
+    display:none;
+    border-top:1px solid var(--linea);
+    background:var(--superficie);
+  }
+  .carrito-panel[data-abierto="true"]{ display:block; }
+  .carrito-panel .wrap{ padding-top:16px; padding-bottom:16px; }
+  .carrito-linea{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px;
+    padding:8px 0; border-bottom:1px solid var(--linea);
+    font-size:14px;
+  }
+  .carrito-linea:last-of-type{ border-bottom:0; }
+  .carrito-vacio{ color:var(--texto-tenue); font-size:14px; margin:0; }
+  .carrito-pie{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; margin-top:12px; }
+  .link-tenue{
+    background:none; border:0; padding:0; cursor:pointer;
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--texto-tenue); text-decoration:underline;
+  }
+
+  /* ---------- Escena fija ----------
+     A diferencia de la otra versión, acá el modelo no vive pegado dentro de
+     la historia: ocupa la pantalla completa y de forma permanente, porque el
+     producto es el protagonista de esta propuesta. */
+  .escena-fija{
+    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+  }
+  #gafas3d{
+    position:absolute; inset:0; width:100%; height:100%; display:block;
+    opacity:0; transition:opacity 1s ease; pointer-events:auto;
+  }
+  #gafas3d[data-listo="true"]{ opacity:1; }
+
+  /* ---------- El wordmark que se vuelve logotipo ----------
+     Fijo y a lo ancho, centrado por flex: al escalar sobre su propio centro
+     el centrado horizontal se mantiene solo, así que basta con animar escala
+     y desplazamiento vertical. Solo se toca `transform`: animar font-size
+     provocaría relayout en cada cuadro. */
+  .wordmark-fijo{
     position:fixed; top:0; left:0; right:0; z-index:45;
     display:flex; justify-content:center;
     pointer-events:none; will-change:transform;
   }
-  .wordmark span{
+  .wordmark-fijo span{
     display:block;
     font-family:var(--display); font-stretch:112%; font-weight:600;
     font-size:100px; line-height:1; letter-spacing:-.03em;
     white-space:nowrap; color:var(--hueso);
-    transform-origin:50% 50%;
-    will-change:transform;
+    transform-origin:50% 50%; will-change:transform;
   }
+  /* El carrito queda anclado a la derecha aunque el logotipo del nav esté
+     oculto: con space-between y un solo hijo se iría a la izquierda. */
+  .carrito-btn{ margin-left:auto; }
 
-  /* ---------- Escena ---------- */
-  .escena{
-    position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden;
-  }
-  #modelo{
-    position:absolute; inset:0; width:100%; height:100%; display:block;
-    opacity:0; transition:opacity 1s ease; pointer-events:auto;
-  }
-  #modelo[data-listo="true"]{ opacity:1; }
+  /* La barra solo se materializa cuando la palabra ya aterrizó en ella. */
+  .nav{ background:transparent; border-bottom-color:transparent; }
+  .nav[data-posado="true"]{ background:var(--noche); border-bottom-color:var(--linea); }
+  body[data-vista="interna"] .nav{ background:var(--noche); border-bottom-color:var(--linea); }
 
   /* ---------- Recorrido ---------- */
-  .recorrido{ position:relative; z-index:10; }
-  /* El primer tramo es el escenario del wordmark: se deja vacío a propósito,
-     porque ahí la palabra y el modelo son todo el contenido. */
-  .apertura{ height:190vh; display:flex; align-items:flex-end; padding-bottom:12vh; }
-  .apertura .wrap{ width:100%; }
+  .historia{ position:relative; z-index:10; }
+  .historia-paneles{ position:relative; }
+  .panel{
+    min-height:100vh; min-height:100svh;
+    display:flex; align-items:center; padding:14vh 0;
+  }
+  /* La primera pantalla es el escenario del wordmark: va vacía a propósito. */
+  .panel--apertura{ min-height:190vh; align-items:flex-end; padding-bottom:16vh; }
   .pista{
     font-family:var(--display); font-stretch:125%; font-weight:600;
     font-size:10px; letter-spacing:.2em; text-transform:uppercase;
-    color:var(--tenue); margin:0;
+    color:var(--texto-tenue); margin:0;
     display:flex; align-items:center; gap:10px;
   }
-  .pista::before{ content:""; width:26px; height:1px; background:var(--tenue); }
+  .pista::before{ content:""; width:26px; height:1px; background:var(--texto-tenue); }
 
-  .panel{ min-height:100vh; display:flex; align-items:center; padding:14vh 0; }
-  .panel .wrap{ width:100%; }
   .hora{
     font-family:var(--display); font-stretch:125%; font-weight:600;
     font-size:11px; letter-spacing:.18em; text-transform:uppercase;
-    color:var(--tenue); margin:0 0 18px;
+    color:var(--texto-tenue); margin:0 0 18px;
   }
-  .hora--ambar{ color:var(--ambar); }
-  .hora--rojo{ color:var(--rojo); }
-  h2{
+  .hora--ambar{ color:var(--ambar-texto); }
+  .hora--rojo{ color:var(--rojo-rlf); }
+  .panel-texto{
     font-family:var(--display); font-stretch:112%; font-weight:600;
-    font-size:clamp(28px,5.4vw,50px); line-height:1.08; letter-spacing:-.025em;
+    font-size:clamp(28px,5.6vw,50px);
+    line-height:1.08; letter-spacing:-.025em;
     margin:0 0 16px; max-width:15ch; text-wrap:balance;
   }
-  .apoyo{ color:var(--tenue); font-size:16.5px; max-width:40ch; margin:0; }
+  .panel-apoyo{
+    font-size:16.5px; line-height:1.65; color:var(--texto-tenue);
+    max-width:42ch; margin:0;
+  }
 
-  /* ---------- Cierre ---------- */
-  .cierre{
-    position:relative; z-index:10; background:var(--noche);
-    border-top:1px solid var(--linea); padding:88px 0 96px;
+  /* ---------- Control de modos ---------- */
+  .modos{ margin-top:36px; }
+  .modos-opciones{
+    display:flex; flex-wrap:wrap; gap:0;
+    border:1px solid var(--linea); width:max-content; max-width:100%;
+    margin:10px 0 10px; background:var(--noche);
   }
-  .cierre h3{
-    font-family:var(--display); font-stretch:112%; font-weight:600;
-    font-size:clamp(24px,3.6vw,34px); letter-spacing:-.02em; margin:0 0 14px;
-    max-width:20ch;
+  .modo-btn{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--display); font-stretch:125%; font-weight:600; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase; padding:10px 14px;
   }
-  .cierre p{ color:var(--tenue); max-width:52ch; margin:0 0 28px; }
-  .acciones{ display:flex; flex-wrap:wrap; gap:10px; }
+  .modo-btn:last-child{ border-right:0; }
+  .modo-btn:hover{ color:var(--hueso); }
+  .modo-btn[aria-pressed="true"]{ background:var(--superficie); color:var(--hueso); }
+  .modo-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
+  .modos-nota{ color:var(--texto-tenue); font-size:13px; margin:0; max-width:44ch; }
+
+  /* Las secciones del catálogo en adelante tapan la escena. */
+  main > .seccion{ position:relative; z-index:10; background:var(--noche); }
+  .footer{ position:relative; z-index:10; background:var(--noche); }
+  .vista{ position:relative; z-index:20; background:var(--noche); min-height:100vh; }
+
+  /* ---------- Botones ---------- */
   .btn{
-    font-family:var(--display); font-stretch:125%; font-weight:600;
-    font-size:11px; letter-spacing:.13em; text-transform:uppercase;
-    padding:14px 20px; text-decoration:none; border:1px solid var(--rojo);
-    background:var(--rojo); color:#fff;
+    display:inline-block;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    letter-spacing:.11em; text-transform:uppercase;
+    padding:14px 22px;
+    border:1px solid var(--rojo-rlf);
+    background:var(--rojo-rlf);
+    color:var(--blanco);
+    text-decoration:none;
+    cursor:pointer;
+    text-align:center;
   }
   .btn:hover{ background:transparent; color:var(--hueso); }
-  .btn--linea{ background:transparent; border-color:var(--linea); color:var(--hueso); }
-  .btn--linea:hover{ border-color:var(--hueso); }
-  .nota{ color:var(--tenue); font-size:13.5px; margin:26px 0 0; max-width:56ch; }
+  .btn--ghost{
+    background:transparent; color:var(--hueso); border-color:var(--linea);
+  }
+  .btn--ghost:hover{ background:transparent; border-color:var(--hueso); }
+  .btn--block{ display:block; width:100%; }
+
+  /* ---------- Fichas de producto ---------- */
+  .fichas{ display:grid; gap:20px; }
+  /* Sin panel ni barra de acento: el color lo pone el lente de la foto,
+     que es lo que dice CLAUDE.md ("los lentes SON la paleta"). */
+  .ficha{
+    background:var(--noche);
+    display:flex; flex-direction:column;
+    min-width:0;
+  }
+  .ficha-img{
+    min-width:0; overflow:hidden;
+    /* El producto es muy apaisado: en móvil un marco 16:10 a ancho completo
+       se come media pantalla sin aportar nada. */
+    aspect-ratio:2 / 1;
+    background:var(--noche);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+  }
+  /* El recuadro respira sin caja: solo la hairline lo delimita. */
+  /* contain, no cover: el recorte viene pegado al producto y con fondo
+     transparente, así que se muestra completo y el vacío se funde con la
+     tarjeta. Con cover se le cortarían las varillas. */
+  .ficha-img img, .combo-img img{
+    width:100%; height:100%; max-width:100%; object-fit:contain;
+    padding:8%;
+  }
+  .ficha-enlace{ text-decoration:none; color:inherit; display:block; }
+  .ficha-enlace:hover .ficha-img img,
+  .ficha-enlace:hover .combo-img img{ opacity:.82; transition:opacity .25s ease; }
+  .ficha-enlace:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:3px; }
+  .ficha h3{
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:19px;
+    letter-spacing:-.01em;
+    margin:0 0 4px;
+  }
+  .ficha .momento{ margin:0 0 12px; }
+  .ficha .descripcion{ margin:0 0 20px; color:var(--texto-tenue); font-size:15px; }
+  .ficha .precio-fila{ margin-top:auto; display:flex; align-items:baseline; gap:10px; margin-bottom:16px; }
+  .precio{
+    font-family:var(--display); font-stretch:112%; font-weight:600;
+    font-size:23px; letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  .precio--tachado{
+    font-weight:200; font-size:16px; color:var(--texto-tenue);
+    text-decoration:line-through;
+  }
+  .acciones{ display:grid; gap:8px; }
+
+  /* ---------- Combo ---------- */
+  .combo{ background:var(--noche); }
+  .combo .combo-grid{ display:grid; gap:24px; }
+  .combo h3{
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:26px;
+    letter-spacing:0; margin:0 0 8px;
+  }
+  .combo .descripcion{ color:var(--texto-tenue); margin:0 0 20px; }
+  .combo .precio-fila{ align-items:flex-end; gap:24px; }
+  .precio-col{ display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+  .combo-img{
+    min-width:0; overflow:hidden;
+    aspect-ratio:2 / 1; background:var(--noche);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .aviso{ font-size:13px; color:var(--texto-tenue); margin:12px 0 0; min-height:1.4em; }
+
+  /* ---------- Ficha técnica ---------- */
+  table{ width:100%; border-collapse:collapse; }
+  th,td{ text-align:left; padding:12px 0; border-bottom:1px solid var(--linea); vertical-align:top; }
+  th{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
+  }
+  td{ font-size:15px; }
+  /* Móvil: etiqueta arriba, valor abajo */
+  @media (max-width:767px){
+    table, tbody, tr, th, td{ display:block; width:auto; }
+    tr{ border-bottom:1px solid var(--linea); padding:12px 0; }
+    th, td{ border-bottom:0; padding:0; }
+    th{ margin-bottom:6px; }
+  }
+  @media (min-width:768px){
+    th{ width:45%; }
+  }
+
+  /* ---------- Honestidad ---------- */
+  .honestidad{ display:grid; gap:16px; max-width:56ch; }
+  .honestidad p{ margin:0; color:var(--texto-tenue); font-size:16px; line-height:1.65; }
+  .honestidad p:first-child{ color:var(--hueso); }
+
+  /* ---------- FAQ ---------- */
+  details{ border-bottom:1px solid var(--linea); }
+  summary{
+    cursor:pointer; list-style:none;
+    padding:18px 0;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:13px;
+    letter-spacing:.06em;
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  summary::-webkit-details-marker{ display:none; }
+  summary::after{ content:"+"; color:var(--texto-tenue); font-weight:200; }
+  details[open] summary::after{ content:"−"; }
+  details .respuesta{ padding:0 0 18px; color:var(--texto-tenue); font-size:15px; margin:0; max-width:64ch; }
+
+  /* ---------- Envíos y pagos ---------- */
+  .dos-columnas{ display:grid; gap:40px; }
+  .sub{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:12px;
+    letter-spacing:.13em; text-transform:uppercase;
+    color:var(--texto-tenue); margin:0 0 16px;
+  }
+  .datos{ margin:0 0 16px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:0; }
+  .datos dt{
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--texto-tenue);
+    padding:10px 20px 10px 0; border-bottom:1px solid var(--linea);
+  }
+  .datos dd{
+    margin:0; font-size:15px; padding:10px 0;
+    border-bottom:1px solid var(--linea); text-align:right;
+  }
+  .nota{ font-size:14px; color:var(--texto-tenue); margin:0; max-width:44ch; }
+
+  /* ---------- Vistas (producto y checkout) ---------- */
+  .vista{ padding:40px 0 80px; }
+  .volver{
+    display:inline-block; margin-bottom:32px;
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase;
+    color:var(--texto-tenue); text-decoration:none;
+  }
+  .volver:hover{ color:var(--hueso); }
+
+  /* Galería */
+  .producto-grid{ display:grid; gap:32px; }
+  .galeria-principal{
+    min-width:0; overflow:hidden;
+    aspect-ratio:2 / 1; background:var(--noche);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .galeria-principal{ position:relative; }
+  .galeria-principal img{ width:100%; height:100%; object-fit:contain; padding:6%; }
+
+  /* ---------- Visor 3D de la ficha ---------- */
+  #visor3d{
+    width:100%; height:100%; display:block;
+    opacity:0; transition:opacity .5s ease;
+  }
+  #visor3d[data-listo="true"]{ opacity:1; }
+  .visor-pista{
+    position:absolute; left:0; right:0; bottom:10px; margin:0; text-align:center;
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--texto-tenue); pointer-events:none;
+  }
+  .visor-lentes{
+    position:absolute; left:50%; transform:translateX(-50%); bottom:34px;
+    display:flex; border:1px solid var(--linea); background:var(--noche);
+  }
+  .visor-lentes button{
+    background:none; border:0; border-right:1px solid var(--linea);
+    color:var(--texto-tenue); cursor:pointer;
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    padding:7px 12px;
+  }
+  .visor-lentes button:last-child{ border-right:0; }
+  .visor-lentes button[aria-pressed="true"]{ background:var(--superficie); color:var(--hueso); }
+  .visor-lentes button:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:-2px; }
+
+  .tira--3d span{
+    font-family:var(--display); font-stretch:125%; font-weight:600;
+    font-size:11px; letter-spacing:.12em; color:var(--texto-tenue);
+    border:0; padding:0;
+  }
+  .tira--3d[aria-pressed="true"] span{ color:var(--hueso); }
+  .galeria-tiras{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; margin-top:8px; }
+  .tira{ aspect-ratio:3 / 2; }
+  .tira{
+    aspect-ratio:1; background:var(--noche);
+    border:1px solid transparent;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding:0;
+    min-width:0; overflow:hidden;
+  }
+  .tira img{ width:100%; height:100%; object-fit:contain; padding:8%; }
+  .tira[aria-pressed="true"]{ border-color:var(--texto-tenue); }
+  .tira:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
+  .tira .tbd{ font-size:9px; letter-spacing:0; border:0; padding:0; }
+
+  .producto-titulo{
+    font-family:var(--display); font-stretch:112%; font-weight:600; font-size:clamp(28px, 6vw, 42px);
+    letter-spacing:-.02em; margin:0 0 6px; text-wrap:balance;
+  }
+  .producto-detalle{ color:var(--texto-tenue); font-size:16px; line-height:1.65; margin:20px 0; max-width:52ch; }
+  .cantidad{ display:flex; align-items:center; gap:0; border:1px solid var(--linea); width:max-content; max-width:100%; }
+  .cantidad button{
+    background:none; border:0; color:var(--hueso); cursor:pointer;
+    font-family:var(--display); font-stretch:125%; font-size:15px; padding:10px 14px;
+  }
+  .cantidad button:hover{ background:var(--superficie); }
+  .cantidad span{
+    font-family:var(--display); font-stretch:125%; font-size:14px; min-width:40px; text-align:center;
+    border-left:1px solid var(--linea); border-right:1px solid var(--linea); padding:10px 0;
+  }
+
+  /* Checkout */
+  .pasos{ display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--linea); margin-bottom:36px; width:max-content; max-width:100%; }
+  .paso-chip{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    letter-spacing:.10em; text-transform:uppercase;
+    color:var(--texto-tenue); padding:9px 12px;
+    border-right:1px solid var(--linea);
+  }
+  .paso-chip:last-child{ border-right:0; }
+  .paso-chip[data-estado="activo"]{ background:var(--superficie); color:var(--hueso); }
+  .paso-chip[data-estado="hecho"]{ color:var(--ambar-texto); }
+
+  .campo{ display:grid; gap:6px; margin-bottom:18px; max-width:420px; }
+  .campo label{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:10px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--texto-tenue);
+  }
+  .campo input, .campo textarea, .campo select{
+    background:var(--noche); border:1px solid var(--linea); color:var(--hueso);
+    font-family:var(--texto); font-size:15px; padding:11px 12px; width:100%;
+  }
+  .campo input:focus, .campo textarea:focus, .campo select:focus{
+    outline:none; border-color:var(--hueso);
+  }
+  .campo .error{ color:var(--rojo-rlf); font-size:12px; min-height:1em; }
+  .campo input[aria-invalid="true"]{ border-color:var(--rojo-rlf); }
+
+  .resumen{ border:1px solid var(--linea); padding:20px; margin-bottom:28px; max-width:520px; }
+  .resumen-linea{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px;
+    padding:10px 0; border-bottom:1px solid var(--linea); font-size:15px;
+  }
+  .resumen-linea:last-of-type{ border-bottom:0; }
+  .resumen-total{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:16px; padding-top:14px; margin-top:6px; border-top:1px solid var(--linea);
+  }
+  .acciones-paso{ display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+
+  .aviso-precios{
+    background:var(--superficie); border-bottom:1px solid var(--linea);
+    font-family:var(--display); font-stretch:125%; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--texto-tenue);
+    padding:8px 0; text-align:center;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer{ border-top:1px solid var(--linea); padding:40px 0 56px; }
+  .footer-grid{ display:flex; flex-wrap:wrap; gap:12px 28px; margin-bottom:24px; }
+  .footer a{
+    font-family:var(--display); font-stretch:125%; font-weight:500; font-size:11px;
+    letter-spacing:.11em; text-transform:uppercase; text-decoration:none;
+    color:var(--hueso);
+  }
+  .footer a:hover{ color:var(--texto-tenue); }
+  .footer small{ color:var(--texto-tenue); font-size:12px; display:block; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+
+  /* ---------- Dos columnas desde 768px ---------- */
+  @media (min-width:760px){
+    .ficha-img, .combo-img, .galeria-principal{ aspect-ratio:16 / 10; }
+    .tira{ aspect-ratio:1; }
+    .dos-columnas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:56px; }
+    .producto-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:48px; align-items:start; }
+  }
 
   @media (min-width:900px){
-    .panel .wrap{ max-width:none; }
-    h2, .apoyo, .hora{ margin-left:0; }
-    .panel--dcha{ justify-content:flex-end; }
-    .panel--dcha .wrap{ text-align:right; }
-    .panel--dcha h2, .panel--dcha .apoyo{ margin-left:auto; }
-    /* El texto se queda en una columna para no taparle el modelo. */
-    .panel .wrap > *{ max-width:min(46%,540px); }
-    .panel--dcha .wrap > *{ margin-left:auto; }
+    /* El modelo 3D ocupa la derecha: el texto no lo invade. */
+    .panel .wrap > *{ max-width:min(48%, 560px); }
+    .panel-texto{ max-width:min(52%, 16ch); }
+    .panel{ align-items:center; }
   }
-  @media (prefers-reduced-motion:reduce){
-    *{ transition:none !important; animation:none !important; }
+
+  @media (min-width:768px){
+    :root{ --gutter:32px; }
+    .seccion{ padding:88px 0; }
+    .hero{ padding:112px 0 96px; }
+    .fichas{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; }
+    .combo .combo-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:40px; }
+    .acciones{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+    .btn--block{ display:inline-block; width:auto; }
   }
 </style>
 </head>
+
 <body>
 
-<header class="nav" id="nav">
-  <a class="carrito" href="index.html">Ver la tienda</a>
+<!-- 1. NAV -->
+<header class="nav">
+  <div class="wrap">
+    <a class="marca" href="#top" id="marcaNav" aria-label="RELIEF — inicio" hidden>RELIEF</a>
+    <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel">
+      Carrito (<span id="carritoCount">0</span>)
+    </button>
+  </div>
+  <div class="carrito-panel" id="carritoPanel" data-abierto="false">
+    <div class="wrap">
+      <div id="carritoItems"></div>
+      <div class="carrito-pie">
+        <span class="label">Total</span>
+        <span class="precio" id="carritoTotal">—</span>
+      </div>
+      <div class="carrito-pie">
+        <button class="link-tenue" id="carritoVaciar" type="button">Vaciar carrito</button>
+        <a class="btn" href="#/checkout" id="irCheckout">Finalizar compra</a>
+      </div>
+    </div>
+  </div>
 </header>
 
-<div class="wordmark" id="wordmark" aria-hidden="true"><span id="palabra">RELIEF</span></div>
-<h1 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">RELIEF</h1>
+<div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
+<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">RELIEF</span></div>
 
-<div class="escena" aria-hidden="true"><canvas id="modelo"></canvas></div>
+<main id="top">
 
-<div class="recorrido" id="recorrido">
+  <!-- 2. LA HISTORIA — wordmark que se vuelve logotipo, sobre escena fija -->
+  <div class="historia" id="historia">
+    <div class="historia-paneles">
 
-  <section class="apertura" data-lente="ambar">
-    <div class="wrap"><p class="pista">Baja para ver</p></div>
-  </section>
+      <section class="panel panel--apertura" data-lente="ambar">
+        <div class="wrap"><p class="pista">Baja para ver</p></div>
+      </section>
 
-  <section class="panel" data-lente="ambar">
-    <div class="wrap">
-      <p class="hora">11:47 PM</p>
-      <h2>Le pasas horas a la pantalla.</h2>
-      <p class="apoyo">Y todavía te faltan dos. No vas a apagar el computador,
-        y nadie te lo está pidiendo.</p>
+      <section class="panel" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">11:47 PM</p>
+          <p class="panel-texto">Le pasas horas a la pantalla.</p>
+          <p class="panel-apoyo">Y todavía te faltan dos. No vas a apagar el computador,
+            y nadie te lo está pidiendo.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--dcha" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora">Somos RELIEF</p>
+          <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
+          <p class="panel-apoyo">Nada más. Sin catálogo de cien referencias, sin monturas
+            de colores. Esto es para ti si trabajas, juegas o estudias de noche.</p>
+
+          <div class="modos">
+            <span class="label" id="modosLabel">Ver el sitio con cada lente</span>
+            <div class="modos-opciones" role="group" aria-labelledby="modosLabel">
+              <button class="modo-btn" type="button" data-modo-set="dia">Día</button>
+              <button class="modo-btn" type="button" data-modo-set="noche">Noche</button>
+              <button class="modo-btn" type="button" data-modo-set="trabajo">Trabajo</button>
+              <button class="modo-btn" type="button" data-modo-set="descanso">Descanso</button>
+            </div>
+            <p class="modos-nota">Trabajo y descanso son una aproximación visual de cada lente.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-lente="ambar">
+        <div class="wrap">
+          <p class="hora hora--ambar">12:30 AM</p>
+          <p class="panel-texto">El ámbar es el del turno.</p>
+          <p class="panel-apoyo">Filtra parte de la luz azul de la pantalla y deja el color
+            utilizable: puedes seguir viendo lo que estás haciendo.</p>
+        </div>
+      </section>
+
+      <section class="panel panel--dcha" data-lente="rojo">
+        <div class="wrap">
+          <p class="hora hora--rojo">2:10 AM</p>
+          <p class="panel-texto">El rojo es el del final.</p>
+          <p class="panel-apoyo">Para la última hora, cuando ya vas a cerrar. Filtra el rango
+            corto del espectro. No es para trabajar ni para conducir.</p>
+        </div>
+      </section>
+
+      <section class="panel" data-lente="rojo">
+        <div class="wrap">
+          <p class="hora">Mañana, 9:00 AM</p>
+          <p class="panel-texto">Sale de Bogotá, no de Shenzhen.</p>
+          <p class="panel-apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
+            Esa es toda la diferencia, y es la única que importa.</p>
+          <div style="margin-top:28px"><a class="btn" href="#combo">Ver el combo</a></div>
+        </div>
+      </section>
+
     </div>
-  </section>
-
-  <section class="panel panel--dcha" data-lente="ambar">
-    <div class="wrap">
-      <p class="hora hora--ambar">12:30 AM</p>
-      <h2>El ámbar es el del turno.</h2>
-      <p class="apoyo">Filtra parte de la luz azul y deja el color utilizable:
-        puedes seguir viendo lo que estás haciendo.</p>
-    </div>
-  </section>
-
-  <section class="panel" data-lente="rojo">
-    <div class="wrap">
-      <p class="hora hora--rojo">2:10 AM</p>
-      <h2>El rojo es el del final.</h2>
-      <p class="apoyo">Para la última hora, cuando ya vas a cerrar. Filtra el rango
-        corto del espectro. No es para trabajar ni para conducir.</p>
-    </div>
-  </section>
-
-  <section class="panel panel--dcha" data-lente="rojo">
-    <div class="wrap">
-      <p class="hora">Mañana, 9:00 AM</p>
-      <h2>Sale de Bogotá, no de Shenzhen.</h2>
-      <p class="apoyo">Llega en 2-3 días y te escribimos por WhatsApp el mismo día.
-        Esa es toda la diferencia, y es la única que importa.</p>
-    </div>
-  </section>
-
-</div>
-
-<section class="cierre">
-  <div class="wrap">
-    <h3>Esto es una propuesta de hero, no la tienda.</h3>
-    <p>El wordmark ocupa la pantalla completa y se convierte en el logotipo del nav
-      a medida que bajas, dejándole el escenario al modelo. Puedes arrastrar las
-      gafas para girarlas en cualquier momento.</p>
-    <div class="acciones">
-      <a class="btn" href="index.html">Ir a la tienda actual</a>
-      <a class="btn btn--linea" href="#" onclick="scrollTo({top:0,behavior:'smooth'});return false;">Volver arriba</a>
-    </div>
-    <p class="nota">La versión que ya está construida —catálogo, ficha de producto con
-      visor 3D y checkout de cuatro pasos— sigue intacta en <code>index.html</code>.
-      Esta página no reemplaza nada.</p>
   </div>
-</section>
+
+  <!-- 3. LOS DOS LENTES -->
+  <section class="seccion" id="lentes">
+    <div class="wrap">
+      <p class="label">Los dos lentes</p>
+      <h2>Uno para trabajar. Uno para apagar.</h2>
+      <p class="bajada">La rutina nocturna tiene dos momentos y cada uno pide un filtro distinto.</p>
+      <div class="fichas" id="fichasLentes"></div>
+    </div>
+  </section>
+
+  <!-- 4. EL COMBO -->
+  <section class="seccion" id="combo">
+    <div class="wrap">
+      <p class="label">El combo</p>
+      <h2>La rutina completa</h2>
+      <p class="bajada">Los dos lentes juntos, con descuento. Es la forma en que están pensados para usarse.</p>
+      <div class="combo" id="comboCard"></div>
+    </div>
+  </section>
+
+  <!-- 5. FICHA TÉCNICA -->
+  <section class="seccion" id="ficha-tecnica">
+    <div class="wrap">
+      <p class="label">Ficha técnica</p>
+      <h2>Lo que estás comprando</h2>
+      <p class="bajada">Especificaciones pendientes de confirmar con el proveedor.</p>
+      <table>
+        <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
+        <tbody>
+          <tr><th scope="row">Material de la montura</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Material del lente</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Peso</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Incluye estuche</th><td><span class="tbd">[TBD]</span></td></tr>
+          <tr><th scope="row">Incluye paño de limpieza</th><td><span class="tbd">[TBD]</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. LO QUE NO DECIMOS -->
+  <section class="seccion" id="honestidad">
+    <div class="wrap">
+      <p class="label">Transparencia</p>
+      <h2>Lo que no vamos a decirte</h2>
+      <div class="honestidad">
+        <p>No vamos a publicar que estos lentes bloquean 97% de la luz azul. Todavía
+          no tenemos el reporte de transmitancia espectral del lote que estamos
+          vendiendo, y sin ese papel el número sería inventado.</p>
+        <p>Cuando lo tengamos, lo publicamos completo: el reporte entero, no la
+          cifra que mejor nos quede.</p>
+        <p>Tampoco vamos a decirte que vas a dormir mejor. Vendemos lentes con
+          filtro, no promesas de salud.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. RESEÑAS -->
+  <section class="seccion" id="resenas">
+    <div class="wrap">
+      <p class="label">Reseñas</p>
+      <h2>Todavía no tenemos</h2>
+      <p class="bajada">Acabamos de empezar. Cuando haya clientes que hayan recibido
+        el pedido, sus reseñas van acá — con nombre y fecha, sin filtrar las malas.</p>
+      <p><span class="tbd">[TBD] Estructura de reseñas pendiente de decidir: formulario
+        propio o pedido por WhatsApp tras la entrega.</span></p>
+    </div>
+  </section>
+
+  <!-- 8. ENVÍOS Y PAGOS -->
+  <section class="seccion" id="envios">
+    <div class="wrap">
+      <p class="label">Envíos y pagos</p>
+      <h2>Cómo llega y cómo se paga</h2>
+      <div class="dos-columnas">
+        <div>
+          <h3 class="sub">Envíos</h3>
+          <dl class="datos">
+            <dt>Bogotá</dt><dd>1-2 días hábiles</dd>
+            <dt>Resto del país</dt><dd>2-3 días hábiles</dd>
+            <dt>Transportadora</dt><dd>Interrapidísimo o Servientrega</dd>
+            <dt>Costo</dt><dd><span class="tbd">[TBD]</span></dd>
+            <dt>Despacho</dt><dd>Desde Bogotá, con stock propio</dd>
+          </dl>
+          <p class="nota">Te enviamos la guía por WhatsApp apenas sale el paquete.</p>
+        </div>
+        <div>
+          <h3 class="sub">Pagos</h3>
+          <dl class="datos">
+            <dt>Tarjeta</dt><dd>Crédito y débito</dd>
+            <dt>PSE</dt><dd>Débito desde tu banco</dd>
+            <dt>Nequi</dt><dd>Sí</dd>
+            <dt>Bancolombia</dt><dd>Botón Bancolombia</dd>
+            <dt>Contraentrega</dt><dd>No, por ahora</dd>
+          </dl>
+          <p class="nota">El pago lo procesa Wompi. Nosotros no vemos ni guardamos
+            los datos de tu tarjeta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FAQ -->
+  <section class="seccion" id="faq">
+    <div class="wrap">
+      <p class="label">Preguntas</p>
+      <h2>Antes de comprar</h2>
+
+      <details>
+        <summary>¿Cuánto demora el envío?</summary>
+        <p class="respuesta">Despachamos desde Bogotá con stock propio. <span class="tbd">[TBD]</span> Confirmar transportadora, cobertura y costo de envío.</p>
+      </details>
+
+      <details>
+        <summary>¿Puedo devolverlos?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Definir política de devoluciones: plazo, condiciones y quién asume el flete de retorno.</p>
+      </details>
+
+      <details>
+        <summary>¿Sirven si uso gafas con fórmula?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Confirmar con el proveedor si la montura permite uso sobre gafas formuladas.</p>
+      </details>
+
+      <details>
+        <summary>¿Los puedo usar de día?</summary>
+        <p class="respuesta">El lente ámbar está pensado para las horas de trabajo frente a pantalla. El lente rojo es para la última hora antes de dormir: no es para trabajar ni para conducir. <span class="tbd">[TBD]</span> Ampliar recomendación de uso.</p>
+      </details>
+
+      <details>
+        <summary>¿Tienen garantía?</summary>
+        <p class="respuesta"><span class="tbd">[TBD]</span> Definir cobertura y plazo de garantía.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<!-- VISTAS: tapan la home cuando la ruta lo pide. Se rellenan desde JS. -->
+<div class="vista" id="vistaProducto" hidden></div>
+<div class="vista" id="vistaCheckout" hidden></div>
+
+<!-- 10. FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#" id="linkWhatsapp" rel="noopener">WhatsApp <span class="tbd">[TBD]</span></a>
+      <a href="#" id="linkInstagram" rel="noopener">Instagram <span class="tbd">[TBD]</span></a>
+      <a href="#" id="linkCorreo">Correo <span class="tbd">[TBD]</span></a>
+    </div>
+    <small>RELIEF · Bogotá, Colombia · <span class="tbd">[TBD] Razón social y NIT</span></small>
+  </div>
+</footer>
 
 <script>
 /* ------------------------------------------------------------------
-   El wordmark: de ocupar la pantalla a ser el logotipo del nav.
+   Catálogo — Fase 1. Sin backend: el catálogo vive acá.
+   precio: null mientras no haya costo landed ni precio de venta
+   definido (ver PENDIENTE en CLAUDE.md). Se renderiza como [TBD].
+   linkWompi: "#" hasta crear los links de pago en el dashboard.
+   imagen: ruta al .webp 16:10. Si el archivo no existe todavía, la
+   ficha cae al placeholder [TBD] sola: basta con soltar el archivo.
+------------------------------------------------------------------ */
+/* ⚠ PRECIOS PROVISIONALES. Son cifras redondas de relleno para poder
+   probar el flujo completo, NO salen de un costo landed. Antes de publicar:
+   poner los precios reales y bajar PRECIOS_PROVISIONALES a false, que apaga
+   el aviso del sitio. */
+const PRECIOS_PROVISIONALES = true;
 
-   Se mide el ancho natural de la palabra una sola vez y de ahí salen las
-   dos escalas — la que la lleva de punta a punta y la del nav. El scroll
-   solo interpola entre esas dos, tocando únicamente `transform`.
+const PRODUCTOS = [
+  {
+    id: "rlf-ambar",
+    nombre: "RLF Ámbar",
+    momento: "Para trabajar",
+    descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
+    detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
+    precio: 129000,
+    lente: "ambar",
+    imagenes: [
+      "assets/img/ambar.webp",
+      "assets/img/ambar-frente.webp",
+      "assets/img/ambar-lateral.webp",
+      "assets/img/ambar-detalle.webp"
+    ],
+    acento: "var(--ambar)",
+    linkWompi: "#"
+  },
+  {
+    id: "rlf-rojo",
+    nombre: "RLF Rojo",
+    momento: "Para dormir",
+    descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
+    detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
+    precio: 129000,
+    lente: "rojo",
+    imagenes: [
+      "assets/img/rojo.webp",
+      "assets/img/rojo-frente.webp",
+      "assets/img/rojo-lateral.webp",
+      "assets/img/rojo-detalle.webp"
+    ],
+    acento: "var(--rojo-rlf)",
+    linkWompi: "#"
+  },
+  {
+    id: "rlf-combo",
+    nombre: "Combo rutina nocturna",
+    momento: "Trabaja, transiciona, duerme",
+    descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
+    detalle: "Los dos lentes, que es como están pensados para usarse: el ámbar mientras trabajas y el rojo en la última hora. Sale más barato que comprarlos por separado y llega en el mismo envío.",
+    precio: 199000,
+    precioAntes: 258000,
+    /* El combo son los dos: el visor deja alternarlos, que es exactamente
+       lo que el combo vende. */
+    lente: "ambar",
+    lentes: ["ambar", "rojo"],
+    imagenes: [
+      "assets/img/combo.webp",
+      "assets/img/combo-frente.webp",
+      "assets/img/combo-estuches.webp"
+    ],
+    acento: "var(--rojo-rlf)",
+    linkWompi: "#"
+  }
+];
+
+/* Compatibilidad: el resto del sitio pide `imagen` (la principal). */
+PRODUCTOS.forEach(p => { p.imagen = p.imagenes[0]; });
+
+const COP = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+  maximumFractionDigits: 0
+});
+
+/* Formatea un precio; si aún no está definido devuelve el marcador visible. */
+function precioHTML(valor, clase){
+  const cls = clase ? ' ' + clase : '';
+  if (typeof valor !== 'number' || Number.isNaN(valor)) {
+    return '<span class="tbd">[TBD] Precio</span>';
+  }
+  return '<span class="precio' + cls + '">' + COP.format(valor) + '</span>';
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+
+function porId(id){ return PRODUCTOS.find(p => p.id === id); }
+
+/* Foto del producto. Mientras el archivo no exista, el listener de error
+   la retira y deja el placeholder visible: no hay que tocar el catálogo. */
+function imagenHTML(p){
+  const marcador = '<span class="tbd">[TBD] Foto 16:10</span>';
+  if (!p.imagen) return marcador;
+  return '<img src="' + esc(p.imagen) + '" alt="' + esc(p.nombre) + '" hidden>'
+       + marcador;
+}
+
+/* La foto solo se muestra si carga; si falla, se queda el [TBD]. */
+function activarImagenes(raiz){
+  raiz.querySelectorAll('img[hidden]').forEach(img => {
+    const mostrar = () => {
+      img.hidden = false;
+      const marcador = img.nextElementSibling;
+      if (marcador) marcador.remove();
+    };
+    if (img.complete && img.naturalWidth > 0) mostrar();
+    else img.addEventListener('load', mostrar, { once: true });
+  });
+}
+
+/* ---------------- Render: los dos lentes ---------------- */
+const fichasLentes = document.getElementById('fichasLentes');
+fichasLentes.innerHTML = PRODUCTOS
+  .filter(p => p.id !== 'rlf-combo')
+  .map(p => `
+    <article class="ficha">
+      <a class="ficha-enlace" href="#/producto/${p.id}">
+        <div class="ficha-img">${imagenHTML(p)}</div>
+        <h3>${esc(p.nombre)}</h3>
+      </a>
+      <p class="momento label">${esc(p.momento)}</p>
+      <p class="descripcion">${esc(p.descripcion)}</p>
+      <div class="precio-fila">${precioHTML(p.precio)}</div>
+      <div class="acciones">
+        <a class="btn btn--block" href="#/producto/${p.id}">Ver detalles</a>
+        <button class="btn btn--ghost btn--block" data-agregar="${p.id}">Agregar al carrito</button>
+      </div>
+      <p class="aviso" data-aviso="${p.id}"></p>
+    </article>
+  `).join('');
+
+activarImagenes(fichasLentes);
+
+/* ---------------- Render: el combo ---------------- */
+const combo = porId('rlf-combo');
+document.getElementById('comboCard').innerHTML = `
+  <div class="combo-grid">
+    <a class="ficha-enlace" href="#/producto/${combo.id}">
+      <div class="combo-img">${imagenHTML(combo)}</div>
+    </a>
+    <div>
+      <h3>${esc(combo.nombre)}</h3>
+      <p class="label">${esc(combo.momento)}</p>
+      <p class="descripcion">${esc(combo.descripcion)}</p>
+      <div class="precio-fila">
+        <span class="precio-col">
+          <span class="label">Por separado</span>
+          ${precioHTML(combo.precioAntes, 'precio--tachado')}
+        </span>
+        <span class="precio-col">
+          <span class="label">Combo</span>
+          ${precioHTML(combo.precio)}
+        </span>
+      </div>
+      <div class="acciones">
+        <a class="btn btn--block" href="#/producto/${combo.id}">Ver el combo</a>
+        <button class="btn btn--ghost btn--block" data-agregar="${combo.id}">Agregar al carrito</button>
+      </div>
+      <p class="aviso" data-aviso="${combo.id}"></p>
+    </div>
+  </div>
+`;
+
+activarImagenes(document.getElementById('comboCard'));
+
+/* ¿Puede este navegador con 3D? Lo decide una sola vez y lo usan tanto la
+   historia de la home como el visor de la ficha de producto. */
+const HAY_WEBGL = (() => {
+  try {
+    const p = document.createElement('canvas');
+    return !!(p.getContext('webgl2') || p.getContext('webgl'));
+  } catch (e) { return false; }
+})();
+
+/* Módulo del modelo. Se pide una sola vez y se reparte entre quien lo use. */
+let modulo3D = null;
+function cargar3D() {
+  if (!HAY_WEBGL) return Promise.reject();
+  if (!modulo3D) modulo3D = import('./assets/js/gafas.js');
+  return modulo3D;
+}
+
+/* ---------------- Escena 3D ----------------
+   Se carga en diferido y solo si el navegador puede. Sin WebGL, o si el
+   módulo falla, la historia se queda con su fondo y sigue funcionando:
+   el 3D es una capa encima, nunca un requisito.
+------------------------------------------------- */
+(function(){
+  const canvas = document.getElementById('gafas3d');
+  if (!canvas) return;
+
+  import('./assets/js/propuesta.js')
+    .then(m => m.iniciarEscena(canvas, document.getElementById('historia'),
+                                document.querySelectorAll('.panel[data-lente]')))
+    .catch(() => {});
+})();
+
+/* ---------------- Modos de visualización ----------------
+   El catálogo son dos lentes y el sitio son los mismos dos modos: el
+   producto se demuestra solo. Día y noche son temas; trabajo y descanso
+   aproximan cada lente.
+   Cada modo trae su propia foto de hero; si el archivo no existe, el
+   hero se queda plano (que es el estado de hoy).
+--------------------------------------------------------- */
+const CLAVE_MODO = 'relief.modo.v1';
+
+const MODOS = {
+  dia:      { fondoBarra: '#EDEBE6', imagen: 'assets/img/hero.webp' },
+  noche:    { fondoBarra: '#0B0B0C', imagen: 'assets/img/hero.webp' },
+  trabajo:  { fondoBarra: '#100C07', imagen: 'assets/img/trabajo.webp' },
+  descanso: { fondoBarra: '#0D0708', imagen: 'assets/img/dormir.webp' }
+};
+
+const botonesModo = [...document.querySelectorAll('[data-modo-set]')];
+
+function aplicarModo(modo, persistir){
+  if (!MODOS[modo]) modo = 'noche';
+  document.documentElement.dataset.modo = modo;
+
+  botonesModo.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modoSet === modo)));
+
+  const barra = document.querySelector('meta[name="theme-color"]');
+  if (barra) barra.setAttribute('content', MODOS[modo].fondoBarra);
+
+  if (persistir) {
+    try { localStorage.setItem(CLAVE_MODO, modo); } catch (e) {}
+  }
+}
+
+botonesModo.forEach(b => {
+  b.addEventListener('click', () => aplicarModo(b.dataset.modoSet, true));
+});
+
+/* El modo ya lo fijó el script del <head>; acá solo se sincroniza la UI. */
+aplicarModo(document.documentElement.dataset.modo, false);
+
+/* ---------------- Carrito (localStorage) ---------------- */
+const CLAVE_CARRITO = 'relief.carrito.v1';
+
+function leerCarrito(){
+  try {
+    const crudo = JSON.parse(localStorage.getItem(CLAVE_CARRITO));
+    if (!Array.isArray(crudo)) return [];
+    return crudo.filter(l => l && porId(l.id) && Number(l.cantidad) > 0)
+                .map(l => ({ id: l.id, cantidad: Math.floor(Number(l.cantidad)) }));
+  } catch (e) {
+    return [];
+  }
+}
+
+function guardarCarrito(carrito){
+  try { localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito)); } catch (e) {}
+}
+
+function agregar(id){
+  const carrito = leerCarrito();
+  const linea = carrito.find(l => l.id === id);
+  if (linea) linea.cantidad += 1; else carrito.push({ id, cantidad: 1 });
+  guardarCarrito(carrito);
+  pintarCarrito();
+}
+
+function quitar(id){
+  guardarCarrito(leerCarrito().filter(l => l.id !== id));
+  pintarCarrito();
+}
+
+function pintarCarrito(){
+  const carrito = leerCarrito();
+  const unidades = carrito.reduce((n, l) => n + l.cantidad, 0);
+  document.getElementById('carritoCount').textContent = unidades;
+
+  const cont = document.getElementById('carritoItems');
+  if (!carrito.length) {
+    cont.innerHTML = '<p class="carrito-vacio">El carrito está vacío.</p>';
+  } else {
+    cont.innerHTML = carrito.map(l => {
+      const p = porId(l.id);
+      return `
+        <div class="carrito-linea">
+          <span>${esc(p.nombre)} × ${l.cantidad}</span>
+          <span>
+            ${precioHTML(typeof p.precio === 'number' ? p.precio * l.cantidad : null)}
+            <button class="link-tenue" data-quitar="${p.id}" type="button">Quitar</button>
+          </span>
+        </div>`;
+    }).join('');
+  }
+
+  const definidos = carrito.every(l => typeof porId(l.id).precio === 'number');
+  const total = carrito.reduce((s, l) => s + (porId(l.id).precio || 0) * l.cantidad, 0);
+  document.getElementById('carritoTotal').innerHTML =
+    (carrito.length && definidos) ? COP.format(total) : '<span class="tbd">[TBD]</span>';
+}
+
+/* ---------------- Eventos ---------------- */
+document.addEventListener('click', ev => {
+  const btn = ev.target.closest('[data-agregar],[data-quitar]');
+  if (!btn) return;
+  if (btn.dataset.agregar) agregar(btn.dataset.agregar);
+  else if (btn.dataset.quitar) quitar(btn.dataset.quitar);
+});
+
+document.getElementById('carritoVaciar').addEventListener('click', () => {
+  guardarCarrito([]);
+  pintarCarrito();
+  if (!vistaCheckout.hidden) { pasoActual = 1; pintarCheckout(); }
+});
+
+const carritoBtn = document.getElementById('carritoBtn');
+const carritoPanel = document.getElementById('carritoPanel');
+
+function abrirCarrito(abierto){
+  carritoPanel.dataset.abierto = String(abierto);
+  carritoBtn.setAttribute('aria-expanded', String(abierto));
+}
+function cerrarCarrito(){ abrirCarrito(false); }
+
+carritoBtn.addEventListener('click', () => {
+  abrirCarrito(carritoPanel.dataset.abierto !== 'true');
+});
+
+pintarCarrito();
+
+/* ---------------- Aviso de precios provisionales ---------------- */
+if (PRECIOS_PROVISIONALES) {
+  const aviso = document.createElement('div');
+  aviso.className = 'aviso-precios';
+  aviso.textContent = 'Precios provisionales — el sitio todavía no vende';
+  document.body.insertBefore(aviso, document.body.firstChild);
+}
+
+/* ---------------- Contacto ----------------
+   Número en formato internacional sin +, para wa.me. Vacío = todavía no
+   hay número: los botones de WhatsApp lo dicen en vez de romperse. */
+const WHATSAPP = '';
+
+/* La altura del nav alimenta el scroll-margin de las anclas. Se remide al
+   cambiar el tamaño porque el aviso pasa de una línea a dos. */
+function medirNav() {
+  const nav = document.querySelector('.nav');
+  const aviso = document.querySelector('.aviso-precios');
+  const alto = (nav ? nav.getBoundingClientRect().height : 0)
+             + (aviso ? aviso.getBoundingClientRect().height : 0);
+  document.documentElement.style.setProperty('--alto-nav', Math.round(alto) + 'px');
+}
+window.addEventListener('resize', medirNav);
+medirNav();
+
+/* ---------------- Router ----------------
+   Tres vistas sobre el mismo archivo, sin build step ni servidor:
+     #/producto/<id>  ficha completa con galería
+     #/checkout       compra paso a paso
+     (nada)           la home
+   El hash funciona en GitHub Pages sin tocar configuración de rutas.
+------------------------------------------- */
+const home          = document.getElementById('top');
+const vistaProducto = document.getElementById('vistaProducto');
+const vistaCheckout = document.getElementById('vistaCheckout');
+
+let vistaActual = null;
+
+function navegar() {
+  const ruta = location.hash.replace(/^#\/?/, '');
+  const partes = ruta.split('/');
+
+  home.hidden = vistaProducto.hidden = vistaCheckout.hidden = true;
+
+  /* Al cambiar de vista el panel del carrito se cierra: si no, queda abierto
+     encima de la vista nueva y el botón del nav aparenta no responder. */
+  cerrarCarrito();
+
+  let nueva;
+  if (partes[0] === 'producto' && porId(partes[1])) {
+    pintarProducto(porId(partes[1]));
+    vistaProducto.hidden = false;
+    nueva = 'producto:' + partes[1];
+  } else if (partes[0] === 'checkout') {
+    pintarCheckout();
+    vistaCheckout.hidden = false;
+    nueva = 'checkout';
+  } else {
+    home.hidden = false;
+    nueva = 'home';
+  }
+
+  /* Wordmark y escena son del hero: fuera de la home estorban. En su lugar
+     aparece el logotipo estático del nav. */
+  const enHome = nueva === 'home';
+  document.getElementById('wordmarkFijo').hidden = !enHome;
+  document.getElementById('escenaFija').hidden = !enHome;
+  document.getElementById('marcaNav').hidden = enHome;
+  document.body.dataset.vista = enHome ? 'home' : 'interna';
+
+  const cambioVista = nueva !== vistaActual;
+  vistaActual = nueva;
+
+  /* Un hash como #combo o #faq es un ancla de la home, no una vista. Sin
+     esto el router lo trataba como "volver a la home" y hacía scroll a cero,
+     cancelando el salto: el único CTA del hero no llevaba a ninguna parte. */
+  if (nueva === 'home') {
+    const id = location.hash.replace(/^#/, '');
+    const destino = id ? document.getElementById(id) : null;
+    if (destino) { destino.scrollIntoView(); return; }
+  }
+
+  /* Solo se sube al entrar a una vista distinta. */
+  if (cambioVista) window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', navegar);
+
+/* ---------------- Vista de producto ---------------- */
+/* Índice reservado para el visor 3D: así convive con las fotos en el mismo
+   selector sin ocupar un espacio en el array de imágenes. */
+const VISTA_3D = -1;
+let imagenActiva = 0;
+
+function pintarProducto(p) {
+  imagenActiva = 0;
+  vistaProducto.innerHTML = `
+    <div class="wrap">
+      <a class="volver" href="#">← Volver</a>
+      <div class="producto-grid">
+        <div>
+          <div class="galeria-principal" id="galeriaPrincipal"></div>
+          <div class="galeria-tiras" id="galeriaTiras"></div>
+        </div>
+        <div>
+          <p class="label">${esc(p.momento)}</p>
+          <h1 class="producto-titulo">${esc(p.nombre)}</h1>
+          <div class="precio-fila">
+            ${typeof p.precioAntes === 'number' ? precioHTML(p.precioAntes, 'precio--tachado') : ''}
+            ${precioHTML(p.precio)}
+          </div>
+          <p class="producto-detalle">${esc(p.detalle || p.descripcion)}</p>
+
+          <p class="label" style="margin-bottom:8px">Cantidad</p>
+          <div class="cantidad">
+            <button type="button" data-cant="-1" aria-label="Quitar uno">−</button>
+            <span id="cantidadValor">1</span>
+            <button type="button" data-cant="1" aria-label="Agregar uno">+</button>
+          </div>
+
+          <div class="acciones" style="margin-top:20px; max-width:420px">
+            <button class="btn btn--block" data-comprar-ahora="${p.id}">Comprar ahora</button>
+            <button class="btn btn--ghost btn--block" data-agregar-cant="${p.id}">Agregar al carrito</button>
+          </div>
+          <p class="aviso" data-aviso="${p.id}"></p>
+
+          <details style="margin-top:28px">
+            <summary>Especificaciones</summary>
+            <div class="respuesta">
+              <dl class="datos">
+                <dt>Montura</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Lente</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Peso</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Estuche</dt><dd><span class="tbd">[TBD]</span></dd>
+                <dt>Paño</dt><dd><span class="tbd">[TBD]</span></dd>
+              </dl>
+            </div>
+          </details>
+          <details>
+            <summary>Envíos</summary>
+            <p class="respuesta">Despachamos desde Bogotá con stock propio. 1-2 días
+              hábiles en Bogotá, 2-3 en el resto del país, por Interrapidísimo o
+              Servientrega. Costo de envío <span class="tbd">[TBD]</span>. Te mandamos
+              la guía por WhatsApp apenas sale el paquete.</p>
+          </details>
+          <details>
+            <summary>Pagos</summary>
+            <p class="respuesta">Tarjeta de crédito y débito, PSE, Nequi y botón
+              Bancolombia. El pago lo procesa Wompi: nosotros no vemos ni guardamos
+              los datos de tu tarjeta. Contraentrega todavía no.</p>
+          </details>
+          <details>
+            <summary>Devoluciones</summary>
+            <p class="respuesta"><span class="tbd">[TBD]</span> Falta definir plazo,
+              condiciones y quién asume el flete de retorno.</p>
+          </details>
+        </div>
+      </div>
+    </div>`;
+
+  pintarGaleria(p);
+}
+
+function pintarGaleria(p) {
+  const principal = document.getElementById('galeriaPrincipal');
+  const tiras = document.getElementById('galeriaTiras');
+
+  if (imagenActiva === VISTA_3D) {
+    const alterna = (p.lentes || []).length > 1 ? `
+      <div class="visor-lentes" role="group" aria-label="Lente a mostrar">
+        ${p.lentes.map((l, i) => `<button type="button" data-visor-lente="${l}"
+           aria-pressed="${i === 0}">${l === 'rojo' ? 'Rojo' : 'Ámbar'}</button>`).join('')}
+      </div>` : '';
+    principal.innerHTML = '<canvas id="visor3d"></canvas>'
+      + alterna
+      + '<p class="visor-pista">Arrástralo para girarlo</p>';
+    montarVisor(p);
+  } else {
+    principal.innerHTML = `<img src="${esc(p.imagenes[imagenActiva])}" alt="${esc(p.nombre)}" hidden>
+                           <span class="tbd">[TBD] Foto ${imagenActiva + 1}</span>`;
+    activarImagenes(principal);
+  }
+
+  const miniaturas = p.imagenes.map((src, i) => `
+    <button class="tira" type="button" data-tira="${i}"
+            aria-pressed="${i === imagenActiva}" aria-label="Foto ${i + 1}">
+      <img src="${esc(src)}" alt="" hidden>
+      <span class="tbd">${i + 1}</span>
+    </button>`);
+
+  /* La miniatura del 3D solo existe si el navegador puede con él. */
+  if (HAY_WEBGL) {
+    miniaturas.push(`
+      <button class="tira tira--3d" type="button" data-tira="${VISTA_3D}"
+              aria-pressed="${imagenActiva === VISTA_3D}" aria-label="Ver en 3D">
+        <span>3D</span>
+      </button>`);
+  }
+  tiras.innerHTML = miniaturas.join('');
+  activarImagenes(tiras);
+}
+
+/* El visor vive solo mientras la ficha esté en pantalla. Al cambiar de
+   producto o de vista se descarta y se vuelve a crear: es más simple y más
+   seguro que reutilizar un contexto WebGL entre productos. */
+let visor = null;
+function montarVisor(p) {
+  const canvas = document.getElementById('visor3d');
+  if (!canvas) return;
+  cargar3D()
+    .then(m => { visor = m.iniciarVisor(canvas, { color: p.lente || 'ambar' }); })
+    .catch(() => {
+      /* Sin 3D: se vuelve a la primera foto en vez de dejar un hueco. */
+      imagenActiva = 0;
+      pintarGaleria(p);
+    });
+}
+
+/* ---------------- Checkout paso a paso ---------------- */
+const CLAVE_ENVIO = 'relief.envio.v1';
+let pasoActual = 1;
+
+const PASOS = ['Carrito', 'Envío', 'Pago', 'Listo'];
+
+const CAMPOS = [
+  { id: 'nombre',    etiqueta: 'Nombre completo', tipo: 'text',  requerido: true },
+  { id: 'whatsapp',  etiqueta: 'WhatsApp',        tipo: 'tel',   requerido: true,
+    ayuda: '10 dígitos', validar: v => /^\d{10}$/.test(v.replace(/\D/g, '')) ,
+    mensaje: 'Debe tener 10 dígitos' },
+  { id: 'documento', etiqueta: 'Cédula',          tipo: 'text',  requerido: true },
+  { id: 'ciudad',    etiqueta: 'Ciudad',          tipo: 'text',  requerido: true },
+  { id: 'direccion', etiqueta: 'Dirección',       tipo: 'text',  requerido: true },
+  { id: 'notas',     etiqueta: 'Indicaciones (opcional)', tipo: 'text', requerido: false }
+];
+
+function leerEnvio() {
+  try { return JSON.parse(localStorage.getItem(CLAVE_ENVIO)) || {}; } catch (e) { return {}; }
+}
+function guardarEnvio(datos) {
+  try { localStorage.setItem(CLAVE_ENVIO, JSON.stringify(datos)); } catch (e) {}
+}
+
+function totalCarrito() {
+  return leerCarrito().reduce((s, l) => s + (porId(l.id).precio || 0) * l.cantidad, 0);
+}
+
+function chipsHTML() {
+  return `<div class="pasos">` + PASOS.map((n, i) => {
+    const num = i + 1;
+    const estado = num === pasoActual ? 'activo' : (num < pasoActual ? 'hecho' : 'pendiente');
+    return `<span class="paso-chip" data-estado="${estado}">${num}. ${n}</span>`;
+  }).join('') + `</div>`;
+}
+
+function resumenHTML() {
+  const carrito = leerCarrito();
+  if (!carrito.length) return '<p class="carrito-vacio">El carrito está vacío.</p>';
+  return `<div class="resumen">
+    ${carrito.map(l => {
+      const p = porId(l.id);
+      return `<div class="resumen-linea">
+        <span>${esc(p.nombre)} × ${l.cantidad}</span>
+        ${precioHTML(p.precio * l.cantidad)}
+      </div>`;
+    }).join('')}
+    <div class="resumen-total">
+      <span class="label">Total</span>
+      ${precioHTML(totalCarrito())}
+    </div>
+    <p class="nota" style="margin-top:12px">Envío <span class="tbd">[TBD]</span>, se suma al confirmar.</p>
+  </div>`;
+}
+
+function mensajeWhatsapp() {
+  const datos = leerEnvio();
+  const lineas = leerCarrito().map(l => {
+    const p = porId(l.id);
+    return `• ${p.nombre} × ${l.cantidad} — ${COP.format(p.precio * l.cantidad)}`;
+  });
+  return [
+    'Hola RELIEF, quiero confirmar este pedido:',
+    '',
+    ...lineas,
+    `Total: ${COP.format(totalCarrito())}`,
+    '',
+    `Nombre: ${datos.nombre || ''}`,
+    `Cédula: ${datos.documento || ''}`,
+    `Ciudad: ${datos.ciudad || ''}`,
+    `Dirección: ${datos.direccion || ''}`,
+    datos.notas ? `Indicaciones: ${datos.notas}` : ''
+  ].filter(Boolean).join('\n');
+}
+
+function pintarCheckout() {
+  const carrito = leerCarrito();
+  if (!carrito.length) pasoActual = 1;
+  const datos = leerEnvio();
+
+  let cuerpo = '';
+
+  if (pasoActual === 1) {
+    cuerpo = `
+      <h1 class="producto-titulo">Tu carrito</h1>
+      ${carrito.length ? carrito.map(l => {
+        const p = porId(l.id);
+        return `<div class="resumen-linea" style="max-width:520px">
+          <span>${esc(p.nombre)}</span>
+          <span style="display:flex; align-items:center; gap:12px">
+            <span class="cantidad">
+              <button type="button" data-carrito-cant="${p.id}" data-delta="-1" aria-label="Quitar uno">−</button>
+              <span>${l.cantidad}</span>
+              <button type="button" data-carrito-cant="${p.id}" data-delta="1" aria-label="Agregar uno">+</button>
+            </span>
+            ${precioHTML(p.precio * l.cantidad)}
+          </span>
+        </div>`;
+      }).join('') : '<p class="carrito-vacio">El carrito está vacío.</p>'}
+      ${carrito.length ? `<div class="resumen-total" style="max-width:520px">
+        <span class="label">Total</span>${precioHTML(totalCarrito())}
+      </div>` : ''}
+      <div class="acciones-paso">
+        ${carrito.length
+          ? '<button class="btn" data-paso="2">Continuar</button>'
+          : '<a class="btn btn--ghost" href="#">Ver los lentes</a>'}
+      </div>`;
+  }
+
+  if (pasoActual === 2) {
+    cuerpo = `
+      <h1 class="producto-titulo">¿A dónde lo mandamos?</h1>
+      <p class="nota" style="margin-bottom:24px">Estos datos viajan contigo por WhatsApp
+        al confirmar. No se guardan en ningún servidor: viven solo en este navegador.</p>
+      <form id="formEnvio" novalidate>
+        ${CAMPOS.map(c => `
+          <div class="campo">
+            <label for="c-${c.id}">${esc(c.etiqueta)}</label>
+            <input id="c-${c.id}" name="${c.id}" type="${c.tipo}"
+                   value="${esc(datos[c.id] || '')}"
+                   ${c.requerido ? 'required' : ''}
+                   ${c.ayuda ? `placeholder="${esc(c.ayuda)}"` : ''}>
+            <span class="error" data-error="${c.id}"></span>
+          </div>`).join('')}
+        <div class="acciones-paso">
+          <button class="btn btn--ghost" type="button" data-paso="1">Atrás</button>
+          <button class="btn" type="submit">Continuar</button>
+        </div>
+      </form>`;
+  }
+
+  if (pasoActual === 3) {
+    const combo = leerCarrito().length === 1 ? porId(leerCarrito()[0].id) : null;
+    cuerpo = `
+      <h1 class="producto-titulo">Pago</h1>
+      ${resumenHTML()}
+      <div class="resumen" style="margin-bottom:28px">
+        <p class="label" style="margin-bottom:10px">Enviamos a</p>
+        <p style="margin:0; font-size:15px; line-height:1.6">
+          ${esc(datos.nombre || '')}<br>
+          ${esc(datos.direccion || '')}, ${esc(datos.ciudad || '')}<br>
+          WhatsApp ${esc(datos.whatsapp || '')}
+        </p>
+      </div>
+      <p class="nota" style="margin-bottom:20px">Pagas con tarjeta, PSE, Nequi o botón
+        Bancolombia. El cobro lo procesa Wompi.</p>
+      <div class="acciones-paso">
+        <button class="btn btn--ghost" type="button" data-paso="2">Atrás</button>
+        <button class="btn" type="button" data-pagar="${combo ? combo.id : ''}">Pagar con Wompi</button>
+      </div>
+      <p class="aviso" data-aviso="pago"></p>`;
+  }
+
+  if (pasoActual === 4) {
+    const texto = encodeURIComponent(mensajeWhatsapp());
+    cuerpo = `
+      <h1 class="producto-titulo">Falta un paso</h1>
+      <p class="producto-detalle">Mándanos el pedido por WhatsApp para que podamos
+        confirmarlo y despacharlo. Va todo prellenado: solo tienes que darle enviar.</p>
+      <div class="acciones-paso">
+        ${WHATSAPP
+          ? `<a class="btn" href="https://wa.me/${WHATSAPP}?text=${texto}" target="_blank" rel="noopener">Enviar por WhatsApp</a>`
+          : `<span class="tbd">[TBD] Falta el número de WhatsApp</span>`}
+        <button class="btn btn--ghost" type="button" data-vaciar-todo>Empezar de nuevo</button>
+      </div>`;
+  }
+
+  vistaCheckout.innerHTML = `<div class="wrap">
+    <a class="volver" href="#">← Seguir viendo</a>
+    ${chipsHTML()}
+    ${cuerpo}
+  </div>`;
+}
+
+/* ---------------- Eventos de las vistas ---------------- */
+let cantidadProducto = 1;
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-tira],[data-cant],[data-agregar-cant],[data-comprar-ahora],'
+    + '[data-paso],[data-carrito-cant],[data-pagar],[data-vaciar-todo],[data-visor-lente]');
+  if (!b) return;
+
+  if (b.dataset.visorLente) {
+    if (visor) visor.pintarLente(b.dataset.visorLente);
+    document.querySelectorAll('[data-visor-lente]').forEach(x =>
+      x.setAttribute('aria-pressed', String(x === b)));
+    return;
+  }
+
+  /* Galería */
+  if (b.dataset.tira !== undefined) {
+    const p = porId(location.hash.split('/')[2]);
+    if (p) { imagenActiva = Number(b.dataset.tira); pintarGaleria(p); }
+    return;
+  }
+
+  /* Cantidad en la ficha de producto */
+  if (b.dataset.cant) {
+    cantidadProducto = Math.max(1, cantidadProducto + Number(b.dataset.cant));
+    document.getElementById('cantidadValor').textContent = cantidadProducto;
+    return;
+  }
+  if (b.dataset.agregarCant || b.dataset.comprarAhora) {
+    const id = b.dataset.agregarCant || b.dataset.comprarAhora;
+    for (let i = 0; i < cantidadProducto; i++) agregar(id);
+    cantidadProducto = 1;
+    if (b.dataset.comprarAhora) { pasoActual = 1; location.hash = '#/checkout'; }
+    else {
+      const v = document.getElementById('cantidadValor');
+      if (v) v.textContent = '1';
+    }
+    return;
+  }
+
+  /* Navegación entre pasos */
+  if (b.dataset.paso) { pasoActual = Number(b.dataset.paso); pintarCheckout(); return; }
+
+  /* Cantidades dentro del checkout */
+  if (b.dataset.carritoCant) {
+    const delta = Number(b.dataset.delta);
+    const carrito = leerCarrito();
+    const linea = carrito.find(l => l.id === b.dataset.carritoCant);
+    if (linea) {
+      linea.cantidad += delta;
+      guardarCarrito(carrito.filter(l => l.cantidad > 0));
+      pintarCarrito();
+      pintarCheckout();
+    }
+    return;
+  }
+
+  /* Pago */
+  if (b.dataset.pagar !== undefined) {
+    const p = b.dataset.pagar ? porId(b.dataset.pagar) : null;
+    const aviso = document.querySelector('[data-aviso="pago"]');
+    if (p && p.linkWompi && p.linkWompi !== '#') {
+      window.open(p.linkWompi, '_blank', 'noopener');
+      pasoActual = 4; pintarCheckout();
+    } else if (aviso) {
+      aviso.innerHTML = '<span class="tbd">[TBD] Falta el link de pago de Wompi. '
+        + 'Puedes seguir al último paso para ver cómo queda.</span>'
+        + ' <button class="link-tenue" type="button" data-paso="4">Continuar igual</button>';
+    }
+    return;
+  }
+
+  if (b.dataset.vaciarTodo !== undefined) {
+    guardarCarrito([]);
+    pintarCarrito();
+    pasoActual = 1;
+    location.hash = '';
+    return;
+  }
+});
+
+/* Validación del formulario de envío */
+document.addEventListener('submit', ev => {
+  if (ev.target.id !== 'formEnvio') return;
+  ev.preventDefault();
+
+  const datos = {};
+  let valido = true;
+
+  CAMPOS.forEach(c => {
+    const input = document.getElementById('c-' + c.id);
+    const error = document.querySelector(`[data-error="${c.id}"]`);
+    const valor = input.value.trim();
+    datos[c.id] = valor;
+
+    let mensaje = '';
+    if (c.requerido && !valor) mensaje = 'Falta este dato';
+    else if (valor && c.validar && !c.validar(valor)) mensaje = c.mensaje;
+
+    error.textContent = mensaje;
+    input.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+    if (mensaje && valido) { valido = false; input.focus(); }
+  });
+
+  guardarEnvio(datos);
+  if (valido) { pasoActual = 3; pintarCheckout(); }
+});
+
+navegar();
+
+/* ---------------- El wordmark se vuelve logotipo ----------------
+   Se mide el ancho natural de la palabra una sola vez y de ahí salen las dos
+   escalas: la que la lleva de punta a punta y la del nav. El scroll solo
+   interpola entre ambas.
 ------------------------------------------------------------------ */
 (function(){
-  const marco  = document.getElementById('wordmark');
-  const palabra = document.getElementById('palabra');
-  const nav    = document.getElementById('nav');
+  const marco   = document.getElementById('wordmarkFijo');
+  const palabra = document.getElementById('palabraHero');
+  const nav     = document.querySelector('.nav');
   if (!marco || !palabra) return;
 
-  const ANCHO_NAV = 104;            // ancho final del logotipo, en px
-  const MARGEN    = 28;             // aire a cada lado cuando ocupa la pantalla
+  const ANCHO_NAV = 104;   // ancho final del logotipo, en px
+  const MARGEN    = 28;    // aire lateral cuando ocupa la pantalla
+  const PIE       = 56;    // aire bajo la palabra en su posición inicial
 
   let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
 
   function medir() {
-    /* Se mide sin transformación para tener el tamaño natural. */
-    palabra.style.transform = 'none';
-    const caja = palabra.getBoundingClientRect();
-    const ancho = caja.width || 1;
+    palabra.style.transform = 'none';         // medir sin transformación
+    const caja  = palabra.getBoundingClientRect();
+    const ancho = caja.width  || 1;
     const alto  = caja.height || 1;
-
     const vw = document.documentElement.clientWidth;
     const vh = window.innerHeight;
-    const alturaNav = parseFloat(getComputedStyle(document.documentElement)
-                        .getPropertyValue('--nav')) || 56;
+    const alturaNav = nav ? nav.getBoundingClientRect().height : 56;
 
     escalaGrande = Math.max(0.2, (vw - MARGEN * 2) / ancho);
     escalaChica  = ANCHO_NAV / ancho;
 
-    /* El centro visual queda en `y + alto/2`; se despeja para dejarlo donde
-       toca en cada extremo. */
-    yInicio = vh * 0.46 - alto / 2;
+    /* Al escalar sobre el centro, el borde inferior queda en
+       alto/2 + y + alto*escala/2. Se despeja para apoyarlo abajo. */
+    yInicio = vh - PIE - alto / 2 - (alto * escalaGrande) / 2;
     yFin    = alturaNav / 2 - alto / 2;
 
-    /* El morphing ocurre a lo largo de la primera pantalla y media. */
     recorrido = Math.max(1, vh * 1.15);
     aplicar();
   }
 
-  /* Suavizado: arranca despacio, acelera y frena. Sin esto el encogimiento
-     se siente lineal y mecánico. */
+  /* Arranca despacio, acelera y frena: lineal se siente mecánico. */
   const suave = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
 
   function aplicar() {
@@ -271,8 +1785,7 @@
     const escala = escalaGrande + (escalaChica - escalaGrande) * t;
     const y      = yInicio + (yFin - yInicio) * t;
     palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
-    /* La barra aparece solo cuando la palabra ya casi aterrizó. */
-    nav.dataset.posado = t > 0.92 ? 'true' : 'false';
+    if (nav) nav.dataset.posado = t > 0.92 ? 'true' : 'false';
   }
 
   let pedido = false;
@@ -283,27 +1796,12 @@
   }, { passive: true });
   addEventListener('resize', medir);
 
-  /* Se remide cuando la tipografía real ya cargó: medir con la de respaldo
-     daría un ancho distinto y el wordmark no quedaría de punta a punta. */
+  /* Se remide cuando la tipografía real cargó: con la de respaldo el ancho
+     es otro y la palabra no quedaría de punta a punta. */
   medir();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
 })();
-
-/* ---------------- Modelo 3D ---------------- */
-(function(){
-  const canvas = document.getElementById('modelo');
-  if (!canvas) return;
-  let puede = false;
-  try {
-    const p = document.createElement('canvas');
-    puede = !!(p.getContext('webgl2') || p.getContext('webgl'));
-  } catch (e) {}
-  if (!puede) return;
-  import('./assets/js/propuesta.js')
-    .then(m => m.iniciarEscena(canvas, document.getElementById('recorrido'),
-                               document.querySelectorAll('[data-lente]')))
-    .catch(() => {});
-})();
 </script>
+
 </body>
 </html>
