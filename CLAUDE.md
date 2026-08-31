@@ -201,8 +201,8 @@ Es el único riesgo de capital aprobado del proyecto.
 - Nombre: **recreo** · Wordmark en **minúscula**: `recreo`
 - **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
   Vocabulario de la marca: **punto, arco y línea recta**. Nada más.
-  - Archivos: `assets/img/isotipo-relief.svg` (principal, de 40 px en adelante)
-    y `assets/img/isotipo-relief-reducido.svg` (trazo grueso, de 40 px hacia
+  - Archivos: `assets/img/isotipo.svg` (principal, de 40 px en adelante)
+    y `assets/img/isotipo-reducido.svg` (trazo grueso, de 40 px hacia
     abajo: favicon, bordado, grabado). Son el mismo dibujo en dos tamaños ópticos.
   - **El isotipo no dibuja la categoría**, por la misma razón que el dominio: nada
     de gafas, ojos, pantallas, lunas ni zzz. El catálogo de mañana puede incluir
