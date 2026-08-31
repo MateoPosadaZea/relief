@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>RELIEF — Gafas con lente protector para trabajar y dormir</title>
+<title>recreo — Gafas con lente protector para trabajar y dormir</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta name="theme-color" content="#0B0B0C">
-<link rel="canonical" href="https://mateoposadazea.github.io/relief/">
+<link rel="canonical" href="https://mateoposadazea.github.io/recreo/">
 
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="RELIEF">
-<meta property="og:title" content="RELIEF — Gafas con lente protector">
+<meta property="og:site_name" content="recreo">
+<meta property="og:title" content="recreo — Gafas con lente protector">
 <meta property="og:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta property="og:image" content="assets/img/og.png">
-<meta property="og:url" content="https://mateoposadazea.github.io/relief/">
+<meta property="og:url" content="https://mateoposadazea.github.io/recreo/">
 <meta property="og:locale" content="es_CO">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RELIEF — Gafas con lente protector">
+<meta name="twitter:title" content="recreo — Gafas con lente protector">
 <meta name="twitter:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta name="twitter:image" content="assets/img/og.png">
 
@@ -34,7 +34,7 @@
 (function(){
   var MODOS = ['noche','dia','trabajo','descanso'];
   var m;
-  try { m = localStorage.getItem('relief.modo.v1'); } catch (e) {}
+  try { m = localStorage.getItem('recreo.modo.v1'); } catch (e) {}
   /* Día es el defecto: la marca vive de noche, pero el visitante llega a
      cualquier hora y un fondo negro de entrada le pide una decisión que no
      ha tomado. El modo noche sigue a un clic. */
@@ -86,7 +86,7 @@
     --hueso:       #EDEBE6;
     --ambar:       #F2A93B;
     --ambar-texto: #F2A93B;
-    --rojo-rlf:    #D91F26;
+    --rojo-marca:    #D91F26;
     --linea:       #26262B;
     --texto-tenue: #8A8A90;
   }
@@ -151,7 +151,7 @@
     --hueso:       #16161A;
     --ambar:       #F2A93B;
     --ambar-texto: #8A5A0B;
-    --rojo-rlf:    #C41A20;
+    --rojo-marca:    #C41A20;
     --linea:       #E4E1DA;
     --texto-tenue: #5F5F66;
   }
@@ -176,7 +176,7 @@
     --hueso:       #F2E6D2;
     --ambar:       #F2A93B;
     --ambar-texto: #F2A93B;
-    --rojo-rlf:    #D91F26;
+    --rojo-marca:    #D91F26;
     --linea:       #2E2519;
     --texto-tenue: #A08F73;
   }
@@ -190,7 +190,7 @@
     --hueso:       #EDD5D2;
     --ambar:       #F2A93B;
     --ambar-texto: #F2A93B;
-    --rojo-rlf:    #D91F26;
+    --rojo-marca:    #D91F26;
     --linea:       #2F1B1C;
     --texto-tenue: #A47F7C;
   }
@@ -321,7 +321,7 @@
      terminar el recorrido: minúscula, misma cara, mismo tamaño. Y en el mismo
      sitio —centrado— porque el centro de la barra es suyo. */
   /* La marca de la barra. En escritorio es la palabra; en móvil, el isotipo:
-     a 26 px con el menú y el carrito a los lados, «relief» compite por un
+     a 26 px con el menú y el carrito a los lados, «recreo» compite por un
      ancho que no tiene, y el isotipo aguanta ese tamaño porque para eso se
      dibujó. Es el mismo sitio —el centro de la barra— en los dos. */
   .marca{
@@ -538,7 +538,7 @@
     min-width:16px; height:16px; padding:0 4px;
     border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
-    background:var(--rojo-rlf); color:var(--blanco);
+    background:var(--rojo-marca); color:var(--blanco);
     border:1.5px solid var(--noche);
     pointer-events:none;
   }
@@ -761,7 +761,7 @@
     color:var(--texto-tenue); margin:0 0 18px;
   }
   .hora--ambar{ color:var(--ambar-texto); }
-  .hora--rojo{ color:var(--rojo-rlf); }
+  .hora--rojo{ color:var(--rojo-marca); }
   .panel-texto{
     font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
     font-size:clamp(28px,5.6vw,50px);
@@ -803,8 +803,8 @@
     font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:500; font-size:12px;
     letter-spacing:.11em; text-transform:uppercase;
     padding:14px 22px;
-    border:1px solid var(--rojo-rlf);
-    background:var(--rojo-rlf);
+    border:1px solid var(--rojo-marca);
+    background:var(--rojo-marca);
     color:var(--blanco);
     text-decoration:none;
     cursor:pointer;
@@ -938,7 +938,7 @@
   .honestidad p{ margin:0; color:var(--texto-tenue); font-size:15px; line-height:1.65; max-width:46ch; }
   .honestidad .no-decimos{
     color:var(--hueso); font-size:17px; margin-bottom:10px;
-    text-decoration:line-through; text-decoration-color:var(--rojo-rlf);
+    text-decoration:line-through; text-decoration-color:var(--rojo-marca);
     text-decoration-thickness:1.5px;
   }
   @media (min-width:900px){
@@ -1085,8 +1085,8 @@
   .campo input:focus, .campo textarea:focus, .campo select:focus{
     outline:none; border-color:var(--hueso);
   }
-  .campo .error{ color:var(--rojo-rlf); font-size:12px; min-height:1em; }
-  .campo input[aria-invalid="true"]{ border-color:var(--rojo-rlf); }
+  .campo .error{ color:var(--rojo-marca); font-size:12px; min-height:1em; }
+  .campo input[aria-invalid="true"]{ border-color:var(--rojo-marca); }
 
   .resumen{ border:1px solid var(--linea); padding:20px; margin-bottom:28px; max-width:520px; }
   .resumen-linea{
@@ -1175,7 +1175,7 @@
      el modelo no tiene ninguna consecuencia visible en la columna de datos y
      los dos bloques parecen dos cosas distintas puestas al lado. */
   .opcion{ transition:border-color .25s ease, transform .25s ease; }
-  .opcion[data-activa="true"]{ border-color:var(--rojo-rlf); }
+  .opcion[data-activa="true"]{ border-color:var(--rojo-marca); }
 
   .medidas{ margin-top:28px; }
   .medidas table{ margin-top:4px; }
@@ -1253,7 +1253,7 @@
     }
     html[data-cursor="propio"] .cursor[data-abierto="rojo"]{
       width:34px; height:34px;
-      background:transparent; border-color:var(--rojo-rlf);
+      background:transparent; border-color:var(--rojo-marca);
     }
   }
   @media (prefers-reduced-motion:reduce){
@@ -1308,7 +1308,7 @@
      de la marca. Antes las demás se apagaban; apagar seis tarjetas para
      señalar una era demasiado gesto para una fila que ya se detuvo sola. */
   .cinta .resena:hover,
-  .cinta .resena:focus-within{ border-color:var(--rojo-rlf); transform:translateY(-3px); }
+  .cinta .resena:focus-within{ border-color:var(--rojo-marca); transform:translateY(-3px); }
   .resena-texto{ margin:0; font-size:15px; line-height:1.5; }
   /* Sin divisor: el cambio de peso y de tamaño ya separa la firma del texto,
      y la línea partía en dos una tarjeta que mide 340 px de ancho. */
@@ -1475,7 +1475,7 @@
     font-size:var(--pie-cuerpo, clamp(56px, 21vw, 260px));
     line-height:.76;
     margin:0 0 8px; padding-bottom:.05em;
-    color:var(--rojo-rlf);
+    color:var(--rojo-marca);
     user-select:none;
   }
   .footer[data-pie="rojo"] .footer-palabra{ color:#F7EFEE; }
@@ -1556,7 +1556,7 @@
       <a href="#materiales">Materiales</a>
       <a href="#envios">Envíos</a>
     </nav>
-    <a class="marca" href="#top" id="marcaNav" aria-label="RELIEF — inicio" hidden>
+    <a class="marca" href="#top" id="marcaNav" aria-label="recreo — inicio" hidden>
       <!-- El isotipo va en línea y no como <img> para que herede el color del
            modo: un archivo externo no puede leer --hueso. Y es el dibujo de la
            versión REDUCIDA —trazo grueso, punto grande— porque a 22 px el
@@ -1568,7 +1568,7 @@
         </g>
         <circle cx="50" cy="50" r="11" fill="currentColor"/>
       </svg>
-      <span class="marca-palabra">relief</span>
+      <span class="marca-palabra">recreo</span>
     </a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel"
             aria-label="Carrito, 0 artículos">
@@ -1629,13 +1629,13 @@
         <a class="menu-enlace" data-contacto="instagram">Instagram</a>
         <a class="menu-enlace" data-contacto="tiktok">TikTok</a>
       </div>
-      <p class="menu-pie-nota" style="--i:7">RELIEF · Bogotá · Envíos a todo el país en 2-3 días</p>
+      <p class="menu-pie-nota" style="--i:7">recreo · Bogotá · Envíos a todo el país en 2-3 días</p>
     </div>
   </div>
 </nav>
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
-<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">relief</span></div>
+<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">recreo</span></div>
 <div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span>Desliza</span></div>
 
 <!-- El punto del centro del isotipo, convertido en cursor. Solo existe con
@@ -1703,7 +1703,7 @@
 
       <section class="panel" data-pieza="conjunto" data-lente="ambar" data-lado="izq">
         <div class="wrap">
-          <p class="hora">Somos RELIEF</p>
+          <p class="hora">Somos recreo</p>
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
           <p class="panel-apoyo">Nada más. Sin catálogo de cien referencias, sin monturas
             de colores. Esto es para ti si trabajas, juegas o estudias de noche.</p>
@@ -1844,7 +1844,7 @@
           <details class="medidas">
             <summary>Las medidas</summary>
             <table>
-              <caption class="sr-only">Especificaciones técnicas de los lentes RELIEF</caption>
+              <caption class="sr-only">Especificaciones técnicas de los lentes</caption>
               <tbody>
                 <tr><th scope="row">Material de la montura</th><td><span class="tbd" data-muestra="ficha-montura">Poliamida TR90 · por confirmar</span></td></tr>
                 <tr><th scope="row">Material del lente</th><td><span class="tbd" data-muestra="ficha-lente">[TBD]</span></td></tr>
@@ -2039,7 +2039,7 @@
   <div class="wrap">
     <!-- aria-hidden: la palabra ya la dice el logotipo de la barra; para un
          lector de pantalla esto es un dibujo, no un encabezado más. -->
-    <p class="footer-palabra" aria-hidden="true">relief</p>
+    <p class="footer-palabra" aria-hidden="true">recreo</p>
     <div class="footer-cima">
       <nav class="footer-enlaces" aria-label="Pie de página">
         <a href="#top">Inicio</a>
@@ -2102,9 +2102,9 @@ const MAQUETA = true;
 const MUESTRA = {
   /* Contacto */
   whatsapp:  '573001234567',          // formato internacional sin +
-  instagram: 'relief.co',
-  tiktok:    'relief.co',
-  correo:    'hola@relief.co',
+  instagram: 'recreo.co',
+  tiktok:    'recreo.co',
+  correo:    'hola@recreo.co',
 
   /* Ficha técnica. Números plausibles para una TR90 de este tipo; hay que
      reemplazarlos con los del proveedor, no confirmarlos contra esto. */
@@ -2141,7 +2141,7 @@ const MUESTRA = {
   'devoluciones-corto': 'Tienes 30 días para devolverlos con el estuche y sin rayones '
                   + 'de uso. Si el problema fue nuestro, el flete de retorno lo pagamos '
                   + 'nosotros.',
-  'legal':          'Relief Colombia S.A.S. · NIT 901.845.223-7',
+  'legal':          'Recreo Colombia S.A.S. · NIT 901.845.223-7',
   'hora-montura':   '',
   'hora-bisagra':   '',
   'resenas-forma':  ''
@@ -2184,8 +2184,8 @@ const PRECIOS_PROVISIONALES = true;
 ------------------------------------------------------------------ */
 const PRODUCTOS = [
   {
-    id: "rlf-ambar",
-    nombre: "RLF Ámbar",
+    id: "ambar",
+    nombre: "Ámbar",
     momento: "Para trabajar",
     descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
     detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
@@ -2202,8 +2202,8 @@ const PRODUCTOS = [
     linkWompi: "#"
   },
   {
-    id: "rlf-rojo",
-    nombre: "RLF Rojo",
+    id: "rojo",
+    nombre: "Rojo",
     momento: "Para dormir",
     descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
     detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
@@ -2216,11 +2216,11 @@ const PRODUCTOS = [
       "assets/img/rojo-lateral.webp",
       "assets/img/rojo-detalle.webp"
     ],
-    acento: "var(--rojo-rlf)",
+    acento: "var(--rojo-marca)",
     linkWompi: "#"
   },
   {
-    id: "rlf-combo",
+    id: "combo",
     nombre: "Combo rutina nocturna",
     momento: "Trabaja, transiciona, duerme",
     descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
@@ -2237,7 +2237,7 @@ const PRODUCTOS = [
       "assets/img/combo-frente.webp",
       "assets/img/combo-estuches.webp"
     ],
-    acento: "var(--rojo-rlf)",
+    acento: "var(--rojo-marca)",
     linkWompi: "#"
   }
 ];
@@ -2333,7 +2333,7 @@ function activarImagenes(raiz){
    cambia de color — es la misma decisión mirada desde los dos lados. */
 const opcionesLentes = document.getElementById('opcionesLentes');
 opcionesLentes.innerHTML = PRODUCTOS
-  .filter(p => p.id !== 'rlf-combo')
+  .filter(p => p.id !== 'combo')
   .map((p, i) => `
     <article class="opcion" data-lente="${p.lente}"
              data-puesta="${esc(p.puesta || '')}" data-activa="${i === 0}">
@@ -2352,7 +2352,7 @@ opcionesLentes.innerHTML = PRODUCTOS
   `).join('');
 
 /* ---------------- Render: el combo ---------------- */
-const combo = porId('rlf-combo');
+const combo = porId('combo');
 document.getElementById('comboCard').innerHTML = `
   <div class="combo-grid">
     <a class="ficha-enlace" href="#/producto/${combo.id}">
@@ -2475,7 +2475,7 @@ function cargar3D() {
   function verPuesta() {
     if (!foto || !puestas[lenteActual]) return;
     foto.src = puestas[lenteActual];
-    foto.alt = 'Las RLF ' + (lenteActual === 'rojo' ? 'Rojo' : 'Ámbar') + ' puestas';
+    foto.alt = 'Las ' + (lenteActual === 'rojo' ? 'Rojo' : 'Ámbar') + ' puestas';
     foto.hidden = false;
     if (pista) pista.hidden = true;
   }
@@ -2546,7 +2546,7 @@ function cargar3D() {
                                 document.querySelectorAll('.panel[data-lente]')))
     /* Se traga el fallo a propósito —el 3D es una capa encima— pero deja
        rastro: un error dentro del módulo mataba la escena sin decir nada. */
-    .catch(e => console.warn('RELIEF: la escena 3D no cargó.', e));
+    .catch(e => console.warn('recreo: la escena 3D no cargó.', e));
 })();
 
 
@@ -2660,19 +2660,19 @@ const RESENAS_DE_MUESTRA = MAQUETA;   // un solo interruptor para todo lo invent
 
 const RESENAS_EJEMPLO = [
   { texto: 'Trabajo en soporte de 10 pm a 6 am. Llevo tres semanas con el ámbar y termino el turno con los ojos menos cansados. Es lo único que puedo decir, pero es real.',
-    nombre: 'Daniel R.', ciudad: 'Bogotá', compra: 'RLF Ámbar', fecha: '12 ago 2026' },
+    nombre: 'Daniel R.', ciudad: 'Bogotá', compra: 'Ámbar', fecha: '12 ago 2026' },
   { texto: 'Pedí un martes y llegó el jueves. Venía de comprar unas parecidas en otra página y esperé mes y medio. La diferencia es esa.',
     nombre: 'Valentina O.', ciudad: 'Medellín', compra: 'Combo Rutina Nocturna', fecha: '3 ago 2026' },
   { texto: 'El rojo es más oscuro de lo que esperaba y eso está bien: no sirve para trabajar y ellos mismos lo dicen en la página. Lo uso la última hora y ya.',
-    nombre: 'Andrés M.', ciudad: 'Cali', compra: 'RLF Rojo', fecha: '28 jul 2026' },
+    nombre: 'Andrés M.', ciudad: 'Cali', compra: 'Rojo', fecha: '28 jul 2026' },
   { texto: 'Escribí por WhatsApp un domingo preguntando por la talla y me contestaron el mismo día. No esperaba eso.',
-    nombre: 'Laura P.', ciudad: 'Bucaramanga', compra: 'RLF Ámbar', fecha: '21 jul 2026' },
+    nombre: 'Laura P.', ciudad: 'Bucaramanga', compra: 'Ámbar', fecha: '21 jul 2026' },
   { texto: 'La montura es más liviana de lo que se ve en las fotos. Seis horas seguidas y no me molesta en las orejas.',
     nombre: 'Sebastián G.', ciudad: 'Barranquilla', compra: 'Combo Rutina Nocturna', fecha: '15 jul 2026' },
   { texto: 'Le pedí que me cambiaran el combo por dos ámbar porque el rojo no era para mí. Lo resolvieron sin pelear.',
-    nombre: 'Camila T.', ciudad: 'Pereira', compra: 'RLF Ámbar', fecha: '9 jul 2026' },
+    nombre: 'Camila T.', ciudad: 'Pereira', compra: 'Ámbar', fecha: '9 jul 2026' },
   { texto: 'Estudio de noche y la pantalla del portátil se me hacía insoportable después de la medianoche. Ahora aguanto el bloque completo.',
-    nombre: 'Julián E.', ciudad: 'Manizales', compra: 'RLF Ámbar', fecha: '2 jul 2026' }
+    nombre: 'Julián E.', ciudad: 'Manizales', compra: 'Ámbar', fecha: '2 jul 2026' }
 ];
 
 (function(){
@@ -2947,7 +2947,7 @@ window.__marcaBarra = marcaDeBarra;
    Cada modo trae su propia foto de hero; si el archivo no existe, el
    hero se queda plano (que es el estado de hoy).
 --------------------------------------------------------- */
-const CLAVE_MODO = 'relief.modo.v1';
+const CLAVE_MODO = 'recreo.modo.v1';
 
 const MODOS = {
   dia:      { fondoBarra: '#EDEBE6', imagen: 'assets/img/hero.webp' },
@@ -2987,7 +2987,7 @@ botonesModo.forEach(b => {
 aplicarModo(document.documentElement.dataset.modo, false);
 
 /* ---------------- Carrito (localStorage) ---------------- */
-const CLAVE_CARRITO = 'relief.carrito.v1';
+const CLAVE_CARRITO = 'recreo.carrito.v1';
 
 function leerCarrito(){
   try {
@@ -3439,7 +3439,7 @@ function montarVisor(p) {
 }
 
 /* ---------------- Checkout paso a paso ---------------- */
-const CLAVE_ENVIO = 'relief.envio.v1';
+const CLAVE_ENVIO = 'recreo.envio.v1';
 let pasoActual = 1;
 
 const PASOS = ['Carrito', 'Envío', 'Pago', 'Listo'];
@@ -3500,7 +3500,7 @@ function mensajeWhatsapp() {
     return `• ${p.nombre} × ${l.cantidad} — ${COP.format(p.precio * l.cantidad)}`;
   });
   return [
-    'Hola RELIEF, quiero confirmar este pedido:',
+    'Hola recreo, quiero confirmar este pedido:',
     '',
     ...lineas,
     `Total: ${COP.format(totalCarrito())}`,
@@ -3742,20 +3742,20 @@ navegar();
     document.querySelectorAll('[data-' + attr + '-set]').forEach(b =>
       b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
   }
-  function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('relief.fondo', v); }
-  function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('relief.claro', v); }
+  function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('recreo.fondo', v); }
+  function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('recreo.claro', v); }
   /* Va en el body y no en :root porque solo lo mira la barra. */
-  function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('relief.marca', v); }
+  function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('recreo.marca', v); }
   function aplicarCursor(v){
     if (window.__cursorPropio) window.__cursorPropio(v === 'punto');
-    marcar('cursor', v); guardar('relief.cursor', v);
+    marcar('cursor', v); guardar('recreo.cursor', v);
   }
   /* El pie es el único bloque que puede llevar color propio, así que su
      interruptor vive en el elemento y no en :root. */
   function aplicarPie(v){
     const pie = document.querySelector('.footer');
     if (pie) pie.dataset.pie = v;
-    marcar('pie', v); guardar('relief.pie', v);
+    marcar('pie', v); guardar('recreo.pie', v);
     if (window.__ajustarPie) window.__ajustarPie();
   }
   /* El peso no es un atributo de :root sino una variable, porque lo consumen
@@ -3763,7 +3763,7 @@ navegar();
   function aplicarPeso(v){
     raiz.style.setProperty('--peso-display', v);
     if (window.__ajustarPie) window.__ajustarPie();
-    marcar('peso', v); guardar('relief.peso', v);
+    marcar('peso', v); guardar('recreo.peso', v);
   }
 
   document.addEventListener('click', ev => {
@@ -3790,12 +3790,12 @@ navegar();
      que juzgar. Arranca plegado. */
   if (window.innerWidth < 760) { banco.hidden = true; abrir.hidden = false; }
 
-  aplicarFondo(leer('relief.fondo', 'neutro'));
-  aplicarPeso(leer('relief.peso', '600'));
-  aplicarPie(leer('relief.pie', 'claro'));
-  aplicarClaro(leer('relief.claro', 'blanco'));
-  aplicarMarca(leer('relief.marca', 'conjunto'));
-  aplicarCursor(leer('relief.cursor', 'punto'));
+  aplicarFondo(leer('recreo.fondo', 'neutro'));
+  aplicarPeso(leer('recreo.peso', '600'));
+  aplicarPie(leer('recreo.pie', 'claro'));
+  aplicarClaro(leer('recreo.claro', 'blanco'));
+  aplicarMarca(leer('recreo.marca', 'conjunto'));
+  aplicarCursor(leer('recreo.cursor', 'punto'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------
@@ -3819,7 +3819,7 @@ navegar();
   let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
 
   /* El alto de la caja de texto no es el alto de las letras: con line-height 1
-     sobra el hueco de los descendentes, y "relief" no tiene ninguno. Para
+     sobra el hueco de los descendentes, y "recreo" no tiene ninguno. Para
      apoyar la palabra abajo hay que medir la tinta, no la caja. */
   const medidor = document.createElement('canvas').getContext('2d');
   function tinta(tam) {
@@ -3884,7 +3884,7 @@ navegar();
        van encima de la palabra, nunca detrás. */
     document.documentElement.style.setProperty('--palabra-cima',
       Math.round(yInicio + ink.arriba) + 'px');
-    window.dispatchEvent(new Event('relief:banda'));
+    window.dispatchEvent(new Event('recreo:banda'));
 
     aplicar();
   }

@@ -1,4 +1,4 @@
-# RELIEF (RLF) — Ecommerce de gafas protectoras
+# recreo — Ecommerce de gafas protectoras
 
 ## Qué es esto
 Tienda online de gafas con lente protector (sin fórmula) para el mercado colombiano.
@@ -10,9 +10,9 @@ arquitectura de catálogo — y como advertencia (ver Posicionamiento).
 Público objetivo: gente que trabaja de noche frente a pantallas (teletrabajo, turnos,
 gamers, estudiantes). El ángulo de venta es la rutina nocturna completa.
 
-1. **RLF Ámbar** — lente naranja/amarillo. Para las horas de trabajo nocturno frente
+1. **Ámbar** — lente naranja/amarillo. Para las horas de trabajo nocturno frente
    a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.
-2. **RLF Rojo** — lente rojo. Para la última hora antes de dormir. Filtra azul y verde
+2. **Rojo** — lente rojo. Para la última hora antes de dormir. Filtra azul y verde
    (rango corto del espectro). No es para trabajar ni conducir.
 3. **Combo Rutina Nocturna** — Ámbar + Rojo con descuento. **Producto héroe del sitio.**
    El combo sube el ticket promedio (el fee fijo de Wompi y el envío pesan menos) y
@@ -69,7 +69,7 @@ arco visual *es* el arco del catálogo.
 |---|---|
 | Hero | Wordmark + "Trabajas de noche. Tus ojos también." |
 | 11:47 PM | El problema, sin prometer nada: llevas seis horas y te faltan dos. |
-| Somos RELIEF | Dos lentes, uno para trabajar, uno para parar. Nada más. |
+| Somos recreo | Dos lentes, uno para trabajar, uno para parar. Nada más. |
 | 12:30 AM | El ámbar: el del turno. |
 | 2:10 AM | El rojo: el del final. |
 | Mañana, 9:00 AM | Sale de Bogotá, no de Shenzhen. La tesis del negocio. |
@@ -154,25 +154,51 @@ compra el aro se pone rojo.
   leerse la página y donde ya no queda nada abajo. Va en una retícula de tres
   columnas y no en `space-between`, porque con flex se centraba en el hueco
   que dejaran los otros dos grupos y no en la página.
-- Como ahora el rojo es **texto** y no fondo, usa el token `--rojo-rlf` y sí
+- Como ahora el rojo es **texto** y no fondo, usa el token `--rojo-marca` y sí
   participa de los modos: verificado que los cuatro pasan 3:1 de texto grande,
   y día pasa incluso 4.5:1. El hex fijo se queda solo en el botón de compra.
 - La versión de **bloque rojo entero** sigue viva en `.footer[data-pie="rojo"]`,
   con su interruptor en el banco de pruebas, para poder comparar las dos sobre
   el sitio real antes de decidir.
 
+## ⚠ El nombre cambió: RELIEF → recreo
+La marca se llamó **RELIEF** hasta agosto de 2026. Se cambió por una razón
+concreta, no por gusto: la consulta de antecedentes marcarios en la SIC
+encontró **I-RELIEF, de Essilor International, registrada y vigente hasta 2033
+en clase 9** — la clase de gafas y lentes—, con una descripción de productos
+que dice literalmente «cristales filtrantes, cristales tintados». Entre
+`I-RELIEF` y `RELIEF`, para el mismo producto, la diferencia es una letra y un
+guion: riesgo alto de negación y de oposición del titular.
+
+- Usar RELIEF sin registrarlo no era ilegal. El problema era que **no lo
+  podríamos registrar en nuestra clase**, o sea construir marca sobre algo
+  indefendible. Se sumaban un tercero disputando el nombre en Colombia
+  (GRUPO RELIEF SAS) y ocho razones sociales en el RUES.
+- `recreo` se eligió contra cinco criterios: nombra el momento y no el mal
+  (RELIEF sonaba a farmacia), es cómplice y no correctivo, no encierra el
+  catálogo, es una palabra decible en minúscula, y debe ser registrable.
+- ⚠ **El quinto criterio sigue PENDIENTE**: falta verificar `recreo` en SIPI,
+  clases 9 y 35. Hasta que eso pase, no se compra dominio ni se abren cuentas.
+  Verificar antes de enamorarse es justo la lección que costó el cambio.
+- Descartados por el camino y por qué: **guiño** (la ñ no sirve para dominio, y
+  con ese nombre el isotipo pasa a leerse como un ojo, que encierra el
+  catálogo), **tregua** (solemne, supone una guerra), **trasnoche** (encierra
+  la marca en la noche), **tranqui** (demasiado informal y poco distintiva),
+  **Oculus** (es la marca de VR de Meta, y los visores son clase 9: colisión
+  peor que la de Essilor), **solaz** (buena, quedó de tercera).
+
 ## Posicionamiento (la tesis del negocio)
 Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot está destruido:
 esperas de hasta 2 meses, envíos desde China, soporte que no responde. **La categoría entera
 pierde por logística y servicio, no por producto.**
 
-RELIEF gana ahí: stock propio en Bogotá, entrega en 2-3 días por Interrapidísimo/Servientrega,
+recreo gana ahí: stock propio en Bogotá, entrega en 2-3 días por Interrapidísimo/Servientrega,
 soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 → Implica **inventario propio, NO dropshipping.** Pedido inicial 50-100 unidades.
 Es el único riesgo de capital aprobado del proyecto.
 
 ## Marca
-- Nombre: **RELIEF** · Wordmark en **minúscula**: `relief`
+- Nombre: **recreo** · Wordmark en **minúscula**: `recreo`
 - **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
   Vocabulario de la marca: **punto, arco y línea recta**. Nada más.
   - Archivos: `assets/img/isotipo-relief.svg` (principal, de 40 px en adelante)
@@ -187,15 +213,16 @@ Es el único riesgo de capital aprobado del proyecto.
     Comparte el átomo —el punto del centro de las manos— así que se lee de la
     misma familia. No se usa como logo: junto a WhatsApp lee a «escribiendo…»
     y en una barra lee a menú de tres puntos.
-  - La sigla **RLF** sigue sirviendo para nombrar producto (RLF Ámbar, RLF Rojo),
-    no como isotipo.
+  - **La sigla recreo murió con el nombre viejo.** Los productos son «Ámbar» y
+    «Rojo» a secas: la sección ya se llama «Los dos lentes» y una sigla nueva
+    («RCR Ámbar») sería inventar un problema que no teníamos.
 - **La palabra del recorrido no se queda como logotipo.** Al llegar a la barra
   se apaga y la releva la marca estática. La del recorrido llega ahí por
   `transform: scale()` desde un cuerpo enorme, y un texto escalado se rasteriza
   a un tamaño y se muestra en otro: se veía pastoso al lado del resto de la
   barra. La estática es texto de 26 px de verdad.
 - **La barra lleva el conjunto: isotipo + palabra.** En móvil se queda solo el
-  isotipo, porque a 26 px con el menú y el carrito a los lados `relief` compite
+  isotipo, porque a 26 px con el menú y el carrito a los lados `recreo` compite
   por un ancho que no tiene. El isotipo va **en línea** en el HTML, no como
   `<img>`, para que herede el color del modo, y a ese tamaño usa el dibujo de
   la **versión reducida** —trazo grueso, punto grande—, que es la regla de los
@@ -214,7 +241,7 @@ Es el único riesgo de capital aprobado del proyecto.
 | Superficie | `#16161A` | Tarjetas, secciones |
 | Hueso | `#EDEBE6` | Texto principal en oscuro (NO blanco puro) |
 | Ámbar | `#F2A93B` | Lente de trabajo, acentos diurnos |
-| Rojo RLF | `#D91F26` | Logo, lente nocturno, botón comprar |
+| Rojo marca | `#D91F26` | Logo, lente nocturno, botón comprar |
 | Línea | `#26262B` | Divisores hairline |
 | Texto tenue | `#8A8A90` | Secundario |
 
@@ -232,7 +259,7 @@ Es el único riesgo de capital aprobado del proyecto.
     parecieran de otra tipografía era el peso, no la cara: los números de
     Epilogue son geométricos y anchos, y a 600 junto a un párrafo de 400 leen
     como otra cosa. Ahora la diferencia es deliberada.
-  - El **logotipo** va en Epilogue, minúscula: `relief`.
+  - El **logotipo** va en Epilogue, minúscula: `recreo`.
   - **Solo el wordmark va en minúscula.** Los titulares de sección van en tipo
     oración. Todo en minúscula leía a manifiesto y le quitaba jerarquía a la
     única palabra que de verdad se escribe así. El texto del recorrido sí
@@ -241,7 +268,7 @@ Es el único riesgo de capital aprobado del proyecto.
   con la escena 3D encima, dos caras eran ruido de más), Archivo + Instrument
   Sans, Sora, y Geist. **Supply Mono** es de pago para uso comercial: NO usar.
 - Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
-- Favicon / app icon: isotipo RLF rojo.
+- Favicon / app icon: isotipo recreo rojo.
 
 ### Modos de visualización
 El catálogo son dos lentes; el sitio son los mismos dos modos. **El producto se
@@ -283,7 +310,7 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 
 ## Arquitectura Fase 1
 ```
-relief/
+recreo/
 ├── index.html      # landing + historia + producto + carrito (todo en uno)
 ├── assets/
 │   ├── img/        # fotos de producto y de marca (webp)
@@ -413,13 +440,11 @@ después de validar que antes.
       exige fotos recortadas o de fondo limpio.
 - [ ] Dominio (~$50.000 COP/año). Único gasto fijo aprobado.
       **Criterio: el dominio NO puede nombrar la categoría.** Nada de `lentes`,
-      `gafas`, `optica` ni `glasses`. RELIEF es el alivio de la jornada, del
-      trabajo y del sueño; el catálogo de mañana puede incluir antifaces, tapones
+      `gafas`, `optica` ni `glasses`. recreo es la pausa de la jornada; el catálogo de mañana puede incluir antifaces, tapones
       o luz de escritorio, y un dominio con la categoría adentro lo contradice.
       Solo la marca, o la marca con una palabra de voz (`soy`, `hola`) que
       tampoco nombre producto.
-      ⚠ `relief.com` está tomado por un tercero: cualquier `relief.xx` va a
-      filtrar tráfico hacia ese `.com` cuando alguien teclee de memoria.
+      ⚠ Verificar `recreo` en SIPI (clases 9 y 35) ANTES de comprar dominio.
 - [ ] Nombre legal / quién factura (persona natural sirve para arrancar con Wompi).
 
 ## Reseñas y estudios (reglas duras)
@@ -470,6 +495,6 @@ que aún no existen.
 - Publicar porcentajes de bloqueo sin certificado propio.
 
 ## División de trabajo
-- Diseño, UI/UX, branding y copy: chat de Claude (proyecto RELIEF).
+- Diseño, UI/UX, branding y copy: chat de Claude (proyecto recreo).
 - Código, git, deploy: Claude Code en la máquina de Mateo.
 - Secretos y llaves: nunca en el chat.
