@@ -104,6 +104,16 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
   `preserveAspectRatio="none"` salía convertida en burbuja.
 - **Dos planchas, no cuatro modos**: marfil con tinta negra y su negativo. El
   negativo no es «modo oscuro», es la otra plancha del mismo grabado.
+- **El sello está CONGELADO en `assets/img/sello.svg`.** Antes lo dibujaba
+  `organico()` en cada carga. Un logotipo no se genera: se guarda. Si la curva
+  puede cambiar entre visitas, no es una marca. Salió de ese mismo generador,
+  se ejecutó una vez y ese trazado es la forma definitiva — el mismo `d` vive
+  en el SVG y en las constantes `SELLO_FUERA`/`SELLO_DENTRO` del sitio, así que
+  hay una sola fuente.
+  ⚠ Las dos palabras siguen como **texto vivo**: para el archivo que se le
+  entrega a un impresor o al fabricante hay que **convertirlas a curvas**, y
+  eso no se puede hacer sin los archivos de Gambetta. El bloqueo de la fuente
+  no es solo estético: **impide cerrar el logotipo.**
 - **Las dos planchas se cambian a mano, y el mando se ve.** Es texto —`marfil`
   y `negra`— en la barra y en la lámina del menú móvil, porque en un sitio sin
   una sola tipografía sans un sol y una luna serían los dos únicos dibujos de
