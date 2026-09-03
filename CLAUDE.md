@@ -213,25 +213,23 @@ soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 Es el único riesgo de capital aprobado del proyecto.
 
 ## El modelo 3D
-Paramétrico, construido en código; no hay `.glb` que cargar. Se rehízo en
-agosto de 2026 contra una referencia nueva del proveedor:
+Paramétrico, construido en código; no hay `.glb` que cargar. Es la **montura
+rectangular de acetato oscuro**, que es la que coincide con las fotos de
+producto: aro de esquinas redondeadas con la ceja gruesa y el bajo fino, canto
+claro laminado sobre el borde superior, puente ancho a la altura de la ceja, y
+varillas planas que adelgazan.
 
-- **Aro panto, casi circular** (razón 1.07), no el rectangular de antes (1.45).
-  Se dibuja con cuatro bezier para poder mover cada cuadrante por separado.
-- **Acetato traslúcido** en vez de negro opaco, y la traslucidez va por **alfa,
-  no por `transmission`**: la transmisión de three.js refracta lo que hay en la
-  escena, y aquí la escena está vacía porque el lienzo va en `alpha:true` para
-  que se vea la página detrás. Con transmisión sola el acetato salía gris
-  plano. Queda un toque de transmisión que no atraviesa: solo enciende los
-  cantos, que es de donde sale la lectura de material.
-- **Puente de ojo de cerradura**: el acetato baja por el centro y se recorta con
-  un semicírculo. Es el detalle que distingue un panto de acetato de una
-  montura redonda cualquiera.
-- Se fue el **canto claro laminado**: la referencia es una sola pieza.
-- ⚠ **El modelo y las fotos de producto ya no coinciden.** Las fotos
-  (`ambar.webp`, `rojo.webp`) siguen siendo de la montura rectangular negra.
-  Al llegar el pedido real hay que rehacerlas, o el visor y la galería estarán
-  mostrando dos productos distintos en la misma ficha.
+- ⚠ **Se probó rehacerlo como panto redondo de acetato traslúcido** —contra una
+  referencia del proveedor, en agosto de 2026— y **se revirtió**: el aro
+  circular y el acetato transparente no se veían bien en la escena. Si alguien
+  vuelve a intentarlo, dos cosas aprendidas que sirven igual:
+  1. La traslucidez **no puede ir por `transmission`**. La transmisión de
+     three.js refracta lo que hay en la escena, y aquí la escena está vacía
+     porque el lienzo va en `alpha:true` para que se vea la página detrás; con
+     transmisión sola el acetato sale gris plano. Va por **alfa**, y entonces
+     lo que se ve a través del aro es la página.
+  2. El aro redondo es más angosto que el rectangular, así que hay que subir la
+     escala del visor o queda nadando en la caja.
 
 ## Marca
 - Nombre: **malcolm** · Wordmark en **minúscula**: `malcolm`
