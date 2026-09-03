@@ -29,22 +29,30 @@ reseñas y claims, y el modo maqueta. Lo que **hay que decidir**: cuál de las d
 es el sitio, porque mantener las dos cuesta el doble.
 
 ## La casa de autor (`capotte.html`)
-- **La ilustración del leopardo NO está en el repo.** El brief la da por adjunta
-  y no llegó. El sitio la trata como una **lámina**: `assets/img/leopardo.svg`,
-  y `HAY_LEOPARDO` a `true` cuando el archivo esté. Mientras tanto cada sitio
-  donde va se ve como una plancha pendiente, con su número y su pie — que es
-  como un libro de historia natural enseña una lámina que no se ha tirado.
-  ⚠ **No sustituirla por otro animal ni por una ilustración de stock.**
-- Hay una **silueta paramétrica provisional** detrás de un interruptor en el
-  pie, apagada por defecto y rotulada como provisional. Sirve para juzgar
-  escala y encuadre, **nunca para hacer de marca**: la técnica de grabado
-  —trama, rosetas de anillo roto, negativo— funciona, pero la cabeza lee a
-  cánido. Tres intentos; se dejó ahí a propósito en vez de seguir fabricando
-  lo que el brief pide no fabricar.
-- **El hueco de un activo que falta es parte de la dirección de arte.** Todas
-  las fotos son láminas con marco de borde irregular y trama tenue. Al soltar
-  el `.webp` en `assets/img/` la lámina se monta sola y el hueco desaparece.
-  Por eso la página se puede juzgar entera sin inventarse fotografía.
+- **La ilustración del leopardo ya está**: `assets/img/leopardo-{640,1120,2048}.webp`,
+  tinta negra y pelaje blanco sobre transparente. Se **recortó a la tinta**, así
+  que el borde de la imagen es el borde del animal y colocarla no es adivinar.
+  WebP con pérdida a q90: sin pérdida pesaba 1 MB y a q90 la trama del grabado
+  aguanta el 100 % — verificado sobre la cabeza, que es lo más fino.
+  ⚠ **No sustituirla por otra, no redibujarla y no usar imágenes de animales
+  genéricas.** Va en la portada, en la sección del leopardo y como firma tenue
+  del pie. En la ficha de producto no va: ahí manda la pieza.
+- **En la plancha negra la ilustración se invierte** (`filter:invert(1)`). No es
+  un filtro de adorno: es literalmente la otra plancha del mismo grabado, y sale
+  del mismo archivo en vez de duplicarlo.
+- ⚠ **Se probó dibujar el leopardo en SVG** mientras la ilustración no había
+  llegado, y se descartó en tres intentos. Lo que se aprendió: la técnica de
+  grabado sí se puede fabricar —trama de líneas recortada a la silueta, rosetas
+  como anillos rotos con un punto dentro, y una segunda trama más densa
+  enmascarada con un degradado para el tono del lomo—, pero la **anatomía** no:
+  la cabeza salía leyendo a cánido. El código se borró al llegar la lámina
+  buena; si alguien lo necesita, está en el historial.
+- **El hueco de un activo que falta es parte de la dirección de arte.** Toda la
+  fotografía que aún no existe son láminas con marco de borde irregular y trama
+  tenue. Al soltar el `.webp` en `assets/img/` la lámina se monta sola y el
+  hueco desaparece. Por eso la página se puede juzgar entera sin inventarse
+  fotografía — y por eso la ilustración, que sí es una lámina, va **sin marco**:
+  un grabado encerrado en un recuadro se convierte en stock.
 - **Ni una tipografía sans en el documento.** Era justo lo que volvía cualquier
   casa de gafas una tienda. Gambetta hace de display, de texto y de rótulo; los
   rótulos van en minúscula con tracking corto, nunca en versalita.
@@ -61,12 +69,25 @@ es el sitio, porque mantener las dos cuesta el doble.
 - **El comercio existe y no abre la página.** «shop» es una celda discreta de
   la barra y el carrito una lámina lateral. El precio no aparece en la
   colección: aparece en la ficha, que es cuando la pregunta tiene sentido.
-- Trampas ya pagadas en este archivo: un `margin:0 auto` en un ítem de grid
-  **desactiva el estirado** y encoge la caja (el hero salía centrado); un `id`
-  repetido entre la sección y su lista hace que `getElementById` devuelva la
-  sección y le borre el encabezado al escribirle dentro; y la lámina del menú
-  móvil tiene que ir **por debajo** de la barra o tapa su propio botón de
-  cierre.
+- Trampas ya pagadas en este archivo, todas de retícula y todas caras de
+  encontrar:
+  1. Un `margin:0 auto` en un ítem de grid **desactiva el estirado** y encoge la
+     caja a su contenido. El hero salía centrado.
+  2. Un `max-height` en **porcentaje** dentro de una fila `1fr` solo resuelve si
+     la retícula tiene alto **definido**. Con `min-height` la lámina de la
+     portada se salía por el pliegue; con `height` cabe.
+  3. La **columna implícita** de una retícula se dimensiona a `max-content`.
+     Hay que declararla.
+  4. El mínimo automático de un ítem de flex con una imagen dentro es su tamaño
+     intrínseco y **se come el `max-width`**: `min-width:0`.
+  5. Y la que costó tres diagnósticos: una regla **huérfana** de una versión
+     anterior del hero (`width:190vw` en una media query de móvil) sobrevivió a
+     la reescritura del marcado. Al reestructurar un bloque, borrar su CSS en el
+     mismo movimiento — o buscar el selector antes de dar nada por bueno.
+  6. Un `id` repetido entre la sección y su lista hace que `getElementById`
+     devuelva la sección y le borre el encabezado al escribirle dentro.
+  7. La lámina del menú móvil tiene que ir **por debajo** de la barra o tapa su
+     propio botón de cierre.
 
 ## Catálogo (DEFINIDO)
 Público objetivo: gente que trabaja de noche frente a pantallas (teletrabajo, turnos,

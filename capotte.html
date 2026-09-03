@@ -11,6 +11,9 @@
 <meta property="og:title" content="capotte — gafas de autor · bogotá">
 <meta property="og:description" content="Una casa de gafas de autor de Bogotá. Hechas para usarse, pensadas para permanecer.">
 <meta property="og:image" content="assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F7F4EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
@@ -244,24 +247,65 @@ body[data-menu="abierto"] .barra{
 .menu-movil[data-abierto="true"] a{ opacity:1; transform:none; transition-delay:calc(.06s * var(--i) + .1s); }
 .menu-movil .pie{ padding-bottom:8vh; }
 
+/* ── La ilustración de la casa ──────────────────────────────────────
+   Tinta negra y pelaje blanco sobre transparente. En la plancha negra se
+   invierte: el pelaje pasa a ser el fondo y la tinta, marfil. Es la otra
+   plancha del mismo grabado, no un filtro de adorno — por eso invert(1)
+   solo, sin tocar el tono. */
+.leo{ display:block; width:100%; height:auto; }
+:root[data-plancha="negra"] .leo{ filter:invert(1); }
+@media (prefers-color-scheme: dark){
+  :root:not([data-plancha="marfil"]) .leo{ filter:invert(1); }
+}
+/* La lámina suelta: la ilustración va sin marco ni placa. Un grabado no
+   es una fotografía y encerrarlo en un recuadro lo convierte en stock. */
+.lamina--suelta{ margin:0; }
+.lamina--suelta figcaption{ margin-top:16px; }
+
 /* ── El hero ────────────────────────────────────────────────────────
    Una portada de libro: la lámina ocupa la página y el texto se posa
    encima, sin caja ni sombra. */
+/* Portada de libro: el titular arriba, la lámina debajo atravesando la
+   página. El texto NO se monta sobre la ilustración — negro sobre la
+   trama del grabado no se lee, y tapar el animal para poner encima el
+   nombre es justo lo que un frontispicio no hace. */
 .portada{
   /* Una pantalla justa menos lo que hay encima. El aviso de maqueta y la
      barra ocupan alto en el flujo, así que restarles solo la barra dejaba
      el sello por debajo del pliegue en un teléfono. Lo mide el JS. */
-  position:relative; min-height:calc(100svh - var(--alto-cabecera, 66px));
-  display:grid; grid-template-rows:1fr auto;
-  padding:clamp(24px,6vh,64px) 0 clamp(20px,4vh,40px);
+  /* height, no min-height: un max-height en % dentro de una fila 1fr solo
+     resuelve si la retícula tiene alto definido. Con min-height la fila se
+     dimensionaba por el contenido y la lámina se salía por el pliegue. */
+  position:relative;
+  height:calc(100svh - var(--alto-cabecera, 66px)); min-height:560px;
+  /* La columna se declara: la implícita se dimensiona a max-content, y en
+     un teléfono eso la hacía de 741 px en una ventana de 390. */
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr);
+  padding:clamp(14px,3vh,36px) 0 clamp(12px,2vh,24px);
   overflow:hidden;
 }
+/* La lámina puede pasarse del ancho de la caja: atraviesa la página, no la
+   ocupa. El margen lateral es corto a propósito. */
 .portada-lamina{
-  position:absolute; left:50%; top:50%;
-  width:min(1500px, 128vw); transform:translate(-50%,-46%);
-  pointer-events:none;
+  min-height:0; display:flex; align-items:flex-end; justify-content:center;
+  padding:clamp(10px,2vh,22px) clamp(10px,2vw,26px) 0;
 }
 .portada-lamina:empty{ display:none; }
+/* Ajusta por alto, no por ancho: a pantalla completa el ancho la haría
+   novecientos píxeles de alta y el titular se iría por encima del pliegue. */
+/* min-width:0 no sobra: el mínimo automático de un ítem de flex con una
+   imagen dentro es su tamaño intrínseco —1456 px— y se comía el max-width.
+   En un teléfono la lámina se salía por los dos lados y solo se veía la
+   cabeza. */
+.portada-lamina .leo{
+  width:auto; min-width:0; max-width:min(1180px, 100%); max-height:100%;
+  object-fit:contain; object-position:center bottom;
+}
+@media (max-width:760px){
+  /* En un teléfono el ancho es lo escaso: la lámina va de margen a margen
+     y el respiro lateral se lo queda el texto, no la ilustración. */
+  .portada-lamina{ padding-left:0; padding-right:0; }
+}
 /* La nota de lámina pendiente: discreta, abajo, como el pie de un
    frontispicio. No ocupa la página; la anuncia. */
 .nota-lamina{
@@ -271,8 +315,8 @@ body[data-menu="abierto"] .barra{
 }
 .nota-lamina::before{ content:"◦"; opacity:.7; }
 .portada-texto{
-  position:relative; z-index:2; align-self:center;
-  display:grid; gap:clamp(18px,3vh,32px);
+  position:relative; z-index:2;
+  display:grid; gap:clamp(8px,1.4vh,16px);
 }
 .portada h1{ margin:0; }
 .portada .lema{
@@ -284,14 +328,13 @@ body[data-menu="abierto"] .barra{
 }
 .portada-pie{
   position:relative; z-index:2;
-  display:flex; align-items:flex-end; justify-content:space-between;
-  gap:24px; flex-wrap:wrap;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px; flex-wrap:wrap; margin-top:clamp(10px,2vh,20px);
 }
 .portada-cta{ display:flex; align-items:baseline; gap:clamp(20px,3vw,38px); flex-wrap:wrap; }
 .portada-cta a{ font-size:1.05rem; text-decoration:none; }
 .sello-lugar{ width:92px; flex:0 0 auto; color:var(--tinta); opacity:.9; }
 @media (max-width:899px){
-  .portada-lamina{ width:190vw; transform:translate(-50%,-42%); }
   .sello-lugar{ width:68px; }
 }
 
@@ -549,10 +592,14 @@ body[data-carro="abierto"] .velo{ opacity:1; visibility:visible; transition:opac
    Sencillo. La marca grande, los enlaces en una línea baja, y el
    leopardo pequeño al fondo — una firma, no un cartel. */
 .pie{ border-top:1px solid var(--linea); padding:var(--hueco) 0 clamp(30px,5vh,54px); position:relative; overflow:hidden; }
+/* En el pie el leopardo es una firma, no un cartel: entero, en la esquina,
+   y lo bastante tenue para que el texto de encima siga siendo lo primero
+   que se lee. En un teléfono no cabe sin estorbar, así que no está. */
 .pie-leo{
-  position:absolute; right:calc(var(--margen) * -.4); bottom:-2%;
-  width:min(420px,46vw); opacity:.16; pointer-events:none; color:var(--tinta);
+  position:absolute; right:-26px; bottom:14px;
+  width:min(340px,34vw); opacity:.11; pointer-events:none;
 }
+@media (max-width:760px){ .pie-leo{ display:none; } }
 .pie-marca{ font-size:clamp(3rem,11vw,8rem); line-height:.94; letter-spacing:-.02em; position:relative; margin:0; }
 .pie-lugar{ font-size:.86rem; letter-spacing:.22em; color:var(--tenue); margin:.6em 0 0; position:relative; }
 .pie-rejilla{
@@ -643,20 +690,22 @@ html:not(.js) .surge{ opacity:1; transform:none; }
 
   <!-- Portada -->
   <section class="portada">
-    <div class="portada-lamina" id="portadaLamina"></div>
-    <div class="caja portada-texto">
-      <h1>capotte</h1>
-      <p class="lema">gafas de autor,<br><em>hechas para mirar distinto.</em></p>
-      <p class="portada-lugar">bogota</p>
-      <p class="nota-lamina" id="notaPortada" hidden>lámina i · el leopardo — pendiente</p>
-    </div>
-    <div class="caja portada-pie">
-      <div class="portada-cta">
-        <a class="enlace" href="#coleccion">explorar colección</a>
-        <a class="enlace" href="#la-casa">conocer la historia</a>
+    <div class="caja portada-cab">
+      <div class="portada-texto">
+        <h1>capotte</h1>
+        <p class="lema">gafas de autor,<br><em>hechas para mirar distinto.</em></p>
+        <p class="portada-lugar">bogota</p>
+        <p class="nota-lamina" id="notaPortada" hidden>lámina i · el leopardo — pendiente</p>
       </div>
-      <div class="sello-lugar" id="selloPortada"></div>
+      <div class="portada-pie">
+        <div class="portada-cta">
+          <a class="enlace" href="#coleccion">explorar colección</a>
+          <a class="enlace" href="#la-casa">conocer la historia</a>
+        </div>
+        <div class="sello-lugar" id="selloPortada"></div>
+      </div>
     </div>
+    <div class="portada-lamina" id="portadaLamina"></div>
   </section>
 
   <!-- ═══ Colección ═══ -->
@@ -868,10 +917,7 @@ html:not(.js) .surge{ opacity:1; transform:none; }
 
     <div class="pie-legal">
       <span id="pieLegal">capotte · bogotá · colombia</span>
-      <span style="display:flex;gap:22px;flex-wrap:wrap">
-        <button class="plancha-btn" id="leoBtn" type="button">ver con la silueta provisional</button>
-        <button class="plancha-btn" id="planchaBtn" type="button">ver en plancha negra</button>
-      </span>
+      <button class="plancha-btn" id="planchaBtn" type="button">ver en plancha negra</button>
     </div>
   </div>
 </footer>
@@ -1155,138 +1201,45 @@ function montarLaminas(raiz){
 
 /* ════════════════════════════════════════════════════════════════════
    EL LEOPARDO
-   Es una ILUSTRACIÓN, no un dibujo generado: vive en assets/img/ y el
-   sitio la monta. Mientras el archivo no esté, cada sitio donde va se
-   ve como una plancha pendiente — nunca sustituido por otro animal.
-   El grabado paramétrico de abajo existe solo para poder juzgar
-   escala, encuadre y recorte antes de tener la lámina buena; va
-   apagado y se enciende desde el pie.
+   La ilustración de la casa: un grabado de tinta negra y pelaje blanco
+   sobre fondo transparente, recortado a la tinta —así el borde de la
+   imagen es el borde del animal y colocarla no es adivinar—.
+   Va en tres anchos y el navegador elige: no tiene sentido bajar 648 kB
+   para la firma de 420 px del pie.
+   En la plancha negra se invierte. No es un truco: es literalmente la
+   otra plancha del mismo grabado, y sale del mismo archivo.
    ════════════════════════════════════════════════════════════════════ */
-const LEO = {
-  cuerpo:
-    'M 958 302 C 946 290 936 282 926 276 C 916 264 904 254 888 250 ' +
-    'L 884 248 L 874 216 L 852 242 L 846 246 C 838 250 832 254 826 258 ' +
-    'C 800 254 770 250 744 252 C 716 244 688 244 662 252 ' +
-    'C 588 258 512 262 440 260 C 400 258 362 264 338 284 ' +
-    'C 318 300 310 322 309 346 C 310 370 320 390 336 400 ' +
-    'C 356 406 378 402 394 394 C 452 406 524 408 598 398 ' +
-    'C 648 390 684 372 704 344 C 726 330 760 320 796 316 ' +
-    'C 836 316 874 314 904 310 C 926 308 946 306 958 302 Z',
-  masa:'M 706 296 C 692 328 686 356 686 376 M 384 296 C 402 328 408 358 402 390',
-  cola:'M 344 322 C 276 328 210 306 178 254 C 160 224 162 194 180 174',
-  cara:'M 902 280 C 908 276 916 276 922 281 M 950 300 C 955 302 956 306 953 309 ' +
-       'M 878 252 C 872 240 870 230 874 220',
-  patas:{
-    tl:'M 372 330 C 386 366 400 392 414 410 C 430 432 442 462 446 480 C 448 490 450 496 450 498 ' +
-       'L 486 498 C 484 490 478 476 470 460 C 456 432 442 404 434 380 C 426 356 422 338 420 322 Z',
-    dl:'M 630 330 C 626 368 622 402 618 432 C 614 458 610 480 606 498 L 640 498 ' +
-       'C 644 480 650 456 654 430 C 660 398 666 364 670 328 Z',
-    tc:'M 336 318 C 326 350 314 380 302 404 C 292 424 286 446 284 466 C 283 480 283 492 284 498 ' +
-       'L 322 498 C 320 490 320 478 322 464 C 326 442 336 420 348 400 C 362 376 374 348 380 320 Z',
-    dc:'M 690 330 C 702 368 714 406 726 440 C 734 462 742 484 746 498 L 786 498 ' +
-       'C 784 484 776 462 768 440 C 756 404 744 366 736 326 Z'
-  }
-};
+const HAY_LEOPARDO = true;
 
-/* Las rosetas: anillos rotos con un punto dentro, que es como se
-   graban. Siembra determinista — una lámina no cambia entre visitas. */
-const ROSETAS = (() => {
-  const p = [];
-  for (let i = 0; i < 64; i++){
-    const u = ruido(i * 1.7 + 3), v = ruido(i * 3.1 + 11), w = ruido(i * 5.3 + 7);
-    const x = 300 + u * 620;
-    const y = 258 + (x > 700 ? 8 : 0) + (x < 380 ? 6 : 0) + v * 128;
-    const lejos = Math.min(Math.abs(x - 520) / 280, 1);
-    p.push({ x, y, r:(9.5 - lejos * 5) * (.72 + w * .56), g:ruido(i * 7.7) * 6.28 });
-  }
-  return p;
-})();
-
-let nLeo = 0;
-function leopardoProvisional(){
-  const k = 'leo' + (++nLeo);
-  const arcos = ROSETAS.map(({ x, y, r, g }) => {
-    const a = (a0, a1) => {
-      const x0 = (x + r * Math.cos(a0)).toFixed(1), y0 = (y + r * Math.sin(a0)).toFixed(1);
-      const x1 = (x + r * Math.cos(a1)).toFixed(1), y1 = (y + r * Math.sin(a1)).toFixed(1);
-      return `M ${x0} ${y0} A ${r.toFixed(1)} ${r.toFixed(1)} 0 ${(a1 - a0) > Math.PI ? 1 : 0} 1 ${x1} ${y1}`;
-    };
-    return a(g, g + 2.2) + ' ' + a(g + 2.7, g + 5.5);
-  }).join(' ');
-  const puntos = ROSETAS.map(({ x, y }) =>
-    `M ${x.toFixed(1)} ${y.toFixed(1)} m -1.7 0 a 1.7 1.7 0 1 0 3.4 0 a 1.7 1.7 0 1 0 -3.4 0`).join(' ');
-  const rel = c => `<path d="${LEO.patas[c]}" fill="var(--leo-fondo)"/>`;
-
-  return `
-<svg viewBox="0 0 1000 560" role="img" aria-label="Leopardo caminando de perfil">
-  <defs>
-    <pattern id="${k}-t" patternUnits="userSpaceOnUse" width="7.5" height="7.5" patternTransform="rotate(-16)">
-      <line x1="0" y1="0" x2="0" y2="7.5" stroke="currentColor" stroke-width="1.5"/></pattern>
-    <pattern id="${k}-d" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(-16)">
-      <line x1="0" y1="0" x2="0" y2="4" stroke="currentColor" stroke-width="1.5"/></pattern>
-    <linearGradient id="${k}-l" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff" stop-opacity="1"/>
-      <stop offset=".5" stop-color="#fff" stop-opacity=".3"/>
-      <stop offset=".76" stop-color="#fff" stop-opacity="0"/></linearGradient>
-    <mask id="${k}-m"><rect width="1000" height="560" fill="url(#${k}-l)"/></mask>
-    <clipPath id="${k}-todo"><path d="${LEO.cuerpo}"/>${Object.values(LEO.patas).map(d => `<path d="${d}"/>`).join('')}</clipPath>
-    <clipPath id="${k}-lejos"><path d="${LEO.patas.tl}"/><path d="${LEO.patas.dl}"/></clipPath>
-  </defs>
-  ${rel('tl')}${rel('dl')}
-  <path d="${LEO.patas.tl}" fill="none" stroke="currentColor" stroke-width="2.2"/>
-  <path d="${LEO.patas.dl}" fill="none" stroke="currentColor" stroke-width="2.2"/>
-  <path d="${LEO.cola}" fill="none" stroke="var(--leo-fondo)" stroke-width="19" stroke-linecap="round"/>
-  <path d="${LEO.cola}" fill="none" stroke="currentColor" stroke-width="19" stroke-linecap="round" opacity=".9"/>
-  <path d="${LEO.cuerpo}" fill="var(--leo-fondo)"/>
-  <path d="${LEO.cuerpo}" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
-  <path d="${LEO.masa}" fill="none" stroke="currentColor" stroke-width="2" opacity=".45" stroke-linecap="round"/>
-  ${rel('tc')}${rel('dc')}
-  <path d="${LEO.patas.tc}" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
-  <path d="${LEO.patas.dc}" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
-  <g clip-path="url(#${k}-todo)">
-    <rect width="1000" height="560" fill="url(#${k}-t)"/>
-    <rect width="1000" height="560" fill="url(#${k}-d)" mask="url(#${k}-m)"/>
-    <path d="${arcos}" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
-    <path d="${puntos}" fill="currentColor"/>
-  </g>
-  <rect width="1000" height="560" fill="var(--leo-fondo)" opacity=".5" clip-path="url(#${k}-lejos)"/>
-  <path d="${LEO.cara}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-</svg>`;
-}
-
-/* El leopardo del sitio. Tres estados, y el orden importa:
-     1 · la ilustración de la casa, si el archivo está;
-     2 · la silueta provisional, solo si se pide desde el pie — sirve
-         para juzgar escala y encuadre, nunca para hacer de marca;
-     3 · nada, y en su lugar una nota de lámina pendiente.
-   El tercero es el defecto a propósito: es preferible una placa
-   anunciada a un animal que no es el nuestro. */
-const HAY_LEOPARDO = false;   /* pasa a true al soltar assets/img/leopardo.svg */
-const provisional = () => document.documentElement.dataset.leo === 'provisional';
-
-function leopardo({ num = 'i', alto = 'panor', pie = '', suelto = false } = {}){
-  if (HAY_LEOPARDO)
-    return `<img src="assets/img/leopardo.svg" alt="Leopardo caminando de perfil, ilustración de la casa">`;
-  if (provisional()) return leopardoProvisional();
-  /* Suelto = va sin marco (la portada y el pie): ahí una placa vacía a
-     pantalla completa no anuncia nada, estorba. */
-  return suelto ? '' : lamina({ img:'leopardo', num, alto, pie,
-                                alt:'Leopardo caminando de perfil, ilustración de la casa' });
+function leopardo({ sizes = '100vw', clase = '', ancho = 1456, alto = 968,
+                    carga = 'lazy' } = {}){
+  if (!HAY_LEOPARDO) return '';
+  return `<img class="leo ${clase}" alt="Leopardo caminando de perfil, ilustración de la casa"
+    src="assets/img/leopardo-1120.webp"
+    srcset="assets/img/leopardo-640.webp 640w,
+            assets/img/leopardo-1120.webp 1120w,
+            assets/img/leopardo-2048.webp 2048w"
+    sizes="${sizes}" width="${ancho}" height="${alto}"
+    loading="${carga}" decoding="async">`;
 }
 
 /* ════════════════════════════════════════════════════════════════════
    PINTAR LA HOME
    ════════════════════════════════════════════════════════════════════ */
 function pintarHome(){
-  const portada = leopardo({ num:'i', suelto:true });
-  document.getElementById('portadaLamina').innerHTML = portada;
-  document.getElementById('notaPortada').hidden = !!portada;
+  /* La portada carga con avidez: es lo primero que se ve y no puede
+     entrar tarde. Las otras dos van diferidas. */
+  document.getElementById('portadaLamina').innerHTML = leopardo({
+    sizes:'(max-width:900px) 104vw, min(1180px, 92vw)', carga:'eager' });
+  document.getElementById('notaPortada').hidden = HAY_LEOPARDO;
   document.getElementById('selloPortada').innerHTML = selloBogota();
-  document.getElementById('leoPlancha').innerHTML =
-    leopardo({ num:'ii', pie:'Panthera pardus · lámina de la casa' });
-  /* En el pie el leopardo es una firma: o está la ilustración de la casa
-     o no hay nada. Una placa pendiente ahí abajo solo sería ruido. */
-  document.getElementById('pieLeo').innerHTML = leopardo({ suelto:true });
+  document.getElementById('leoPlancha').innerHTML = `
+    <figure class="lamina lamina--suelta">
+      ${leopardo({ sizes:'(max-width:900px) 100vw, min(1320px, 92vw)' })}
+      <figcaption><span>ii</span><b>Panthera pardus · lámina de la casa</b></figcaption>
+    </figure>`;
+  document.getElementById('pieLeo').innerHTML =
+    leopardo({ sizes:'(max-width:760px) 46vw, 420px' });
 
   document.getElementById('listaPiezas').innerHTML = PIEZAS.map((p, i) => `
     <article class="pieza surge">
@@ -1465,26 +1418,17 @@ function observarSurgir(raiz){
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
 })();
 
-/* ── Paralaje de la portada ─────────────────────────────────────────
-   El leopardo atraviesa: se desplaza un poco menos que la página, así
-   que parece que camina hacia la izquierda mientras bajas. Es un
-   desplazamiento pequeño y por tiempo de scroll, no una animación. */
+/* ── La barra se materializa al empezar a subir ─────────────────── */
 (function(){
-  const lam = document.getElementById('portadaLamina');
   const barra = document.getElementById('barra');
-  if (!lam) return;
   let pedido = false;
   function seguir(){
     pedido = false;
-    const y = window.scrollY;
-    barra.dataset.subida = y > 12 ? 'true' : 'false';
-    if (quieto()) return;
-    const t = Math.min(1, y / Math.max(1, innerHeight));
-    lam.style.transform =
-      `translate(calc(-50% - ${(t * 9).toFixed(2)}%), calc(-46% + ${(t * 5).toFixed(2)}%))`;
+    barra.dataset.subida = window.scrollY > 12 ? 'true' : 'false';
   }
-  addEventListener('scroll', () => { if (!pedido){ pedido = true; requestAnimationFrame(seguir); } }, { passive:true });
-  addEventListener('resize', seguir);
+  addEventListener('scroll', () => {
+    if (!pedido){ pedido = true; requestAnimationFrame(seguir); }
+  }, { passive:true });
   seguir();
 })();
 
@@ -1629,23 +1573,6 @@ planchaBtn.addEventListener('click', () => {
   rotularPlancha();
 });
 rotularPlancha();
-
-/* La silueta provisional no es el leopardo de la marca y el rótulo del
-   botón lo dice: sirve para juzgar escala y encuadre mientras la lámina
-   buena no está. */
-const leoBtn = document.getElementById('leoBtn');
-function rotularLeo(){
-  leoBtn.hidden = HAY_LEOPARDO;
-  leoBtn.textContent = provisional()
-    ? 'quitar la silueta provisional' : 'ver con la silueta provisional';
-}
-leoBtn.addEventListener('click', () => {
-  if (provisional()) delete document.documentElement.dataset.leo;
-  else document.documentElement.dataset.leo = 'provisional';
-  rotularLeo();
-  pintarHome();
-});
-rotularLeo();
 
 /* ── Arranque ───────────────────────────────────────────────────── */
 document.getElementById('aviso').hidden = !PRECIOS_PROVISIONALES;
