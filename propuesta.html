@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>capote — Gafas con lente protector para trabajar y dormir</title>
+<title>capotte — Gafas con lente protector para trabajar y dormir</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta name="theme-color" content="#0B0B0C">
-<link rel="canonical" href="https://mateoposadazea.github.io/capote/">
+<link rel="canonical" href="https://capotte.com.co/">
 
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="capote">
-<meta property="og:title" content="capote — Gafas con lente protector">
+<meta property="og:site_name" content="capotte">
+<meta property="og:title" content="capotte — Gafas con lente protector">
 <meta property="og:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta property="og:image" content="assets/img/og.png">
-<meta property="og:url" content="https://mateoposadazea.github.io/capote/">
+<meta property="og:url" content="https://capotte.com.co/">
 <meta property="og:locale" content="es_CO">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="capote — Gafas con lente protector">
+<meta name="twitter:title" content="capotte — Gafas con lente protector">
 <meta name="twitter:description" content="Lentes con filtro de luz azul para trabajo nocturno frente a pantalla y para la hora antes de dormir. Stock en Bogotá, entrega en 2-3 días.">
 <meta name="twitter:image" content="assets/img/og.png">
 
@@ -34,7 +34,7 @@
 (function(){
   var MODOS = ['noche','dia','trabajo','descanso'];
   var m;
-  try { m = localStorage.getItem('capote.modo.v1'); } catch (e) {}
+  try { m = localStorage.getItem('capotte.modo.v1'); } catch (e) {}
   /* Día es el defecto, pero no por encima del sistema: si el visitante ya
      puso su equipo en oscuro, esa decisión YA está tomada y la página la
      respeta. El razonamiento de «no le pidas una decisión que no ha tomado»
@@ -49,7 +49,16 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
+<!-- Gambetta viene de Fontshare, que NO es Google Fonts. Se enlaza igual
+     porque en el sitio real (Cloudflare Pages) carga sin problema; en la
+     vista previa publicada la política de contenido del visor solo admite
+     hojas de estilo de fonts.googleapis.com, así que ahí Gambetta no llega y
+     manda la siguiente de la pila. Por eso la pila lleva Fraunces: una serif
+     de contraste alto y con itálica de verdad, para que la vista previa se
+     vea deliberada y no caiga a Georgia. Al vendorizar las fuentes —que es lo
+     que pide CLAUDE.md— este problema desaparece. -->
+<link href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,401&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Instrument+Sans:wght@400;500;600&family=Epilogue:wght@300..800&display=swap" rel="stylesheet">
 
 <style>
   /* ------------------------------------------------------------------
@@ -71,10 +80,16 @@
        supergrandes y se descartó: con la escena y el 3D encima, dos caras
        eran una capa de ruido más. Los tokens siguen separados por rol para
        poder cambiar de idea sin tocar una sola regla. */
-    --display:  "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --titulo:   "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --etiqueta: "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --texto:    "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* Dos caras y dos papeles: la serif firma y titula, la sans se lee.
+       Los cuatro tokens por rol se quedan —son los que usan las reglas— y
+       ahora apuntan a las dos familias nuevas. */
+    --serif: "Gambetta", "Fraunces", Georgia, "Times New Roman", serif;
+    --sans:  "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    --display:  var(--serif);
+    --titulo:   var(--serif);
+    --etiqueta: var(--sans);
+    --texto:    var(--sans);
     --ancho-display: normal;
     --ancho-etiqueta: normal;
 
@@ -301,13 +316,20 @@
   .panel-texto{ text-transform:lowercase; }
   .propio{ text-transform:none; }
 
+  /* Baja un escalón respecto de la sans: una serif de contraste alto pesa
+     más a igual cuerpo, y a 32 px competía con el wordmark. */
   .seccion h2{
     font-family:var(--titulo);
     font-weight:var(--peso-display);
-    font-size:clamp(24px, 3.4vw, 32px);
-    letter-spacing:-.01em;
+    font-size:clamp(1.75rem, 4.5vw, 2.75rem);
+    line-height:1.1;
+    letter-spacing:-.012em;
     margin:0 0 8px;
   }
+  /* La itálica es la firma de la marca, y se usa con cuentagotas: solo el
+     énfasis del título y la frase de marca del hero. Gambetta en itálica es
+     caligráfica; repartida por la página se vuelve decoración. */
+  .seccion h2 em{ font-style:italic; font-weight:400; }
   .seccion .bajada{ color:var(--texto-tenue); margin:0 0 32px; max-width:52ch; }
 
   /* ---------- Nav ---------- */
@@ -326,7 +348,7 @@
      terminar el recorrido: minúscula, misma cara, mismo tamaño. Y en el mismo
      sitio —centrado— porque el centro de la barra es suyo. */
   /* La marca de la barra. En escritorio es la palabra; en móvil, el isotipo:
-     a 26 px con el menú y el carrito a los lados, «capote» compite por un
+     a 26 px con el menú y el carrito a los lados, «capotte» compite por un
      ancho que no tiene, y el isotipo aguanta ese tamaño porque para eso se
      dibujó. Es el mismo sitio —el centro de la barra— en los dos. */
   .marca{
@@ -644,7 +666,7 @@
   .wordmark-fijo span{
     display:block;
     font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
-    font-size:100px; line-height:1; letter-spacing:-.03em;
+    font-size:100px; line-height:1.0; letter-spacing:-.02em;
     white-space:nowrap; color:var(--hueso);
     transform-origin:50% 50%; will-change:transform;
   }
@@ -759,6 +781,27 @@
     display:flex; align-items:center; gap:10px;
   }
   .pista::before{ content:""; width:26px; height:1px; background:var(--texto-tenue); }
+
+  /* El hero editorial: la frase de marca en itálica —la firma—, el cuerpo en
+     sans y el sello en versalitas. Va abajo a la izquierda, debajo del
+     wordmark que llena la pantalla. */
+  .hero-frase{
+    font-family:var(--serif); font-weight:400; font-style:italic;
+    font-size:clamp(1.35rem, 3.4vw, 2rem); line-height:1.2;
+    letter-spacing:-.01em; margin:0 0 14px; color:var(--hueso);
+    max-width:22ch;
+  }
+  .hero-cuerpo{
+    font-family:var(--sans); font-weight:400;
+    font-size:clamp(15px, 1.5vw, 17px); line-height:1.55;
+    color:var(--texto-tenue); margin:0 0 20px; max-width:44ch;
+  }
+  .hero-sello{
+    font-family:var(--sans); font-weight:500;
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--texto-tenue); margin:0;
+    border-top:1px solid var(--linea); padding-top:12px; display:inline-block;
+  }
 
   .hora{
     font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
@@ -1266,6 +1309,21 @@
   }
 
 
+  /* ---------- El ritual ----------
+     Dos columnas y nada más: sin iconos, sin numeración, sin tarjeta. El
+     contenido son dos frases, y cualquier adorno pesaría más que ellas. */
+  .ritual{ display:grid; gap:32px; margin-top:36px; }
+  .ritual article{ border-top:1px solid var(--linea); padding-top:20px; }
+  .ritual h3{
+    font-family:var(--serif); font-weight:var(--peso-display);
+    font-size:clamp(1.25rem, 2.4vw, 1.6rem); line-height:1.2;
+    letter-spacing:-.01em; margin:0 0 10px;
+  }
+  .ritual p{ margin:0; color:var(--texto-tenue); font-size:16px; line-height:1.6; max-width:34ch; }
+  @media (min-width:760px){
+    .ritual{ grid-template-columns:1fr 1fr; gap:48px; }
+  }
+
   /* ---------- Reseñas: la cinta ----------
      Una fila horizontal que desfila sola. No es un slider: no hay pasos ni
      flechas ni un elemento "actual", es una cinta continua que se para
@@ -1472,7 +1530,7 @@
      Epilogue debajo de una palabra sin descendentes. */
   .footer p.footer-palabra{
     font-family:var(--display); font-weight:var(--peso-display);
-    text-transform:lowercase; letter-spacing:-.04em;
+    text-transform:lowercase; letter-spacing:-.02em;
     /* El cuerpo lo calcula el JS midiendo la palabra: se busca que ocupe
        exactamente el ancho disponible, y eso depende de la cara, del peso y
        del tracking, que aquí se pueden cambiar en caliente. El clamp queda de
@@ -1481,7 +1539,7 @@
     line-height:.76;
     /* El hueco de abajo lo mide el JS a partir de la tinta real de ESTA
        palabra: con `line-height:.76` la caja se recorta por debajo de la
-       línea base, así que una palabra con descendente —la p de «capote»— se
+       línea base, así que una palabra con descendente —la p de «capotte»— se
        montaba sobre los enlaces. Un valor fijo no sirve: «relief», «recreo» y
        «malcolm» no tienen ninguno y sobraba espacio. */
     margin:0 0 8px; padding-bottom:var(--pie-descenso, .06em);
@@ -1566,7 +1624,7 @@
       <a href="#materiales">Materiales</a>
       <a href="#envios">Envíos</a>
     </nav>
-    <a class="marca" href="#top" id="marcaNav" aria-label="capote — inicio" hidden>
+    <a class="marca" href="#top" id="marcaNav" aria-label="capotte — inicio" hidden>
       <!-- El isotipo va en línea y no como <img> para que herede el color del
            modo: un archivo externo no puede leer --hueso. Y es el dibujo de la
            versión REDUCIDA —trazo grueso, punto grande— porque a 22 px el
@@ -1578,7 +1636,7 @@
         </g>
         <circle cx="50" cy="50" r="11" fill="currentColor"/>
       </svg>
-      <span class="marca-palabra">capote</span>
+      <span class="marca-palabra">capotte</span>
     </a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel"
             aria-label="Carrito, 0 artículos">
@@ -1639,13 +1697,13 @@
         <a class="menu-enlace" data-contacto="instagram">Instagram</a>
         <a class="menu-enlace" data-contacto="tiktok">TikTok</a>
       </div>
-      <p class="menu-pie-nota" style="--i:7">capote · Bogotá · Envíos a todo el país en 2-3 días</p>
+      <p class="menu-pie-nota" style="--i:7">capotte · Bogotá · Envíos a todo el país en 2-3 días</p>
     </div>
   </div>
 </nav>
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
-<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">capote</span></div>
+<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">capotte</span></div>
 <div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span>Desliza</span></div>
 
 <!-- El punto del centro del isotipo, convertido en cursor. Solo existe con
@@ -1660,7 +1718,6 @@
     <button type="button" data-peso-set="400">400</button>
     <button type="button" data-peso-set="500">500</button>
     <button type="button" data-peso-set="600">600</button>
-    <button type="button" data-peso-set="700">700</button>
   </div>
   <h4>Fondo del modo noche</h4>
   <div class="banco-fila" role="group" aria-label="Color de fondo">
@@ -1699,7 +1756,12 @@
     <div class="historia-paneles">
 
       <section class="panel panel--apertura" data-pieza="conjunto" data-lente="ambar">
-        <div class="wrap"><p class="pista">Baja para ver</p></div>
+        <div class="wrap">
+          <p class="hero-frase"><em>Para la última hora del día.</em></p>
+          <p class="hero-cuerpo">Dos lentes para la noche. Uno para la lectura y la
+            pantalla, otro para cuando ya no queda nada por hacer.</p>
+          <p class="hero-sello">Hechos en TR90 · Stock en Bogotá · 2–3 días</p>
+        </div>
       </section>
 
       <section class="panel" data-pieza="frente" data-lente="ambar" data-lado="izq">
@@ -1713,7 +1775,7 @@
 
       <section class="panel" data-pieza="conjunto" data-lente="ambar" data-lado="izq">
         <div class="wrap">
-          <p class="hora">Somos capote</p>
+          <p class="hora">Somos capotte</p>
           <p class="panel-texto">Dos lentes. Uno para trabajar, uno para parar.</p>
           <p class="panel-apoyo">Nada más. Sin catálogo de cien referencias, sin monturas
             de colores. Esto es para ti si trabajas, juegas o estudias de noche.</p>
@@ -1843,7 +1905,7 @@
   <section class="seccion" id="lentes">
     <div class="wrap">
       <p class="label">Los dos lentes</p>
-      <h2>Uno para trabajar. Uno para apagar.</h2>
+      <h2>Dos lentes, <em>una noche.</em></h2>
       <p class="bajada">La rutina nocturna tiene dos momentos y cada uno pide un
         filtro distinto. Gíralas, cámbiales el lente y llévate el que te sirva.</p>
 
@@ -1852,7 +1914,7 @@
           <div class="opciones" id="opcionesLentes"></div>
 
           <details class="medidas">
-            <summary>Las medidas</summary>
+            <summary>De qué están hechos</summary>
             <table>
               <caption class="sr-only">Especificaciones técnicas de los lentes</caption>
               <tbody>
@@ -1880,7 +1942,7 @@
           <div class="visor-mandos">
             <div class="visor-grupo" role="group" aria-label="Lente">
               <button type="button" data-lente-set="ambar" aria-pressed="true">Ámbar</button>
-              <button type="button" data-lente-set="rojo" aria-pressed="false">Rojo</button>
+              <button type="button" data-lente-set="rojo" aria-pressed="false">Carmín</button>
             </div>
             <div class="visor-grupo" id="visorVistas" role="group" aria-label="Vista">
               <button type="button" data-vista-set="modelo" aria-pressed="true">3D</button>
@@ -1893,11 +1955,29 @@
     </div>
   </section>
 
+  <!-- 3b. EL RITUAL — cómo se usan, entre los lentes y el par -->
+  <section class="seccion" id="como">
+    <div class="wrap">
+      <p class="label">El ritual</p>
+      <h2>Cómo <em>se usan.</em></h2>
+      <div class="ritual">
+        <article>
+          <h3>Lectura</h3>
+          <p>Cuando anochece y todavía hay algo que leer o que terminar.</p>
+        </article>
+        <article>
+          <h3>Sobremesa</h3>
+          <p>Una hora antes de dormir. Luces bajas, nada de pantallas.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- 4. EL COMBO -->
   <section class="seccion" id="combo">
     <div class="wrap">
       <p class="label">El combo</p>
-      <h2>La rutina completa</h2>
+      <h2>Los dos, <em>como debe ser.</em></h2>
       <p class="bajada">Los dos lentes juntos, con descuento. Es la forma en que están pensados para usarse.</p>
       <div class="combo" id="comboCard"></div>
     </div>
@@ -1999,7 +2079,7 @@
   <section class="seccion" id="faq">
     <div class="wrap">
       <p class="label">Preguntas</p>
-      <h2>Antes de comprar</h2>
+      <h2>Lo que <em>conviene saber.</em></h2>
 
       <details>
         <summary>¿Cuánto demora el envío?</summary>
@@ -2049,12 +2129,13 @@
   <div class="wrap">
     <!-- aria-hidden: la palabra ya la dice el logotipo de la barra; para un
          lector de pantalla esto es un dibujo, no un encabezado más. -->
-    <p class="footer-palabra" aria-hidden="true">capote</p>
+    <p class="footer-palabra" aria-hidden="true">capotte</p>
     <div class="footer-cima">
       <nav class="footer-enlaces" aria-label="Pie de página">
         <a href="#top">Inicio</a>
         <a href="#lentes">Los lentes</a>
         <a href="#materiales">Materiales</a>
+        <a href="#como">El ritual</a>
         <a href="#envios">Envíos y pagos</a>
         <a href="#faq">Preguntas</a>
       </nav>
@@ -2112,9 +2193,9 @@ const MAQUETA = true;
 const MUESTRA = {
   /* Contacto */
   whatsapp:  '573001234567',          // formato internacional sin +
-  instagram: 'capote.co',
-  tiktok:    'capote.co',
-  correo:    'hola@capote.co',
+  instagram: 'capotte.com.co',
+  tiktok:    'capotte.com.co',
+  correo:    'hola@capotte.com.co',
 
   /* Ficha técnica. Números plausibles para una TR90 de este tipo; hay que
      reemplazarlos con los del proveedor, no confirmarlos contra esto. */
@@ -2151,7 +2232,7 @@ const MUESTRA = {
   'devoluciones-corto': 'Tienes 30 días para devolverlos con el estuche y sin rayones '
                   + 'de uso. Si el problema fue nuestro, el flete de retorno lo pagamos '
                   + 'nosotros.',
-  'legal':          'Capote Colombia S.A.S. · NIT 901.845.223-7',
+  'legal':          'Capotte Colombia S.A.S. · NIT 901.845.223-7',
   'hora-montura':   '',
   'hora-bisagra':   '',
   'resenas-forma':  ''
@@ -2195,10 +2276,12 @@ const PRECIOS_PROVISIONALES = true;
 const PRODUCTOS = [
   {
     id: "ambar",
-    nombre: "Ámbar",
-    momento: "Para trabajar",
-    descripcion: "Lente naranja/amarillo para las horas de trabajo nocturno frente a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.",
-    detalle: "Es el lente del turno: el que te pones cuando todavía te falta trabajo y la pantalla lleva horas encendida. Filtra parte de la luz azul y deja el color suficientemente fiel como para que puedas seguir viendo lo que haces — diseñar, editar, leer, jugar.",
+    orden: "Nº 1",
+    nombre: "Lectura",
+    variante: "Ámbar",
+    momento: "Para leer",
+    descripcion: "Lente ámbar. Para leer, para la pantalla, para las horas largas de la noche. Mantiene el color y baja la luz azul.",
+    detalle: "El de las horas largas. Se pone cuando anochece y todavía hay algo que leer o que terminar: filtra parte de la luz azul y deja el color lo bastante fiel como para seguir trabajando con él puesto.",
     precio: 129000,
     lente: "ambar",
     puesta: 'assets/img/ambar-puesta.webp',
@@ -2212,11 +2295,13 @@ const PRODUCTOS = [
     linkWompi: "#"
   },
   {
-    id: "rojo",
-    nombre: "Rojo",
-    momento: "Para dormir",
-    descripcion: "Lente rojo para la última hora antes de dormir. Filtra el rango corto del espectro. No es para trabajar ni para conducir.",
-    detalle: "Es el lente del final. Para la última hora, cuando ya cerraste el computador y estás en el teléfono o viendo algo antes de acostarte. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
+    id: "carmin",
+    orden: "Nº 2",
+    nombre: "Sobremesa",
+    variante: "Carmín",
+    momento: "Para la última hora",
+    descripcion: "Lente carmín. Para la última hora, cuando ya no se trabaja. Filtra el rango corto del espectro. No es para conducir.",
+    detalle: "El del final del día. Para la última hora, cuando ya no queda nada por hacer. Filtra el rango corto del espectro, así que altera bastante el color: no es para trabajar ni para conducir.",
     precio: 129000,
     lente: "rojo",
     puesta: 'assets/img/rojo-puesta.webp',
@@ -2230,11 +2315,14 @@ const PRODUCTOS = [
     linkWompi: "#"
   },
   {
-    id: "combo",
-    nombre: "Combo rutina nocturna",
-    momento: "Trabaja, transiciona, duerme",
-    descripcion: "Los dos lentes juntos, con descuento sobre la compra por separado.",
-    detalle: "Los dos lentes, que es como están pensados para usarse: el ámbar mientras trabajas y el rojo en la última hora. Sale más barato que comprarlos por separado y llega en el mismo envío.",
+    id: "par",
+    orden: "Nº 3",
+    nombre: "El par",
+    variante: "Los dos",
+    momento: "La noche entera",
+    destacado: true,
+    descripcion: "Lectura y Sobremesa. La noche entera, resuelta.",
+    detalle: "Los dos, que es como están pensados: Lectura mientras haya algo que hacer, Sobremesa cuando ya no. Sale más barato que comprarlos por separado y llega en el mismo envío.",
     precio: 199000,
     precioAntes: 258000,
     /* El combo son los dos: el visor deja alternarlos, que es exactamente
@@ -2343,7 +2431,7 @@ function activarImagenes(raiz){
    cambia de color — es la misma decisión mirada desde los dos lados. */
 const opcionesLentes = document.getElementById('opcionesLentes');
 opcionesLentes.innerHTML = PRODUCTOS
-  .filter(p => p.id !== 'combo')
+  .filter(p => p.id !== 'par')
   .map((p, i) => `
     <article class="opcion" data-lente="${p.lente}"
              data-puesta="${esc(p.puesta || '')}" data-activa="${i === 0}">
@@ -2362,7 +2450,7 @@ opcionesLentes.innerHTML = PRODUCTOS
   `).join('');
 
 /* ---------------- Render: el combo ---------------- */
-const combo = porId('combo');
+const combo = porId('par');
 document.getElementById('comboCard').innerHTML = `
   <div class="combo-grid">
     <a class="ficha-enlace" href="#/producto/${combo.id}">
@@ -2485,7 +2573,7 @@ function cargar3D() {
   function verPuesta() {
     if (!foto || !puestas[lenteActual]) return;
     foto.src = puestas[lenteActual];
-    foto.alt = 'Las ' + (lenteActual === 'rojo' ? 'Rojo' : 'Ámbar') + ' puestas';
+    foto.alt = 'Las ' + (lenteActual === 'rojo' ? 'Carmín' : 'Ámbar') + ' puestas';
     foto.hidden = false;
     if (pista) pista.hidden = true;
   }
@@ -2556,7 +2644,7 @@ function cargar3D() {
                                 document.querySelectorAll('.panel[data-lente]')))
     /* Se traga el fallo a propósito —el 3D es una capa encima— pero deja
        rastro: un error dentro del módulo mataba la escena sin decir nada. */
-    .catch(e => console.warn('capote: la escena 3D no cargó.', e));
+    .catch(e => console.warn('capotte: la escena 3D no cargó.', e));
 })();
 
 
@@ -2967,7 +3055,7 @@ window.__marcaBarra = marcaDeBarra;
    Cada modo trae su propia foto de hero; si el archivo no existe, el
    hero se queda plano (que es el estado de hoy).
 --------------------------------------------------------- */
-const CLAVE_MODO = 'capote.modo.v1';
+const CLAVE_MODO = 'capotte.modo.v1';
 
 const MODOS = {
   dia:      { fondoBarra: '#EDEBE6', imagen: 'assets/img/hero.webp' },
@@ -3007,7 +3095,7 @@ botonesModo.forEach(b => {
 aplicarModo(document.documentElement.dataset.modo, false);
 
 /* ---------------- Carrito (localStorage) ---------------- */
-const CLAVE_CARRITO = 'capote.carrito.v1';
+const CLAVE_CARRITO = 'capotte.carrito.v1';
 
 function leerCarrito(){
   try {
@@ -3401,7 +3489,7 @@ function pintarGaleria(p) {
     const alterna = (p.lentes || []).length > 1 ? `
       <div class="visor-lentes" role="group" aria-label="Lente a mostrar">
         ${p.lentes.map((l, i) => `<button type="button" data-visor-lente="${l}"
-           aria-pressed="${i === 0}">${l === 'rojo' ? 'Rojo' : 'Ámbar'}</button>`).join('')}
+           aria-pressed="${i === 0}">${l === 'rojo' ? 'Carmín' : 'Ámbar'}</button>`).join('')}
       </div>` : '';
     principal.innerHTML = '<canvas id="visor3d"></canvas>'
       + alterna
@@ -3459,7 +3547,7 @@ function montarVisor(p) {
 }
 
 /* ---------------- Checkout paso a paso ---------------- */
-const CLAVE_ENVIO = 'capote.envio.v1';
+const CLAVE_ENVIO = 'capotte.envio.v1';
 let pasoActual = 1;
 
 const PASOS = ['Carrito', 'Envío', 'Pago', 'Listo'];
@@ -3520,7 +3608,7 @@ function mensajeWhatsapp() {
     return `• ${p.nombre} × ${l.cantidad} — ${COP.format(p.precio * l.cantidad)}`;
   });
   return [
-    'Hola capote, quiero confirmar este pedido:',
+    'Hola capotte, quiero confirmar este pedido:',
     '',
     ...lineas,
     `Total: ${COP.format(totalCarrito())}`,
@@ -3762,20 +3850,20 @@ navegar();
     document.querySelectorAll('[data-' + attr + '-set]').forEach(b =>
       b.setAttribute('aria-pressed', String(b.dataset[attr + 'Set'] === valor)));
   }
-  function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('capote.fondo', v); }
-  function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('capote.claro', v); }
+  function aplicarFondo(v){ raiz.dataset.fondo = v; marcar('fondo', v); guardar('capotte.fondo', v); }
+  function aplicarClaro(v){ raiz.dataset.claro = v; marcar('claro', v); guardar('capotte.claro', v); }
   /* Va en el body y no en :root porque solo lo mira la barra. */
-  function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('capote.marca', v); }
+  function aplicarMarca(v){ document.body.dataset.marca = v; marcar('marca', v); guardar('capotte.marca', v); }
   function aplicarCursor(v){
     if (window.__cursorPropio) window.__cursorPropio(v === 'punto');
-    marcar('cursor', v); guardar('capote.cursor', v);
+    marcar('cursor', v); guardar('capotte.cursor', v);
   }
   /* El pie es el único bloque que puede llevar color propio, así que su
      interruptor vive en el elemento y no en :root. */
   function aplicarPie(v){
     const pie = document.querySelector('.footer');
     if (pie) pie.dataset.pie = v;
-    marcar('pie', v); guardar('capote.pie', v);
+    marcar('pie', v); guardar('capotte.pie', v);
     if (window.__ajustarPie) window.__ajustarPie();
   }
   /* El peso no es un atributo de :root sino una variable, porque lo consumen
@@ -3783,7 +3871,7 @@ navegar();
   function aplicarPeso(v){
     raiz.style.setProperty('--peso-display', v);
     if (window.__ajustarPie) window.__ajustarPie();
-    marcar('peso', v); guardar('capote.peso', v);
+    marcar('peso', v); guardar('capotte.peso', v);
   }
 
   document.addEventListener('click', ev => {
@@ -3810,12 +3898,13 @@ navegar();
      que juzgar. Arranca plegado. */
   if (window.innerWidth < 760) { banco.hidden = true; abrir.hidden = false; }
 
-  aplicarFondo(leer('capote.fondo', 'neutro'));
-  aplicarPeso(leer('capote.peso', '600'));
-  aplicarPie(leer('capote.pie', 'claro'));
-  aplicarClaro(leer('capote.claro', 'blanco'));
-  aplicarMarca(leer('capote.marca', 'conjunto'));
-  aplicarCursor(leer('capote.cursor', 'punto'));
+  aplicarFondo(leer('capotte.fondo', 'neutro'));
+  /* Gambetta solo trae 400 y 500: pedirle 600 lo sintetiza y sale sucio. */
+  aplicarPeso(leer('capotte.peso', '500'));
+  aplicarPie(leer('capotte.pie', 'claro'));
+  aplicarClaro(leer('capotte.claro', 'blanco'));
+  aplicarMarca(leer('capotte.marca', 'conjunto'));
+  aplicarCursor(leer('capotte.cursor', 'punto'));
 })();
 
 /* ---------------- El wordmark se vuelve logotipo ----------------
@@ -3839,7 +3928,7 @@ navegar();
   let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
 
   /* El alto de la caja de texto no es el alto de las letras: con line-height 1
-     sobra el hueco de los descendentes, y "capote" no tiene ninguno. Para
+     sobra el hueco de los descendentes, y "capotte" no tiene ninguno. Para
      apoyar la palabra abajo hay que medir la tinta, no la caja. */
   const medidor = document.createElement('canvas').getContext('2d');
   function tinta(tam) {
@@ -3904,7 +3993,7 @@ navegar();
        van encima de la palabra, nunca detrás. */
     document.documentElement.style.setProperty('--palabra-cima',
       Math.round(yInicio + ink.arriba) + 'px');
-    window.dispatchEvent(new Event('capote:banda'));
+    window.dispatchEvent(new Event('capotte:banda'));
 
     aplicar();
   }
