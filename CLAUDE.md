@@ -12,8 +12,12 @@ deja de ser «lentes filtrantes para trabajar de noche» y pasa a ser **una casa
 de gafas de autor de Bogotá**, con un leopardo grabado del XIX como firma,
 paleta negro + marfil y tono de libro de exploración. Vive en `capotte.html`.
 
-**Las dos direcciones conviven en el repo a propósito**, porque la vieja tiene
-trabajo que la nueva no invalida:
+**DECIDIDO (septiembre 2026): el sitio es `capotte.html`.** Mateo lo vio montado
+y la dirección de casa de autor gana. `propuesta.html` se queda como archivo: no
+se sigue desarrollando, pero tampoco se borra todavía, porque guarda el trabajo
+de los cuatro modos, el checkout de cuatro pasos y el visor 3D.
+
+Las dos siguen en el repo por eso:
 
 | | Dirección «noche» | Dirección «casa de autor» |
 |---|---|---|
@@ -25,8 +29,7 @@ trabajo que la nueva no invalida:
 
 Lo que **sigue valiendo para las dos** y no se toca: el capítulo del nombre y la
 SIC, la infraestructura (Cloudflare, Wompi, org de GitHub), las reglas duras de
-reseñas y claims, y el modo maqueta. Lo que **hay que decidir**: cuál de las dos
-es el sitio, porque mantener las dos cuesta el doble.
+reseñas y claims, y el modo maqueta.
 
 ## La casa de autor (`capotte.html`)
 - **La ilustración del leopardo ya está**: `assets/img/leopardo-{640,1120,2048}.webp`,
@@ -74,6 +77,11 @@ es el sitio, porque mantener las dos cuesta el doble.
   `preserveAspectRatio="none"` salía convertida en burbuja.
 - **Dos planchas, no cuatro modos**: marfil con tinta negra y su negativo. El
   negativo no es «modo oscuro», es la otra plancha del mismo grabado.
+- **Las dos planchas se cambian a mano, y el mando se ve.** Es texto —`marfil`
+  y `negra`— en la barra y en la lámina del menú móvil, porque en un sitio sin
+  una sola tipografía sans un sol y una luna serían los dos únicos dibujos de
+  la página. Hay dos mandos y un solo estado: se sincronizan desde el atributo
+  del documento, nunca desde el botón que se pulsó.
 - **El comercio existe y no abre la página.** «shop» es una celda discreta de
   la barra y el carrito una lámina lateral. El precio no aparece en la
   colección: aparece en la ficha, que es cuando la pregunta tiene sentido.
@@ -320,6 +328,18 @@ guion: riesgo alto de negación y de oposición del titular.
   la marca en la noche), **tranqui** (demasiado informal y poco distintiva),
   **Oculus** (es la marca de VR de Meta, y los visores son clase 9: colisión
   peor que la de Essilor), **solaz** (buena, quedó de tercera).
+
+## El público de la casa de autor (dirección tomada, copy sin cerrar)
+No es el estudiante trasnochado —ese era el público de la dirección vieja—. Es
+**la proyección de los socios a unos años**: alguien que sigue trabajando pero
+ya no se quema, que se cuida y lo hace con gusto. Fotografía de estilo de vida
+y de momentos, no de producto sobre fondo blanco.
+- ⚠ **«Cuidarte con estilo» está sin decidir y tiene dos peros.** El primero es
+  regulatorio: «cuidar» junto a unas gafas se lee como cuidado ocular, que es
+  justo la frontera INVIMA que este proyecto lleva un año esquivando. El
+  segundo es de registro: suena a bienestar, y la casa habla como un catálogo
+  («hechas para usarse. pensadas para permanecer.»). Si la idea se queda, que
+  viva en la sección de la casa, no como eslogan bajo la marca.
 
 ## Posicionamiento (la tesis del negocio)
 Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot está destruido:

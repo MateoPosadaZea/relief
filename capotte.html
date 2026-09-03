@@ -210,6 +210,31 @@ em{ font-style:italic; }
   display:flex; align-items:center; gap:.4em;
 }
 .menu-shop b{ font-weight:400; font-variant-numeric:tabular-nums; color:var(--tenue); }
+/* ── Las dos planchas ───────────────────────────────────────────────
+   El interruptor es texto, como el resto de la barra: en un sitio que no
+   tiene una sola tipografía sans, un sol y una luna serían los dos únicos
+   dibujos de la página. Y dice «marfil» y «negra» porque son los nombres
+   que el sitio ya usa para sus dos planchas. */
+.plancha{
+  display:inline-flex; align-items:stretch; flex:0 0 auto;
+  margin-left:clamp(8px,1.6vw,18px); padding-left:clamp(10px,1.8vw,20px);
+  border-left:1px solid var(--linea);
+}
+.plancha button{
+  font:inherit; font-size:.86rem; line-height:1; position:relative;
+  background:none; border:0; padding:6px 9px; cursor:pointer;
+  color:var(--tenue); transition:color .3s ease;
+}
+.plancha button + button{ border-left:1px solid var(--linea); }
+.plancha button:hover{ color:var(--tinta-2); }
+.plancha button[aria-pressed="true"]{ color:var(--tinta); }
+/* La marca del activo es un filete debajo de la palabra, no un fondo: un
+   bloque de color en la barra pesa más que todo lo que hay a su lado. */
+.plancha button[aria-pressed="true"]::after{
+  content:""; position:absolute; left:9px; right:9px; bottom:1px; height:1px;
+  background:var(--tinta);
+}
+
 .hamb{
   display:none; margin-left:auto; background:none; border:0; padding:10px;
   margin-right:-10px; color:inherit; cursor:pointer; line-height:0;
@@ -246,6 +271,17 @@ body[data-menu="abierto"] .barra{
 }
 .menu-movil[data-abierto="true"] a{ opacity:1; transform:none; transition-delay:calc(.06s * var(--i) + .1s); }
 .menu-movil .pie{ padding-bottom:8vh; }
+/* En un teléfono la barra no lleva menú, así que el interruptor vive en la
+   lámina, encima de la firma del pie. */
+.menu-movil-plancha{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--linea);
+}
+.menu-movil-plancha .plancha{ margin:0; padding:0; border-left:0; }
+.menu-movil-plancha .plancha button{ font-size:1rem; padding:8px 12px; }
+.menu-movil-plancha .plancha button:first-child{ padding-left:0; }
+.menu-movil-plancha .plancha button[aria-pressed="true"]::after{ left:12px; right:12px; }
+.menu-movil-plancha .plancha button:first-child[aria-pressed="true"]::after{ left:0; }
 
 /* ── La ilustración de la casa ──────────────────────────────────────
    Tinta negra y pelaje blanco sobre transparente. En la plancha negra se
@@ -663,6 +699,12 @@ html:not(.js) .surge{ opacity:1; transform:none; }
       <a href="#el-leopardo">el leopardo</a>
       <a href="#journal">journal</a>
       <a class="menu-shop" href="#" id="abrirCarro">shop <b id="carroN">(0)</b></a>
+      <div class="plancha" role="group" aria-label="Modo claro u oscuro">
+        <button type="button" data-plancha-set="marfil" aria-pressed="true"
+                title="Modo claro">marfil</button>
+        <button type="button" data-plancha-set="negra" aria-pressed="false"
+                title="Modo oscuro">negra</button>
+      </div>
     </nav>
     <button class="hamb" id="hamb" type="button" aria-expanded="false" aria-controls="menuMovil" aria-label="Abrir el menú">
       <i></i><i></i>
@@ -679,6 +721,15 @@ html:not(.js) .surge{ opacity:1; transform:none; }
     <a style="--i:4" href="#" id="abrirCarroMovil">shop</a>
   </div>
   <div class="pie">
+    <div class="menu-movil-plancha">
+      <span class="rotulo">plancha</span>
+      <div class="plancha" role="group" aria-label="Modo claro u oscuro">
+        <button type="button" data-plancha-set="marfil" aria-pressed="true"
+                title="Modo claro">marfil</button>
+        <button type="button" data-plancha-set="negra" aria-pressed="false"
+                title="Modo oscuro">negra</button>
+      </div>
+    </div>
     <p class="rotulo" style="--i:5">capotte · bogotá · colombia</p>
   </div>
 </nav>
@@ -917,7 +968,6 @@ html:not(.js) .surge{ opacity:1; transform:none; }
 
     <div class="pie-legal">
       <span id="pieLegal">capotte · bogotá · colombia</span>
-      <button class="plancha-btn" id="planchaBtn" type="button">ver en plancha negra</button>
     </div>
   </div>
 </footer>
@@ -1560,19 +1610,23 @@ document.getElementById('boletin').addEventListener('submit', e => {
   e.target.reset();
 });
 
-/* ── La plancha ─────────────────────────────────────────────────── */
-const planchaBtn = document.getElementById('planchaBtn');
-function rotularPlancha(){
-  planchaBtn.textContent = document.documentElement.dataset.plancha === 'negra'
-    ? 'ver en plancha marfil' : 'ver en plancha negra';
+/* ── Las dos planchas ───────────────────────────────────────────────
+   Hay dos mandos —la barra y la lámina del móvil— y un solo estado, así
+   que el estado manda sobre los dos: se sincronizan desde el atributo del
+   documento y no desde el botón que se pulsó. */
+function sincronizarPlancha(){
+  const n = document.documentElement.dataset.plancha;
+  document.querySelectorAll('[data-plancha-set]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.planchaSet === n)));
 }
-planchaBtn.addEventListener('click', () => {
-  const n = document.documentElement.dataset.plancha === 'negra' ? 'marfil' : 'negra';
-  document.documentElement.dataset.plancha = n;
-  try { localStorage.setItem('capotte.plancha', n); } catch(e){}
-  rotularPlancha();
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-plancha-set]');
+  if (!b) return;
+  document.documentElement.dataset.plancha = b.dataset.planchaSet;
+  try { localStorage.setItem('capotte.plancha', b.dataset.planchaSet); } catch(e){}
+  sincronizarPlancha();
 });
-rotularPlancha();
+sincronizarPlancha();
 
 /* ── Arranque ───────────────────────────────────────────────────── */
 document.getElementById('aviso').hidden = !PRECIOS_PROVISIONALES;
