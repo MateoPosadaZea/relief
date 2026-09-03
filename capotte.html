@@ -29,11 +29,16 @@
 /* El modo se aplica antes del primer paint: si se hace después, la página
    parpadea de marfil a negro. Es el único script que no vive al final. */
 (function(){
+  var r = document.documentElement;
   var m; try { m = localStorage.getItem('capotte.plancha'); } catch(e){}
+  if (m === 'negra' || m === 'marfil') { r.dataset.plancha = m; return; }
+  /* data-theme lo estampa el contenedor donde la página va incrustada; si no
+     está, manda lo que diga el sistema. Elegido aquí > contenedor > sistema. */
+  var t = r.dataset.theme;
+  if (t === 'dark' || t === 'light') { r.dataset.plancha = t === 'dark' ? 'negra' : 'marfil'; return; }
   var oscuro = false;
   try { oscuro = matchMedia('(prefers-color-scheme: dark)').matches; } catch(e){}
-  document.documentElement.dataset.plancha =
-    (m === 'negra' || m === 'marfil') ? m : (oscuro ? 'negra' : 'marfil');
+  r.dataset.plancha = oscuro ? 'negra' : 'marfil';
 })();
 </script>
 
