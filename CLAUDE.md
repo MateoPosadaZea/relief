@@ -212,6 +212,27 @@ soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 → Implica **inventario propio, NO dropshipping.** Pedido inicial 50-100 unidades.
 Es el único riesgo de capital aprobado del proyecto.
 
+## El modelo 3D
+Paramétrico, construido en código; no hay `.glb` que cargar. Se rehízo en
+agosto de 2026 contra una referencia nueva del proveedor:
+
+- **Aro panto, casi circular** (razón 1.07), no el rectangular de antes (1.45).
+  Se dibuja con cuatro bezier para poder mover cada cuadrante por separado.
+- **Acetato traslúcido** en vez de negro opaco, y la traslucidez va por **alfa,
+  no por `transmission`**: la transmisión de three.js refracta lo que hay en la
+  escena, y aquí la escena está vacía porque el lienzo va en `alpha:true` para
+  que se vea la página detrás. Con transmisión sola el acetato salía gris
+  plano. Queda un toque de transmisión que no atraviesa: solo enciende los
+  cantos, que es de donde sale la lectura de material.
+- **Puente de ojo de cerradura**: el acetato baja por el centro y se recorta con
+  un semicírculo. Es el detalle que distingue un panto de acetato de una
+  montura redonda cualquiera.
+- Se fue el **canto claro laminado**: la referencia es una sola pieza.
+- ⚠ **El modelo y las fotos de producto ya no coinciden.** Las fotos
+  (`ambar.webp`, `rojo.webp`) siguen siendo de la montura rectangular negra.
+  Al llegar el pedido real hay que rehacerlas, o el visor y la galería estarán
+  mostrando dos productos distintos en la misma ficha.
+
 ## Marca
 - Nombre: **malcolm** · Wordmark en **minúscula**: `malcolm`
 - **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
@@ -320,6 +341,10 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 - Toda combinación texto/fondo verificada contra WCAG AA (4.5:1) en los 4 modos.
 - El modo se guarda en `localStorage` y se aplica en un script inline del
   `<head>`, antes del primer paint. Es el único JS que no vive al final.
+- **El defecto respeta `prefers-color-scheme`.** Día es el defecto, pero no por
+  encima del sistema: si el visitante ya puso su equipo en oscuro, esa decisión
+  YA está tomada y la página la sigue. El orden es: lo que eligió aquí > lo que
+  dice su sistema > día.
 - ⚠ El copy de los modos es **descriptivo, nunca clínico**. "Aproximación visual
   de cada lente", jamás "reduce la fatiga" ni "te ayuda a dormir".
 

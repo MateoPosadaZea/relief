@@ -35,10 +35,15 @@
   var MODOS = ['noche','dia','trabajo','descanso'];
   var m;
   try { m = localStorage.getItem('malcolm.modo.v1'); } catch (e) {}
-  /* Día es el defecto: la marca vive de noche, pero el visitante llega a
-     cualquier hora y un fondo negro de entrada le pide una decisión que no
-     ha tomado. El modo noche sigue a un clic. */
-  document.documentElement.dataset.modo = MODOS.indexOf(m) > -1 ? m : 'dia';
+  /* Día es el defecto, pero no por encima del sistema: si el visitante ya
+     puso su equipo en oscuro, esa decisión YA está tomada y la página la
+     respeta. El razonamiento de «no le pidas una decisión que no ha tomado»
+     apunta justo para el otro lado cuando sí la tomó.
+     Orden: lo que eligió aquí > lo que dice su sistema > día. */
+  var oscuro = false;
+  try { oscuro = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+  document.documentElement.dataset.modo =
+    MODOS.indexOf(m) > -1 ? m : (oscuro ? 'noche' : 'dia');
 })();
 </script>
 
