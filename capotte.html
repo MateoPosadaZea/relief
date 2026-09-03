@@ -310,6 +310,14 @@ em{ font-style:italic; }
   font-family:var(--texto); font-size:.64rem; font-weight:500;
   letter-spacing:.16em; color:var(--tenue);
 }
+/* El rombo separa la palabra del lugar. Es el único signo del sistema y
+   sale del propio branding: aparece en el bloqueo, en el sello y como
+   trama del papel. No es un icono — no dibuja nada, solo puntúa. */
+.rombo{
+  font-size:.34em; line-height:1; color:var(--tenue);
+  margin:0 .1em; position:relative; top:-.15em;
+}
+.pie-lugar .rombo{ font-size:.5em; margin-right:.7em; top:-.1em; }
 .menu{ display:flex; align-items:center; gap:clamp(14px,2.2vw,30px); margin-left:auto; }
 .menu a{
   font-size:.92rem; text-decoration:none; color:var(--tinta-2);
@@ -807,7 +815,7 @@ html:not(.js) .surge{ opacity:1; transform:none; }
 
 <header class="barra" id="barra">
   <div class="caja">
-    <a class="marca" href="#/" aria-label="capotte, inicio">capotte<span class="lugar">bogota</span></a>
+    <a class="marca" href="#/" aria-label="capotte, inicio">capotte<span class="rombo" aria-hidden="true">&#9670;</span><span class="lugar">bogota</span></a>
     <nav class="menu" aria-label="Secciones">
       <a href="#coleccion">colección</a>
       <a href="#la-casa">la casa</a>
@@ -1054,7 +1062,7 @@ html:not(.js) .surge{ opacity:1; transform:none; }
   <div class="pie-leo" id="pieLeo" aria-hidden="true"></div>
   <div class="caja">
     <p class="pie-marca">capotte</p>
-    <p class="pie-lugar">bogota</p>
+    <p class="pie-lugar"><span class="rombo" aria-hidden="true">&#9670;</span>bogota</p>
 
     <div class="pie-rejilla">
       <div class="pie-col">
@@ -1305,17 +1313,20 @@ function marcoOrganico(semilla, ins = 3.2, porLado = 9, amp = .8){
   return cerrar(pts);
 }
 
-/* El sello de procedencia. Sin marco doble ni festón: el borde
-   irregular y dos palabras. */
-function selloBogota(){
+/* El sello de la casa. Doble filete ondulado —no un círculo perfecto y no
+   un festón—, la palabra arriba, el lugar abajo y el rombo entre las dos.
+   Sin el leopardo dentro: a 92 px la lámina se empasta, y el animal ya está
+   en la página a tamaño de lámina. */
+function sello(){
   return `
-<svg viewBox="0 0 100 100" role="img" aria-label="Sello: hecho en Bogotá">
-  <path d="${organico(7.3, 17, 46, 2.2)}" fill="none" stroke="currentColor" stroke-width="1.4"/>
-  <path d="${organico(19.1, 15, 38, 1.6)}" fill="none" stroke="currentColor" stroke-width=".7" opacity=".6"/>
-  <text x="50" y="45" text-anchor="middle" font-family="var(--display)" font-size="13"
-        fill="currentColor">hecho en</text>
-  <text x="50" y="61" text-anchor="middle" font-family="var(--display)" font-size="13"
-        fill="currentColor">bogota</text>
+<svg viewBox="0 0 100 100" role="img" aria-label="Sello de capotte, Bogotá">
+  <path d="${organico(7.3, 17, 46.5, 2.0)}" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <path d="${organico(7.3, 17, 42.5, 2.0)}" fill="none" stroke="currentColor" stroke-width=".7"/>
+  <text x="50" y="43" text-anchor="middle" font-family="var(--display)" font-size="15"
+        letter-spacing="1.2" fill="currentColor">capotte</text>
+  <text x="50" y="56" text-anchor="middle" font-size="7" fill="currentColor">&#9670;</text>
+  <text x="50" y="70" text-anchor="middle" font-family="var(--texto)" font-size="8"
+        letter-spacing="1.8" fill="currentColor">bogota</text>
 </svg>`;
 }
 
@@ -1397,7 +1408,7 @@ function pintarHome(){
   document.getElementById('portadaLamina').innerHTML = leopardo({
     sizes:'(max-width:900px) 104vw, min(1180px, 92vw)', carga:'eager' });
   document.getElementById('notaPortada').hidden = HAY_LEOPARDO;
-  document.getElementById('selloPortada').innerHTML = selloBogota();
+  document.getElementById('selloPortada').innerHTML = sello();
   document.getElementById('leoPlancha').innerHTML = `
     <figure class="lamina lamina--suelta">
       ${leopardo({ sizes:'(max-width:900px) 100vw, min(1320px, 92vw)' })}

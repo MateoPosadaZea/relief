@@ -378,6 +378,45 @@ guion: riesgo alto de negación y de oposición del titular.
   **Oculus** (es la marca de VR de Meta, y los visores son clase 9: colisión
   peor que la de Essilor), **solaz** (buena, quedó de tercera).
 
+## Lo que trajo la tanda de imágenes (septiembre 2026)
+Mateo pasó el brief de fotografía por un modelo de imagen y volvió con tres
+láminas: contactos por bloque (catálogo, macro, puestas, contexto, packaging),
+macros de marca sobre la pieza, y una hoja de brand book. **Son dirección, no
+activos** — las monturas no son las reales y las láminas no están gestionadas
+en color. Lo que sí resuelven:
+- **El sello es la marca.** Doble filete ondulado —no un círculo—, `capotte`
+  arriba, el leopardo, `bogota` abajo. Con eso **muere la exploración de la C**:
+  el isotipo no es una letra, es el sello con el animal.
+- **El rombo ◆ es el separador** del bloqueo (`capotte ◆ bogota`) y la trama del
+  papel. Es el único signo del sistema: no dibuja nada, puntúa. Adoptado en la
+  barra, en el pie y en el sello del sitio.
+- **La montura es de acetato carey**, rectangular de esquinas redondeadas.
+  ⚠ El catálogo del sitio dice «negro humo / arena traslúcido / oro viejo»: las
+  imágenes y el copy no coinciden todavía.
+
+⚠ **Divergencias medidas que hay que cerrar antes de que esto sea especificación:**
+1. **Tres marfiles distintos.** El sistema usa `#F7F4EF`; la hoja de brand book
+   se etiqueta `#F5F2EB` y **renderiza** `#EFEBE4`; la hoja de contactos corre a
+   `#E0DAD1`. Ni siquiera coincide consigo misma.
+2. El negro etiquetado `#000000` renderiza `#141414`.
+3. **La tipografía de las láminas no es Gambetta**, y el brand book la rotula
+   así. Su «alfabeto» además es inventado (`fguįksshoopcetãrwxyz`): es
+   decoración, no un espécimen. No usar esa hoja como referencia de tipografía.
+4. **Aparece dorado** en bisagra, grabado y lacre, y no está en la paleta.
+   Criterio propuesto: el metal es **material**, no color — vive en la pieza
+   física y no se convierte nunca en tinta sobre papel ni en color del sitio.
+5. **Hay tres leopardos distintos** circulando: el de la lámina vendorizada
+   (rosetas de anillo), el del brand book (manchas macizas) y el del sello.
+   Hay que quedarse con uno y redibujar los otros dos a partir de él.
+6. La iconografía propuesta (rombo, flor, estrella, **laurel**) contradice la
+   regla de «nada de laurel, corona, guilloché ni festón». Se conserva **solo el
+   rombo**, que ya hace trabajo real.
+7. El bloqueo aparece **con tracking** en el sello y en la varilla, contra la
+   regla de no añadirle tracking a `capotte`. Si se queda, que sea una excepción
+   declarada para texto curvo o muy pequeño, no un accidente.
+8. En «puestas» el reparto es mayoritariamente masculino. El pendiente de
+   «masculina o unisex» sigue abierto y estas imágenes lo contestan sin querer.
+
 ## El público de la casa de autor (dirección tomada, copy sin cerrar)
 No es el estudiante trasnochado —ese era el público de la dirección vieja—. Es
 **la proyección de los socios a unos años**: alguien que sigue trabajando pero
