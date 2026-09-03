@@ -67,7 +67,7 @@ arco visual *es* el arco del catálogo.
 
 | Panel | Qué dice |
 |---|---|
-| Hero | Wordmark + "Trabajas de noche. Tus ojos también." |
+| Hero | Titular escalonado de tres líneas: «LA ÚLTIMA / HORA / DEL DÍA.» |
 | 11:47 PM | El problema, sin prometer nada: llevas seis horas y te faltan dos. |
 | Somos capotte | Dos lentes, uno para trabajar, uno para parar. Nada más. |
 | 12:30 AM | El ámbar: el del turno. |
@@ -76,6 +76,24 @@ arco visual *es* el arco del catálogo.
 
 - El reloj no es decoración: encierra la noche del cliente y aterriza en la entrega,
   que es la única ventaja competitiva real.
+- **El hero es tipografía y nada más.** Tres líneas escalonadas en MAYÚSCULAS
+  —la única mayúscula de la página—, el punto final en rojo, el párrafo
+  arrancando en la mitad del ancho y el CTA en dos celdas separadas por un
+  filete. Sin botón rojo: el rojo es del botón de compra. El sello de entrega
+  se va a la esquina de abajo. Mide una pantalla justa **menos la barra**: la
+  barra es `sticky` y sigue ocupando su alto en el flujo, así que con `100svh`
+  a secas el sello caía por debajo del pliegue.
+- **El modelo no comparte pantalla con el titular.** Entra al irse el hero, no
+  con la página. Ese avance lo publica el mismo contrato de antes
+  —`window.__morfo`, que la escena lee para pasar del encuadre de entrada al
+  del recorrido—; lo que cambió es quién lo escribe.
+- ⚠ **Se retiró el wordmark que se volvía logotipo**, junto con el indicio
+  «Desliza» y la primera pantalla de 190vh que le servía de escenario. Duró
+  hasta septiembre de 2026. Lo que se aprendió y sigue valiendo: un texto que
+  llega a su tamaño final por `transform: scale()` se rasteriza a un cuerpo y
+  se muestra en otro, y se ve pastoso al lado de texto dibujado a su tamaño;
+  y para apoyar una palabra sobre una línea hay que medir su **tinta**
+  (`actualBoundingBox…`), no su caja.
 - **El copy describe el problema, nunca promete la cura.** "Llevas seis horas frente
   a la pantalla" es seguro y pega más fuerte que cualquier claim de salud.
 
@@ -260,22 +278,23 @@ varillas planas que adelgazan.
   - **La sigla RLF murió con el nombre viejo.** Los productos son «Ámbar» y
     «Rojo» a secas: la sección ya se llama «Los dos lentes» y una sigla nueva
     («RCR Ámbar») sería inventar un problema que no teníamos.
-- **La palabra del recorrido no se queda como logotipo.** Al llegar a la barra
-  se apaga y la releva la marca estática. La del recorrido llega ahí por
-  `transform: scale()` desde un cuerpo enorme, y un texto escalado se rasteriza
-  a un tamaño y se muestra en otro: se veía pastoso al lado del resto de la
-  barra. La estática es texto de 26 px de verdad.
-- **La barra lleva el conjunto: isotipo + palabra.** En móvil se queda solo el
-  isotipo, porque a 26 px con el menú y el carrito a los lados `capotte` compite
-  por un ancho que no tiene. El isotipo va **en línea** en el HTML, no como
-  `<img>`, para que herede el color del modo, y a ese tamaño usa el dibujo de
-  la **versión reducida** —trazo grueso, punto grande—, que es la regla de los
-  dos tamaños ópticos. Hay interruptor en el banco para volver a solo palabra.
-- **El wordmark del recorrido no lleva isotipo.** Ahí la palabra llena la
-  pantalla y es un gesto tipográfico, no una presentación de logo: un isotipo
-  a esa escala sería enorme, y la medida del morfo está calculada sobre la
-  tinta de una sola palabra. El conjunto se presenta en la barra, que es donde
-  se ve en cada pantalla del sitio.
+- **La marca vive en la barra y solo en la barra.** El hero es un titular, no
+  una presentación de logotipo: la palabra a pantalla completa y la marca en la
+  barra eran la misma palabra dos veces. Va centrada y en todas las vistas
+  —antes se ganaba el sitio cuando el wordmark aterrizaba; ahora lo tiene—, en
+  versalita chica y muy trackeada (`CAPOTTE`, 13 px, `.18em`), que es una firma
+  y no compite con el titular. A ese cuerpo cabe también en un teléfono, que
+  era lo que antes obligaba a dejar solo el isotipo.
+- **La barra son tres celdas de texto del mismo peso**: `Lentes` · `Capotte` ·
+  `Carrito (n)`. El carrito dejó de ser una bolsa dibujada con una píldora
+  encima: entre dos palabras, un icono rompía la línea, y el número cabe en la
+  propia etiqueta. Abierto, la celda dice `Cerrar`.
+  ⚠ El coste: en escritorio la barra ya no lleva `Materiales` ni `Envíos`. Se
+  llega por scroll y por el pie; en móvil el menú completo sigue en la lámina.
+- El isotipo va **en línea** en el HTML, no como `<img>`, para que herede el
+  color del modo, y usa el dibujo de la **versión reducida** —trazo grueso,
+  punto grande—, que es la regla de los dos tamaños ópticos. Hay interruptor en
+  el banco para dejar solo la palabra.
 - **Tono: editorial mid-century.** Referencias: Truman Capote, Don Draper de
   vacaciones, Esquire de los 60. Elegancia sin esfuerzo. Menos «protección»,
   más «ritual». El público no es el trabajador de turno: es la persona de 30 a

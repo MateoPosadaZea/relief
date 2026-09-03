@@ -253,9 +253,9 @@
   img:not([hidden]){ display:block; }
 
   /* [hidden] lo trae la hoja del navegador, que pierde contra cualquier regla
-     de autor: .wordmark-fijo{display:flex} lo anulaba, y el wordmark gigante
-     del hero se quedaba pintado encima de la ficha de producto. Se refuerza
-     una vez, arriba, en vez de acordarse de excluirlo regla por regla. */
+     de autor: un display de autor lo anulaba y el elemento seguía pintado
+     encima de la ficha de producto. Se refuerza una vez, arriba, en vez de
+     acordarse de excluirlo regla por regla. */
   [hidden]{ display:none !important; }
 
   a{ color:inherit; }
@@ -344,13 +344,12 @@
     height:56px;
     display:flex; align-items:center; justify-content:space-between;
   }
-  /* El logotipo de las vistas internas es el mismo que aterriza en la barra al
-     terminar el recorrido: minúscula, misma cara, mismo tamaño. Y en el mismo
-     sitio —centrado— porque el centro de la barra es suyo. */
-  /* La marca de la barra. En escritorio es la palabra; en móvil, el isotipo:
-     a 26 px con el menú y el carrito a los lados, «capotte» compite por un
-     ancho que no tiene, y el isotipo aguanta ese tamaño porque para eso se
-     dibujó. Es el mismo sitio —el centro de la barra— en los dos. */
+  /* La marca vive en la barra y solo en la barra: el hero es un titular, no
+     una presentación de logotipo. Va centrada y en todas las vistas, porque
+     el centro de la barra es suyo. Versalita chica y muy trackeada —13 px,
+     .18em— para que sea una firma y no compita con el titular; a ese tamaño
+     cabe también en un teléfono, que es lo que antes obligaba a dejar solo
+     el isotipo. */
   .marca{
     position:absolute; left:50%; transform:translateX(-50%);
     display:flex; align-items:center; line-height:0;
@@ -361,40 +360,24 @@
      fijo, calibrar el grosor cambiaba el wordmark del recorrido pero no el
      logotipo de la barra, y al aterrizar la palabra cambiaba de grosor. */
   .marca-palabra{
-    font-family:var(--display); font-weight:var(--peso-display); font-size:26px;
-    letter-spacing:-.01em; text-transform:lowercase; line-height:1;
+    font-family:var(--display); font-weight:500; font-size:13px;
+    letter-spacing:.18em; text-transform:uppercase; line-height:1;
   }
   /* El isotipo al lado de la palabra: el conjunto. En móvil va solo. */
   /* El viewBox de la reducida es más ancho que alto, así que el ancho manda
      y el alto sale solo. */
-  .marca-iso{ display:block; width:26px; height:auto; margin-right:9px; flex:0 0 auto; }
+  .marca-iso{ display:block; width:17px; height:auto; margin-right:8px; flex:0 0 auto; }
   body[data-marca="palabra"] .marca-iso{ display:none; }
   .marca:hover{ color:var(--texto-tenue); }
-  /* La palabra del recorrido no se queda como logotipo: al llegar a la barra
-     se apaga y la releva la marca estática. La del recorrido llega ahí por
-     `transform: scale()` desde un cuerpo enorme, y un texto escalado se
-     rasteriza a un tamaño y se muestra en otro — se veía pastoso al lado del
-     resto de la barra, que sí está dibujado a su tamaño. La estática es
-     texto de 26 px de verdad. El relevo es el mismo en escritorio y en
-     móvil; lo único que cambia es si la marca es la palabra o el isotipo. */
-  .wordmark-fijo{ transition:opacity .28s ease; }
-  .wordmark-fijo[data-posado="true"]{ opacity:0; pointer-events:none; }
   .marca{ transition:opacity .28s ease, color .2s ease; }
-
-  @media (max-width:759px){
-    /* En móvil solo el isotipo, con o sin conjunto: a 26 px entre el menú y
-       el carrito la palabra no tiene ancho, y el isotipo sí aguanta ahí. */
-    .marca-palabra{ display:none; }
-    .marca-iso{ display:block; width:28px; height:auto; margin-right:0; }
-  }
   /* Menu de la barra. Va a la izquierda porque el centro es del logotipo:
      el wordmark aterriza ahi y no se le puede disputar el sitio. */
   .menu{ display:flex; gap:4px; align-items:center; margin-left:-10px; }
-  /* Minúscula como todo lo demás: la marca se escribe abajo y la barra no es
-     la excepción. Sin versalita el tracking abierto sobra, así que baja. */
+  /* Tipo oración y 12 px: la barra son tres celdas del mismo peso —enlace,
+     marca, carrito— y la única que cambia de cara es la marca. */
   .menu a{
-    font-family:var(--etiqueta); font-weight:500; font-size:13px;
-    letter-spacing:.01em; text-transform:lowercase;
+    font-family:var(--etiqueta); font-weight:500; font-size:12px;
+    letter-spacing:.02em;
     color:var(--texto-tenue); text-decoration:none;
     padding:6px 10px;
     border-radius:2px;
@@ -498,7 +481,7 @@
   }
   @media (prefers-reduced-motion:reduce){
     .menu-icono i, .menu-movil, .menu-movil *,
-    .carrito-panel, .icono-doble > *{ transition:none !important; }
+    .carrito-panel{ transition:none !important; }
   }
   /* Por encima de 760 px el menú de la barra ya está: el panel no existe. */
   @media (min-width:760px){ .menu-movil{ display:none; } }
@@ -506,70 +489,32 @@
   /* La barra sube por encima del panel mientras está abierto. No basta con
      subirle el z-index al botón: la barra tiene su propio contexto de apilado
      y sus hijos no pueden salir de él, así que el botón quedaba tapado y en un
-     teléfono no había forma de cerrar. Y el wordmark gigante y el indicio de
-     scroll no pintan nada encima de un menú a pantalla completa. */
+     teléfono no había forma de cerrar. */
   body[data-menu="abierto"] .nav,
   body[data-carrito="abierto"] .nav{ z-index:90; }
-  body[data-menu="abierto"] .nav[data-posado="false"],
-  body[data-carrito="abierto"] .nav[data-posado="false"]{ background:var(--noche); }
-  /* El wordmark y el indicio se retiran solo cuando la lámina los tapa de
-     verdad. El menú es siempre a pantalla completa, así que ahí siempre. El
-     carrito no: por encima de 560 px es una barra pegada a la derecha y el
-     resto de la pantalla sigue siendo del hero — escondiendo la palabra ahí,
-     abrir el carrito en escritorio dejaba la portada en blanco. */
-  body[data-menu="abierto"] .wordmark-fijo,
-  body[data-menu="abierto"] .pista-scroll{ display:none; }
-  @media (max-width:559px){
-    body[data-carrito="abierto"] .wordmark-fijo,
-    body[data-carrito="abierto"] .pista-scroll{ display:none; }
-  }
 
-  /* Solo el icono: la palabra "carrito" no dice nada que el dibujo no diga. */
-  /* Sin recuadro: encerrar el icono en una caja lo convierte en un botón de
+  /* Celda de texto, no icono: la barra es «Lentes · Capotte · Carrito (n)»,
+     tres rótulos del mismo peso, y una bolsa dibujada entre dos palabras
+     rompía esa línea. El número va en la propia etiqueta —«Carrito (2)»— así
+     que no hace falta la píldora encima del icono.
+     Sin recuadro: encerrarlo en una caja lo convierte en un botón de
      formulario y rompe la línea de hairlines del resto de la barra. */
   .carrito-btn{
-    position:relative;                 /* ancla del contador */
     background:none; border:0; color:var(--hueso);
-    font-family:var(--etiqueta);
+    font-family:var(--etiqueta); font-weight:500; font-size:12px;
+    letter-spacing:.02em; line-height:1;
+    font-variant-numeric:tabular-nums;
     padding:6px; margin-right:-6px; cursor:pointer;
-    display:flex; align-items:center; line-height:0;
+    display:flex; align-items:center;
+    transition:color .18s ease;
   }
   .carrito-btn:hover{ color:var(--texto-tenue); }
   .carrito-btn:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
-
-  /* La bolsa y el aspa comparten sitio: una entra girando mientras la otra
-     sale, en vez de aparecer de golpe. */
-  .icono-doble{ position:relative; display:block; width:21px; height:21px; }
-  .icono-doble > *{
-    position:absolute; inset:0; width:100%; height:100%;
-    transition:opacity .26s ease, transform .38s cubic-bezier(.5,0,.2,1);
-  }
-  .ico-bolsa{ opacity:1; transform:none; }
-  .ico-aspa{ opacity:0; transform:rotate(-90deg); }
-  .carrito-btn[aria-expanded="true"] .ico-bolsa{ opacity:0; transform:rotate(90deg); }
-  .carrito-btn[aria-expanded="true"] .ico-aspa{ opacity:1; transform:none; }
-  .ico-aspa i{
-    position:absolute; left:2px; right:2px; top:10px; height:1px; background:currentColor;
-  }
-  .ico-aspa i:first-child{ transform:rotate(45deg); }
-  .ico-aspa i:last-child{ transform:rotate(-45deg); }
-  /* El contador se posa sobre la esquina del icono, no al lado: una caja
-     junto a la bolsa rompía la línea de la barra y quedaba desalineada con
-     el dibujo. Círculo, no rectángulo — de un solo dígito es lo que se lee
-     como marca de notificación y no como etiqueta de precio. El borde del
-     color del fondo lo recorta contra el trazo del icono. */
-  .carrito-cuenta{
-    position:absolute; top:1px; right:0;
-    font-family:var(--etiqueta); font-weight:600; font-size:9px;
-    font-variant-numeric:tabular-nums; letter-spacing:0; line-height:1;
-    min-width:16px; height:16px; padding:0 4px;
-    border-radius:999px;
-    display:inline-flex; align-items:center; justify-content:center;
-    background:var(--rojo-marca); color:var(--blanco);
-    border:1.5px solid var(--noche);
-    pointer-events:none;
-  }
-  .carrito-cuenta[hidden]{ display:none; }
+  /* Abierto, la misma celda dice cómo se cierra. Es una sustitución de
+     palabra y no un aspa: en una barra de puro texto un dibujo desentona. */
+  .carrito-btn[aria-expanded="true"] .carrito-etq{ display:none; }
+  .carrito-btn[aria-expanded="true"] .carrito-etq--cerrar{ display:inline; }
+  .carrito-etq--cerrar{ display:none; }
 
   /* ---------- Carrito ----------
      Lámina pegada a la derecha en escritorio y pantalla completa en móvil.
@@ -634,8 +579,13 @@
      pieza de la que hablaba el panel quedaba tapada justo mientras se
      hablaba de ella. Sigue por debajo de la barra (50), del wordmark (55) y
      de las láminas de menú y carrito (80), que sí tienen que taparlo todo. */
+  /* El hero es tipografía y nada más, así que la escena no entra con la
+     página: aparece a medida que el titular se va. El avance lo escribe el
+     JS en --escena-entra; la retirada del final sigue mandando porque pone
+     opacity a pelo y gana a la variable. */
   .escena-fija{
     position:fixed; inset:0; z-index:20; overflow:hidden; pointer-events:none;
+    opacity:var(--escena-entra, 1);
     transition:opacity .35s ease, visibility 0s;
   }
   /* Es fija y ocupa la ventana entera, así que al terminar el recorrido
@@ -651,62 +601,12 @@
   }
   #gafas3d[data-listo="true"]{ opacity:1; }
 
-  /* ---------- El wordmark que se vuelve logotipo ----------
-     Fijo y a lo ancho, centrado por flex: al escalar sobre su propio centro
-     el centrado horizontal se mantiene solo, así que basta con animar escala
-     y desplazamiento vertical. Solo se toca `transform`: animar font-size
-     provocaría relayout en cada cuadro. */
-  .wordmark-fijo{
-    /* Por encima del nav (z-index 50): al posarse, el fondo opaco de la
-       barra tapaba la palabra y el logotipo desaparecia. */
-    position:fixed; top:0; left:0; right:0; z-index:55;
-    display:flex; justify-content:center;
-    pointer-events:none; will-change:transform;
-  }
-  .wordmark-fijo span{
-    display:block;
-    font-family:var(--display); font-stretch:var(--ancho-display); font-weight:var(--peso-display);
-    font-size:100px; line-height:1.0; letter-spacing:-.02em;
-    white-space:nowrap; color:var(--hueso);
-    transform-origin:50% 50%; will-change:transform;
-  }
-  /* Solo recibe clics cuando ya es logotipo: a pantalla completa taparia
-     todo lo que hay debajo. */
-  .wordmark-fijo[data-posado="true"] span{ pointer-events:auto; cursor:pointer; }
-
-  /* Indicio de scroll. Vive en la franja que la escena le reserva entre las
-     gafas y la palabra, y se apaga apenas empieza el recorrido. */
-  /* Solo la palabra. Antes iba con un riel animado al lado; los dos juntos
-     medían más que el hueco que deja el wordmark encima y el bloque se
-     montaba sobre la palabra. Con «Desliza» ya se entiende, y una sola línea
-     de texto cabe. Late despacio para que se note sin pedir atención. */
-  .pista-scroll{
-    position:fixed; left:0; right:0; z-index:44;
-    top:calc(var(--palabra-cima, 70vh) - 34px);
-    display:flex; justify-content:center; align-items:center;
-    pointer-events:none;
-    font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta);
-    font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
-    color:var(--texto-tenue);
-    transition:opacity .3s ease;
-  }
-  .pista-scroll[hidden]{ display:none; }
-  .pista-scroll span{ animation:pista-late 2.6s ease-in-out infinite; }
-  @keyframes pista-late{ 0%,100%{opacity:.55} 50%{opacity:1} }
-  @media (prefers-reduced-motion:reduce){
-    .pista-scroll span{ animation:none; }
-  }
-  /* El carrito queda anclado a la derecha aunque el logotipo del nav esté
-     oculto: con space-between y un solo hijo se iría a la izquierda. */
+  /* El carrito queda anclado a la derecha: con space-between y la marca
+     centrada en absoluto, el botón se iría al centro. */
   .carrito-btn{ margin-left:auto; }
-  /* A 320 px el logotipo posado y el carrito se disputan la barra: el boton
-     cede primero, porque el logotipo va centrado y no puede moverse. */
+  /* A 320 px la marca centrada y el carrito se disputan la barra: el botón
+     cede primero, porque la marca va centrada y no puede moverse. */
   @media (max-width:400px){ .carrito-btn{ padding:5px; } }
-
-  /* La barra solo se materializa cuando la palabra ya aterrizó en ella. */
-  .nav{ background:transparent; border-bottom-color:transparent; }
-  .nav[data-posado="true"]{ background:var(--noche); border-bottom-color:var(--linea); }
-  body[data-vista="interna"] .nav{ background:var(--noche); border-bottom-color:var(--linea); }
 
   /* ---------- Recorrido ---------- */
   .historia{ position:relative; z-index:10; }
@@ -715,8 +615,6 @@
     min-height:100vh; min-height:100svh;
     display:flex; align-items:center; padding:14vh 0;
   }
-  /* La primera pantalla es el escenario del wordmark: va vacía a propósito. */
-  .panel--apertura{ min-height:190vh; align-items:flex-end; padding-bottom:16vh; }
 
   /* El reparto de la pantalla. El modelo va centrado y arriba; el texto abajo,
      en una columna lateral. La separación es VERTICAL y no horizontal: así el
@@ -734,7 +632,6 @@
     justify-content:flex-end; padding-bottom:9vh;
   }
   .panel{ min-height:125vh; }
-  .panel--apertura{ padding-top:14vh; }
   .panel > .wrap{ display:flex; flex-direction:column; align-items:flex-start; }
   .panel > .wrap > *{ max-width:min(38%, 440px); }
   .panel[data-lado="dcha"] > .wrap{ align-items:flex-end; text-align:right; }
@@ -772,7 +669,6 @@
   .panel--pieza .hora{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   @media (max-width:899px){
     .panel{ align-items:flex-end; padding-top:46vh; padding-bottom:14vh; }
-    .panel--apertura{ padding-top:14vh; }
   }
   .pista{
     font-family:var(--etiqueta); font-stretch:var(--ancho-etiqueta); font-weight:600;
@@ -782,25 +678,111 @@
   }
   .pista::before{ content:""; width:26px; height:1px; background:var(--texto-tenue); }
 
-  /* El hero editorial: la frase de marca en itálica —la firma—, el cuerpo en
-     sans y el sello en versalitas. Va abajo a la izquierda, debajo del
-     wordmark que llena la pantalla. */
-  .hero-frase{
-    font-family:var(--serif); font-weight:400; font-style:italic;
-    font-size:clamp(1.35rem, 3.4vw, 2rem); line-height:1.2;
-    letter-spacing:-.01em; margin:0 0 14px; color:var(--hueso);
-    max-width:22ch;
+  /* ---------- El hero ----------
+     Un titular de tres líneas escalonadas y nada más. La marca no está aquí:
+     se presenta en la barra, que es donde se ve en todas las pantallas del
+     sitio; un wordmark a pantalla completa y una marca en la barra eran la
+     misma palabra dos veces.
+     Las MAYÚSCULAS son la excepción de la página y viven solo en este bloque:
+     los titulares de sección siguen en tipo oración con la itálica de firma.
+     La caja lleva un hueco para la foto del shooting (ver el comentario del
+     HTML): hoy es fondo plano a propósito, no un placeholder. */
+  /* Una pantalla justa, descontando la barra: el recorrido empieza debajo de
+     ella y con 100svh a secas los últimos 57 px del hero —el sello— caían por
+     debajo del pliegue. */
+  .panel--apertura{
+    min-height:0; align-items:stretch; padding:0;
+    height:calc(100svh - var(--alto-nav, 60px));
+  }
+  /* Dos filas: el bloque de lectura ocupa el hueco y se centra en él, el sello
+     se queda pegado abajo. Con flex y un margin-top:auto en el sello el auto se
+     comía todo el aire y el bloque quedaba clavado arriba — en un teléfono, con
+     el titular en su tamaño mínimo, eso dejaba media pantalla vacía. */
+  .panel--apertura > .wrap{
+    min-height:100%;
+    display:grid; grid-template-rows:1fr auto;
+    padding-top:6vh; padding-bottom:32px;
+  }
+  .hero-alto{
+    align-self:center;
+    display:flex; flex-direction:column; align-items:stretch;
+    gap:clamp(22px, 4vh, 46px);
+  }
+  /* El hero manda sobre el reparto del recorrido: allí el texto ocupa una
+     columna del 38 % junto al modelo, aquí el titular ES la pantalla. */
+  .panel--apertura > .wrap > *{ max-width:none; }
+  .hero-alto > *{ max-width:none; }
+
+  .hero-titular{
+    font-family:var(--display); font-weight:400; font-style:normal;
+    font-size:clamp(2.75rem, 11vw, 9rem);
+    line-height:.95; letter-spacing:.02em; text-transform:uppercase;
+    color:var(--hueso); margin:0; text-wrap:nowrap;
+  }
+  .hero-linea{ display:block; }
+  /* El escalonado. Los desplazamientos son porcentaje del ancho y no píxeles,
+     para que la diagonal se conserve igual a 1440 que a 900. */
+  .hero-linea--2{ margin-left:30%; }
+  .hero-linea--3{ margin-left:10%; }
+  /* El punto final es la única tinta de color del hero: no hay botón rojo
+     aquí, el rojo es del botón de compra. */
+  .hero-punto{ color:var(--rojo-marca); }
+
+  /* El párrafo arranca en la mitad del ancho: el titular pesa a la izquierda
+     y la lectura cae al otro lado, sin centrar nada. */
+  .hero-bajo{
+    margin-left:50%; display:flex; flex-direction:column;
+    align-items:flex-start; gap:22px;
   }
   .hero-cuerpo{
-    font-family:var(--sans); font-weight:400;
-    font-size:clamp(15px, 1.5vw, 17px); line-height:1.55;
-    color:var(--texto-tenue); margin:0 0 20px; max-width:44ch;
+    font-family:var(--display); font-weight:400; font-style:normal;
+    font-size:1.25rem; line-height:1.45; letter-spacing:0;
+    color:var(--hueso); margin:0; max-width:32ch;
   }
+  /* Dos celdas separadas por un filete, no un botón con la flecha dentro. Es
+     un solo enlace —una sola parada de teclado— con la línea pintada entre
+     los dos hijos. */
+  .hero-cta{
+    display:inline-flex; align-items:stretch;
+    border:1px solid var(--linea); background:transparent;
+    color:var(--hueso); text-decoration:none;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .hero-cta:hover{ border-color:var(--hueso); }
+  .hero-cta:focus-visible{ outline:2px solid var(--ambar-texto); outline-offset:2px; }
+  .hero-cta-txt{
+    font-family:var(--etiqueta); font-weight:500; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:14px 20px;
+  }
+  .hero-cta-flecha{
+    display:flex; align-items:center; justify-content:center;
+    border-left:1px solid var(--linea);
+    padding:0 15px; font-size:14px; line-height:1;
+    transition:transform .2s ease;
+  }
+  .hero-cta:hover .hero-cta-flecha{ transform:translateX(3px); }
+  @media (prefers-reduced-motion:reduce){
+    .hero-cta-flecha{ transition:none; }
+    .hero-cta:hover .hero-cta-flecha{ transform:none; }
+  }
+
+  /* El sello se va a la esquina de abajo: es el dato que cierra la pantalla,
+     no el que la abre. margin-top:auto se come el hueco que sobra. */
   .hero-sello{
-    font-family:var(--sans); font-weight:500;
-    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
-    color:var(--texto-tenue); margin:0;
-    border-top:1px solid var(--linea); padding-top:12px; display:inline-block;
+    margin:clamp(22px, 4vh, 46px) 0 0;
+    font-family:var(--etiqueta); font-weight:500;
+    font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--texto-tenue);
+  }
+
+  @media (max-width:639px){
+    /* En un teléfono el escalonado grande empuja las líneas fuera de la caja:
+       el mismo gesto, con la mitad de recorrido. */
+    .hero-linea--2{ margin-left:12%; }
+    .hero-linea--3{ margin-left:4%; }
+    .hero-bajo{ margin-left:0; }
+    .hero-cuerpo{ max-width:100%; }
   }
 
   .hora{
@@ -1620,11 +1602,9 @@
       <span class="menu-icono" aria-hidden="true"><i></i><i></i></span>
     </button>
     <nav class="menu" aria-label="Secciones del sitio">
-      <a href="#lentes">Los lentes</a>
-      <a href="#materiales">Materiales</a>
-      <a href="#envios">Envíos</a>
+      <a href="#lentes">Lentes</a>
     </nav>
-    <a class="marca" href="#top" id="marcaNav" aria-label="capotte — inicio" hidden>
+    <a class="marca" href="#top" id="marcaNav" aria-label="capotte — inicio">
       <!-- El isotipo va en línea y no como <img> para que herede el color del
            modo: un archivo externo no puede leer --hueso. Y es el dibujo de la
            versión REDUCIDA —trazo grueso, punto grande— porque a 22 px el
@@ -1636,19 +1616,12 @@
         </g>
         <circle cx="50" cy="50" r="11" fill="currentColor"/>
       </svg>
-      <span class="marca-palabra">capotte</span>
+      <span class="marca-palabra">Capotte</span>
     </a>
     <button class="carrito-btn" id="carritoBtn" aria-expanded="false" aria-controls="carritoPanel"
             aria-label="Carrito, 0 artículos">
-      <span class="carrito-cuenta" id="carritoCount" hidden>0</span>
-      <span class="icono-doble" aria-hidden="true">
-        <svg class="ico-bolsa" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.3" stroke-linejoin="round" focusable="false">
-          <path d="M4.6 7.4h14.8l-1 12.6H5.6z"/>
-          <path d="M9 7.4V6a3 3 0 0 1 6 0v1.4"/>
-        </svg>
-        <span class="ico-aspa"><i></i><i></i></span>
-      </span>
+      <span class="carrito-etq" id="carritoCount">Carrito (0)</span>
+      <span class="carrito-etq carrito-etq--cerrar" aria-hidden="true">Cerrar</span>
     </button>
   </div>
 </header>
@@ -1703,8 +1676,6 @@
 </nav>
 
 <div class="escena-fija" id="escenaFija" aria-hidden="true"><canvas id="gafas3d"></canvas></div>
-<div class="wordmark-fijo" id="wordmarkFijo" aria-hidden="true"><span id="palabraHero">capotte</span></div>
-<div class="pista-scroll" id="pistaScroll" aria-hidden="true"><span>Desliza</span></div>
 
 <!-- El punto del centro del isotipo, convertido en cursor. Solo existe con
      ratón: en táctil no hay puntero que sustituir y el elemento ni se crea. -->
@@ -1751,16 +1722,29 @@
 
 <main id="top">
 
-  <!-- 2. LA HISTORIA — wordmark que se vuelve logotipo, sobre escena fija -->
+  <!-- 2. LA HISTORIA — hero tipográfico y, detrás, la escena fija -->
   <div class="historia" id="historia">
     <div class="historia-paneles">
 
       <section class="panel panel--apertura" data-pieza="conjunto" data-lente="ambar">
+        <!-- hero-bg: foto del shooting, cuando exista -->
         <div class="wrap">
-          <p class="hero-frase"><em>Para la última hora del día.</em></p>
-          <p class="hero-cuerpo">Dos lentes para la noche. Uno para la lectura y la
-            pantalla, otro para cuando ya no queda nada por hacer.</p>
-          <p class="hero-sello">Hechos en TR90 · Stock en Bogotá · 2–3 días</p>
+          <div class="hero-alto">
+          <h1 class="hero-titular">
+            <span class="hero-linea hero-linea--1">La última</span>
+            <span class="hero-linea hero-linea--2">hora</span>
+            <span class="hero-linea hero-linea--3">del día<span class="hero-punto">.</span></span>
+          </h1>
+          <div class="hero-bajo">
+            <p class="hero-cuerpo">Dos lentes para la noche. Uno para la lectura y la
+              pantalla, otro para cuando ya no queda nada por hacer.</p>
+            <a class="hero-cta" href="#lentes">
+              <span class="hero-cta-txt">Ver los lentes</span>
+              <span class="hero-cta-flecha" aria-hidden="true">&#8594;</span>
+            </a>
+          </div>
+          </div>
+          <p class="hero-sello">Stock en Bogotá · 2–3 días</p>
         </div>
       </section>
 
@@ -2748,7 +2732,7 @@ function cargar3D() {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustar);
   /* El calibrador del grosor cambia --peso-display en caliente y la palabra
      hay que remedirla. Se expone en vez de observar el atributo style del
-     documento: ahí escriben también --alto-nav y --palabra-cima, y un
+     documento: ahí escribe también --alto-nav, y un
      observador se dispararía en bucle con lo que escribe esta misma función. */
   window.__ajustarPie = ajustar;
 })();
@@ -2985,26 +2969,6 @@ const RESENAS_EJEMPLO = [
   }, { threshold: 0 }).observe(historia);
 })();
 
-/* ---------------- La marca de la barra ----------------
-   En escritorio la barra lleva la palabra, y en la home no hace falta: la
-   pone el wordmark del recorrido al aterrizar. En móvil la palabra no cabe
-   a 26 px entre el menú y el carrito, así que la barra lleva el isotipo — y
-   en la home aparece justo cuando el recorrido suelta la palabra, que es el
-   momento en que la barra se materializa.
--------------------------------------------------------- */
-function marcaDeBarra() {
-  const marca = document.getElementById('marcaNav');
-  const nav = document.querySelector('.nav');
-  if (!marca || !nav) return;
-  const enHome = document.body.dataset.vista !== 'interna';
-  const posado = nav.dataset.posado === 'true';
-  /* Fuera de la home siempre; dentro de la home, cuando el recorrido suelta
-     la palabra y la barra se materializa. */
-  marca.hidden = enHome && !posado;
-}
-/* El morfo la llama al cambiar de estado: es quien sabe cuándo se posa. */
-window.__marcaBarra = marcaDeBarra;
-
 /* ---------------- Sección activa en la barra ----------------
    El enlace de la sección que tienes delante se marca. Sin esto la barra no
    dice nunca dónde estás, y en una home de un solo scroll eso es todo lo que
@@ -3129,8 +3093,7 @@ function pintarCarrito(){
   const carrito = leerCarrito();
   const unidades = carrito.reduce((n, l) => n + l.cantidad, 0);
   const cuenta = document.getElementById('carritoCount');
-  cuenta.textContent = unidades;
-  cuenta.hidden = unidades === 0;
+  cuenta.textContent = 'Carrito (' + unidades + ')';
   document.getElementById('carritoBtn').setAttribute('aria-label',
     'Carrito, ' + unidades + (unidades === 1 ? ' artículo' : ' artículos'));
 
@@ -3327,18 +3290,10 @@ function navegar() {
     nueva = 'home';
   }
 
-  /* Wordmark y escena son del hero: fuera de la home estorban. En su lugar
-     aparece el logotipo estático del nav. */
+  /* La escena es del recorrido: fuera de la home estorba. */
   const enHome = nueva === 'home';
-  document.getElementById('wordmarkFijo').hidden = !enHome;
-  document.getElementById('pistaScroll').hidden = !enHome;
   document.getElementById('escenaFija').hidden = !enHome;
-  /* El estado va primero: marcaDeBarra() lee data-vista para decidir, y
-     llamándola antes leía el de la vista anterior. Al entrar a un producto
-     desde el inicio de la home se quedaba con el «home sin posar» de antes
-     y escondía el logotipo, así que la barra de la ficha salía sin marca. */
   document.body.dataset.vista = enHome ? 'home' : 'interna';
-  marcaDeBarra();
 
   const cambioVista = nueva !== vistaActual;
   vistaActual = nueva;
@@ -3907,125 +3862,34 @@ navegar();
   aplicarCursor(leer('capotte.cursor', 'punto'));
 })();
 
-/* ---------------- El wordmark se vuelve logotipo ----------------
-   Se mide el ancho natural de la palabra una sola vez y de ahí salen las dos
-   escalas: la que la lleva de punta a punta y la del nav. El scroll solo
-   interpola entre ambas.
------------------------------------------------------------------- */
+/* ---------------- La entrada de la escena ----------------
+   El hero es tipografía y nada más: el modelo no comparte pantalla con el
+   titular. Entra a medida que el hero se va, y este bloque es quien publica
+   ese avance —window.__morfo— que la escena lee para pasar del encuadre de
+   entrada al del recorrido. Antes lo publicaba el wordmark que se convertía
+   en logotipo; la palabra se mudó a la barra y el contrato se quedó donde
+   estaba, porque la escena no tiene por qué enterarse.
+---------------------------------------------------------- */
 (function(){
-  const marco   = document.getElementById('wordmarkFijo');
-  const palabra = document.getElementById('palabraHero');
-  const nav     = document.querySelector('.nav');
-  const pista   = document.getElementById('pistaScroll');
-  if (!marco || !palabra) return;
-
-  const BASE      = 100;   // tamaño de referencia solo para medir
-  const ANCHO_NAV = 76;    // ancho final del logotipo, en px (techo)
-  const HUECO     = 12;    // aire minimo entre el logotipo y el carrito
-  const MARGEN    = 28;    // aire lateral cuando ocupa la pantalla
-  const PIE       = 40;    // aire bajo la palabra en su posición inicial
-
-  let escalaGrande = 1, escalaChica = .2, yInicio = 0, yFin = 0, recorrido = 1;
-
-  /* El alto de la caja de texto no es el alto de las letras: con line-height 1
-     sobra el hueco de los descendentes, y "capotte" no tiene ninguno. Para
-     apoyar la palabra abajo hay que medir la tinta, no la caja. */
-  const medidor = document.createElement('canvas').getContext('2d');
-  function tinta(tam) {
-    try {
-      const cs = getComputedStyle(palabra);
-      medidor.font = cs.font || (cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily);
-      const m = medidor.measureText(palabra.textContent);
-      if (m.fontBoundingBoxAscent == null || m.actualBoundingBoxAscent == null) throw 0;
-      const linea = (tam - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2;
-      const base  = linea + m.fontBoundingBoxAscent;
-      return { arriba: base - m.actualBoundingBoxAscent,
-               abajo:  base + m.actualBoundingBoxDescent };
-    } catch (e) {
-      return { arriba: tam * 0.22, abajo: tam * 0.95 };
-    }
-  }
-
-  function medir() {
-    palabra.style.transform = 'none';         // medir sin transformación
-    const vw = document.documentElement.clientWidth;
-    const vh = window.innerHeight;
-    const alturaNav = nav ? nav.getBoundingClientRect().height : 56;
-
-    /* La palabra no se agranda con scale: se compone al tamaño real y de ahí
-       solo encoge. Escalar texto rasterizado hacia arriba lo pixela, que es
-       justo lo que se veía. Hacia abajo siempre queda limpio. */
-    palabra.style.fontSize = BASE + 'px';
-    const anchoBase = palabra.getBoundingClientRect().width || 1;
-    const tam = Math.max(24, BASE * (vw - MARGEN * 2) / anchoBase);
-    palabra.style.fontSize = tam + 'px';
-
-    const caja  = palabra.getBoundingClientRect();
-    const ancho = caja.width  || 1;
-    const alto  = caja.height || 1;
-    const ink   = tinta(tam);
-
-    escalaGrande = 1;
-
-    /* El ancho final no es fijo: el logotipo va centrado, asi que su borde
-       derecho no puede pasar del borde izquierdo del carrito. En pantallas
-       anchas sobra espacio y manda el techo. */
-    const btn = document.getElementById('carritoBtn');
-    let anchoFinal = ANCHO_NAV;
-    if (btn) {
-      const cabe = 2 * (btn.getBoundingClientRect().left - HUECO - vw / 2);
-      anchoFinal = Math.max(64, Math.min(ANCHO_NAV, cabe));
-    }
-    escalaChica = anchoFinal / ancho;
-
-    /* Apoyada abajo: el pie de la tinta queda a PIE del borde inferior. */
-    yInicio = vh - PIE - ink.abajo;
-
-    /* Al escalar sobre el centro de la caja, un punto a distancia d del borde
-       superior acaba en alto/2 + (d - alto/2)*escala. Se despeja para dejar el
-       centro de la tinta en el centro de la barra. */
-    const inkCentro = (ink.arriba + ink.abajo) / 2;
-    yFin = alturaNav / 2 - alto / 2 - (inkCentro - alto / 2) * escalaChica;
-
-    recorrido = Math.max(1, vh * 1.15);
-
-    /* La escena lee esto para saber cuánto espacio le queda arriba: las gafas
-       van encima de la palabra, nunca detrás. */
-    document.documentElement.style.setProperty('--palabra-cima',
-      Math.round(yInicio + ink.arriba) + 'px');
-    window.dispatchEvent(new Event('capotte:banda'));
-
-    aplicar();
-  }
+  const hero   = document.querySelector('.panel--apertura');
+  const escena = document.getElementById('escenaFija');
+  if (!hero) return;
 
   /* Arranca despacio, acelera y frena: lineal se siente mecánico. */
   const suave = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
 
-  function aplicar() {
-    const t = suave(Math.min(1, Math.max(0, window.scrollY / recorrido)));
-    /* La escena 3D sigue este mismo avance para bajar y crecer a medida que
-       la palabra le devuelve la pantalla. */
-    window.__morfo = t;
-    /* El indicio ya cumplió apenas el recorrido arranca. Se apaga contra el
-       scroll crudo y no contra t: la curva suave arranca casi plana y el
-       indicio se quedaba encendido medio viewport. */
-    if (pista) pista.style.opacity =
-      String(Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.18)));
-    const escala = escalaGrande + (escalaChica - escalaGrande) * t;
-    const y      = yInicio + (yFin - yInicio) * t;
-    palabra.style.transform = `translateY(${y.toFixed(2)}px) scale(${escala.toFixed(4)})`;
-    const posado = t > 0.92 ? 'true' : 'false';
-    const cambio = marco.dataset.posado !== posado;
-    if (nav) nav.dataset.posado = posado;
-    marco.dataset.posado = posado;
-    /* Solo al cambiar: esto corre en cada cuadro de scroll. */
-    if (cambio && window.__marcaBarra) window.__marcaBarra();
+  let recorrido = 1;
+  function medir(){
+    /* La entrada cabe dentro del hero: cuando llega el primer panel del
+       recorrido el modelo ya tiene que estar compuesto para él. */
+    recorrido = Math.max(1, hero.getBoundingClientRect().height * 0.9);
   }
 
-  palabra.addEventListener('click', () => {
-    if (marco.dataset.posado !== 'true') return;
-    location.hash = '#top';
-  });
+  function aplicar(){
+    const t = suave(Math.min(1, Math.max(0, window.scrollY / recorrido)));
+    window.__morfo = t;
+    if (escena) escena.style.setProperty('--escena-entra', t.toFixed(3));
+  }
 
   let pedido = false;
   addEventListener('scroll', () => {
@@ -4033,18 +3897,12 @@ navegar();
     pedido = true;
     requestAnimationFrame(() => { aplicar(); pedido = false; });
   }, { passive: true });
-  addEventListener('resize', medir);
+  addEventListener('resize', () => { medir(); aplicar(); });
 
-  /* Se remide cuando la tipografía real cargó: con la de respaldo el ancho
-     es otro y la palabra no quedaría de punta a punta. */
   medir();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
-  /* El banco de pruebas lo llama al cambiar de tipografía: cada cara tiene
-     un ancho distinto y las escalas hay que recalcularlas. */
-  window.__remedirWordmark = () => {
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(medir);
-    else medir();
-  };
+  aplicar();
+  /* El banco cambia de tipografía y con ella el alto del titular. */
+  window.__remedirWordmark = () => { medir(); aplicar(); };
 })();
 </script>
 
