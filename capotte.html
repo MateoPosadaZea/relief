@@ -24,9 +24,7 @@
      previa se vea deliberada y no caiga a Georgia. En producción manda
      Gambetta. Vendorizar las dos es lo que hay que hacer antes de publicar. -->
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,401,500,501&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap">
 
 <script>
 /* El modo se aplica antes del primer paint: si se hace después, la página
@@ -46,6 +44,82 @@
 </script>
 
 <style>
+/* ── Las caras, vendorizadas ─────────────────────────────────────────
+   Instrument Sans y Fraunces viven en el repo, no en un CDN: el proyecto
+   no lleva CDN de terceros y una tipografía que se cae deja la página sin
+   voz. Solo los subconjuntos latin y latin-ext — el sitio es en español y
+   no hace falta traerse cirílico ni vietnamita. 364 kB en total.
+   ⚠ Gambetta sigue en Fontshare porque su descarga está bloqueada por
+   política de red aquí. Es lo último que queda por vendorizar. */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-normal-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-normal-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:italic;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-italica-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:italic;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-italica-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:normal;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-normal-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:normal;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-normal-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:italic;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-italica-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:italic;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-italica-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
 /* ════════════════════════════════════════════════════════════════════
    capotte · bogotá
    ────────────────────────────────────────────────────────────────────
@@ -65,7 +139,12 @@
   --oliva:#55624A;
 
   /* La cara. Gambetta manda; Fraunces la sustituye donde no carga. */
-  --cara:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  /* Dos caras y dos papeles. Gambetta titula y firma; Instrument Sans se
+     lee. La serif se guarda para lo que se mira y la sans para lo que se
+     recorre — que es la convención editorial clásica y lo que pide una
+     página que además tiene que vender. */
+  --display:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  --texto:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Medidas del papel */
   --caja:1320px;
@@ -117,10 +196,12 @@ body{
   margin:0;
   background:var(--fondo);
   color:var(--tinta);
-  font-family:var(--cara);
+  font-family:var(--texto);
   font-weight:400;
-  font-size:clamp(16px,1.05vw,17.5px);
-  line-height:1.62;
+  /* La sans tiene la x más alta que la serif: al mismo cuerpo se ve mayor,
+     así que baja medio punto y el interlineado con ella. */
+  font-size:clamp(15.5px,1vw,16.5px);
+  line-height:1.6;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   overflow-x:hidden;
@@ -142,6 +223,12 @@ a{ color:inherit; }
 /* ── Tipografía ─────────────────────────────────────────────────────
    Un solo tamaño de referencia y una escala corta. El titular es
    grande porque la página tiene poco texto, no porque grite. */
+/* Gambetta: lo que se mira. Titulares, la marca, y la itálica de firma.
+   Todo lo demás —párrafos, rótulos, datos, mandos, formularios— es sans. */
+h1,h2,h3,h4,
+.marca, .pie-marca, .lema, .leo-verso, .frases, .firma{
+  font-family:var(--display);
+}
 h1,h2,h3,h4{ font-weight:400; margin:0; letter-spacing:-.012em; }
 h1{ font-size:clamp(3.4rem,9vw,6.4rem); line-height:1.0; }
 h2{ font-size:clamp(1.9rem,4.4vw,3.5rem); line-height:1.06; text-wrap:balance; }
@@ -150,13 +237,15 @@ p{ margin:0 0 1.1em; }
 p:last-child{ margin-bottom:0; }
 em{ font-style:italic; }
 
-/* La itálica es la firma y se usa con cuentagotas. */
+/* La itálica de Gambetta es la firma, y se usa con cuentagotas: el énfasis
+   de un titular y la frase de marca. Repartida por la página se vuelve
+   decoración. */
 .firma{ font-style:italic; }
 
 /* El rótulo. Minúscula y tracking corto: la marca se escribe abajo y
    nada en esta página se escribe en mayúscula. */
 .rotulo{
-  font-size:.72rem; letter-spacing:.14em; line-height:1.4;
+  font-size:.7rem; font-weight:500; letter-spacing:.12em; line-height:1.4;
   color:var(--tenue); margin:0;
   font-variant-numeric:tabular-nums;
 }
@@ -197,7 +286,10 @@ em{ font-style:italic; }
   letter-spacing:0; display:flex; align-items:baseline; gap:.55em;
   flex:0 0 auto;
 }
-.marca .lugar{ font-size:.66rem; letter-spacing:.16em; color:var(--tenue); }
+.marca .lugar{
+  font-family:var(--texto); font-size:.64rem; font-weight:500;
+  letter-spacing:.16em; color:var(--tenue);
+}
 .menu{ display:flex; align-items:center; gap:clamp(14px,2.2vw,30px); margin-left:auto; }
 .menu a{
   font-size:.92rem; text-decoration:none; color:var(--tinta-2);
@@ -566,7 +658,7 @@ body[data-menu="abierto"] .barra{
 .ficha-datos{ display:grid; gap:clamp(16px,2.5vh,26px); align-content:start; }
 .ficha-datos h1{ font-size:clamp(2rem,4.4vw,3.4rem); }
 .ficha-precio{
-  font-size:1.5rem; font-variant-numeric:tabular-nums; letter-spacing:0;
+  font-size:1.4rem; font-weight:500; font-variant-numeric:tabular-nums; letter-spacing:0;
   display:flex; align-items:baseline; gap:.7em; flex-wrap:wrap;
 }
 .disponible{
@@ -637,7 +729,10 @@ body[data-carro="abierto"] .velo{ opacity:1; visibility:visible; transition:opac
 }
 @media (max-width:760px){ .pie-leo{ display:none; } }
 .pie-marca{ font-size:clamp(3rem,11vw,8rem); line-height:.94; letter-spacing:-.02em; position:relative; margin:0; }
-.pie-lugar{ font-size:.86rem; letter-spacing:.22em; color:var(--tenue); margin:.6em 0 0; position:relative; }
+.pie-lugar{
+  font-family:var(--texto); font-size:.8rem; font-weight:500;
+  letter-spacing:.2em; color:var(--tenue); margin:.7em 0 0; position:relative;
+}
 .pie-rejilla{
   display:grid; gap:clamp(24px,4vw,60px); grid-template-columns:minmax(0,1fr);
   margin-top:clamp(38px,7vh,80px); position:relative;
@@ -1197,9 +1292,9 @@ function selloBogota(){
 <svg viewBox="0 0 100 100" role="img" aria-label="Sello: hecho en Bogotá">
   <path d="${organico(7.3, 17, 46, 2.2)}" fill="none" stroke="currentColor" stroke-width="1.4"/>
   <path d="${organico(19.1, 15, 38, 1.6)}" fill="none" stroke="currentColor" stroke-width=".7" opacity=".6"/>
-  <text x="50" y="45" text-anchor="middle" font-family="var(--cara)" font-size="13"
+  <text x="50" y="45" text-anchor="middle" font-family="var(--display)" font-size="13"
         fill="currentColor">hecho en</text>
-  <text x="50" y="61" text-anchor="middle" font-family="var(--cara)" font-size="13"
+  <text x="50" y="61" text-anchor="middle" font-family="var(--display)" font-size="13"
         fill="currentColor">bogota</text>
 </svg>`;
 }

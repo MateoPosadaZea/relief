@@ -6,16 +6,84 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="Manual de marca de capotte: color, tipografía, la lámina del leopardo y la voz de la casa.">
 <title>Manual de capotte</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,401,500,501&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap">
 
 <style>
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-normal-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-normal-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:italic;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-italica-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Fraunces";
+    font-style:italic;
+    font-weight:300 600;
+    font-variation-settings:"opsz" 24;
+    font-display:swap;
+    src:url("assets/fuentes/fraunces-italica-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:normal;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-normal-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:normal;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-normal-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:italic;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-italica-latin.woff2") format("woff2");
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face{
+    font-family:"Instrument Sans";
+    font-style:italic;
+    font-weight:400 600;
+    font-display:swap;
+    src:url("assets/fuentes/instrument-italica-latin-ext.woff2") format("woff2");
+    unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
 :root{
   --negro:#000000; --marfil:#F7F4EF; --arena:#D8D2C4;
   --espresso:#2B231D; --oliva:#55624A;
-  --cara:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  --display:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  --texto:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --caja:1180px; --margen:clamp(20px,5vw,60px);
 }
 :root, :root[data-plancha="marfil"]{
@@ -44,11 +112,15 @@
 *,*::before,*::after{ box-sizing:border-box; }
 body{
   margin:0; background:var(--fondo); color:var(--tinta);
-  font-family:var(--cara); font-size:16.5px; line-height:1.62;
+  font-family:var(--texto); font-size:15.8px; line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
 .caja{ width:100%; max-width:var(--caja); margin:0 auto; padding:0 var(--margen); }
+h1,h2,h3,.barra b,.tono .nom,.voz .frase,.pend b,.muestra-t{
+  font-family:var(--display);
+}
 h1,h2,h3{ font-weight:400; margin:0; letter-spacing:-.012em; }
+.t-cuerpo, .t-rotulo{ font-family:var(--texto); }
 p{ margin:0 0 1.05em; } p:last-child{ margin-bottom:0; }
 em{ font-style:italic; }
 a{ color:inherit; }
@@ -56,7 +128,7 @@ a{ color:inherit; }
 hr{ border:0; border-top:1px solid var(--linea); margin:0; }
 
 .rotulo{
-  font-size:.72rem; letter-spacing:.14em; color:var(--tenue); margin:0;
+  font-size:.7rem; font-weight:500; letter-spacing:.12em; color:var(--tenue); margin:0;
   font-variant-numeric:tabular-nums;
 }
 .rotulo--tinta{ color:var(--tinta); }
@@ -69,7 +141,7 @@ hr{ border:0; border-top:1px solid var(--linea); margin:0; }
 }
 .barra .caja{ height:58px; display:flex; align-items:center; gap:14px; }
 .barra b{ font-weight:400; font-size:1.14rem; }
-.barra .lugar{ font-size:.64rem; letter-spacing:.16em; color:var(--tenue); }
+.barra .lugar{ font-size:.62rem; font-weight:500; letter-spacing:.16em; color:var(--tenue); }
 .plancha{ margin-left:auto; display:inline-flex; align-items:stretch; }
 .plancha button{
   font:inherit; font-size:.84rem; line-height:1; position:relative;
@@ -406,39 +478,42 @@ td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
   <div class="sec-cab">
     <p class="rotulo">v · la tipografía</p>
     <div>
-      <h2>Una cara en la página, <em>dos en el sistema.</em></h2>
-      <p class="bajada">Gambetta lo hace todo en el sitio: titula, se lee y rotula. Que
-        no haya ninguna sans en la página es la decisión que separa esto de una tienda
-        — era justo la sans lo que volvía cualquier casa de gafas un ecommerce.</p>
+      <h2>Gambetta titula. <em>Instrument Sans se lee.</em></h2>
+      <p class="bajada">Dos caras y dos papeles. La serif se guarda para lo que se
+        mira —el titular, la marca, la firma en itálica— y la sans para lo que se
+        recorre: párrafos, rótulos, datos, mandos y formularios. Es la convención
+        editorial de siempre, y es la que aguanta que esto además tenga que vender.</p>
     </div>
   </div>
 
   <div class="bloque">
-    <h3>La regla: si se lee, Gambetta; si se rellena, sans</h3>
-    <p><b>Instrument Sans no desaparece del sistema</b>, se reserva. Va donde el texto
-      deja de ser voz de marca y pasa a ser interfaz: campos del checkout, correos de
-      confirmación de pedido, guías de envío, factura. Un formulario en serif de
-      contraste alto se lee peor y se escribe peor, y ahí la marca no gana nada.
-      En la página —portada, colección, ficha, journal, pie— no aparece nunca.</p>
+    <h3>El reparto</h3>
+    <p><b>Gambetta</b> — titulares de cualquier nivel, el logotipo, los nombres de las
+      piezas, las frases de marca y el énfasis en itálica.<br>
+      <b>Instrument Sans</b> — texto corriente, bajadas, rótulos, fichas técnicas,
+      precios y cifras, la barra, los botones y todo formulario.</p>
+    <p class="aviso"><b>Si dudas, es sans.</b> Gambetta es la excepción que se nota
+      porque el resto de la página no compite con ella. En cuanto la serif baja al
+      párrafo, deja de firmar y pasa a ser solo una fuente más.</p>
   </div>
 
   <div class="bloque">
     <h3>La escala</h3>
     <div class="espec">
-      <p class="dato">display · clamp(3,4rem — 6,4rem) · 400 · interlineado 1,0 · tracking −0,012em</p>
+      <p class="dato">display · Gambetta · clamp(3,4rem — 6,4rem) · 400 · interlineado 1,0</p>
       <p class="muestra-t t-display">capotte</p>
     </div>
     <div class="espec">
-      <p class="dato">titular de sección · clamp(1,9rem — 3,5rem) · 400 · la itálica es la firma</p>
+      <p class="dato">titular de sección · Gambetta · clamp(1,9rem — 3,5rem) · 400 · la itálica es la firma</p>
       <p class="muestra-t t-titulo">de qué <em>están hechas.</em></p>
     </div>
     <div class="espec">
-      <p class="dato">texto · 16,5px · 400 · interlineado 1,62 · medida 60–66 caracteres</p>
+      <p class="dato">texto · Instrument Sans · 15,8px · 400 · interlineado 1,6 · medida 60–66 caracteres</p>
       <p class="t-cuerpo">Acetato de bloque, metal templado y bisagra de tornillo. Nada
         que no se pueda reparar.</p>
     </div>
     <div class="espec">
-      <p class="dato">rótulo · 0,72rem · 400 · tracking 0,14em · minúscula</p>
+      <p class="dato">rótulo · Instrument Sans · 0,7rem · 500 · tracking 0,12em · minúscula</p>
       <p class="t-rotulo">iv · el color</p>
     </div>
   </div>
@@ -449,25 +524,26 @@ td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
       <ul>
         <li><span class="marca-si">·</span> Titulares en tipo oración, no en mayúscula.</li>
         <li><span class="marca-si">·</span> Rótulos en minúscula con tracking corto.</li>
-        <li><span class="marca-si">·</span> La itálica, con cuentagotas: el énfasis de un titular y poco más.</li>
+        <li><span class="marca-si">·</span> La itálica de Gambetta, con cuentagotas: el énfasis de un titular y poco más.</li>
         <li><span class="marca-si">·</span> Cifras tabulares en precios, medidas y tablas.</li>
       </ul>
     </div>
     <div>
       <h4>no</h4>
       <ul>
-        <li><span class="marca-no">·</span> Sans en la página.</li>
-        <li><span class="marca-no">·</span> Negritas para enfatizar dentro de un párrafo.</li>
+        <li><span class="marca-no">·</span> Gambetta en un párrafo corrido.</li>
+        <li><span class="marca-no">·</span> La sans en el logotipo, ni siquiera en favicon.</li>
         <li><span class="marca-no">·</span> Versalitas fingidas con mayúsculas reducidas.</li>
         <li><span class="marca-no">·</span> Más de dos tamaños de texto en un mismo bloque.</li>
       </ul>
     </div>
   </div>
 
-  <p class="aviso"><b>Gambetta viene de Fontshare, no de Google Fonts.</b> Hoy va por
-    CDN y detrás lleva Fraunces, que es lo que se ve donde Fontshare está bloqueado.
-    Antes de publicar hay que vendorizar las dos caras en el repo y quitar los enlaces:
-    el proyecto no lleva CDN, y mientras tanto la vista previa no enseña la cara real.</p>
+  <p class="aviso"><b>Instrument Sans y Fraunces están vendorizadas</b> en
+    <code>assets/fuentes/</code>, solo los subconjuntos latin y latin-ext: 364 kB y
+    ningún CDN. Gambetta sigue fuera porque su descarga está bloqueada por política de
+    red en el entorno de trabajo; hasta que entre, lo que se ve en la vista previa es
+    Fraunces, que es su respaldo y por eso está aquí.</p>
 </section>
 
 <section class="sec">
@@ -585,9 +661,11 @@ td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
     <li><span class="n">01</span><span><b>Registrar la marca, no solo buscarla.</b>
       <span class="q">La búsqueda en SIPI salió limpia. Registrar es el paso siguiente, y
       hasta que la solicitud esté radicada no hay derecho que oponer.</span></span></li>
-    <li><span class="n">02</span><span><b>Vendorizar Gambetta e Instrument Sans.</b>
-      <span class="q">Quitar los dos enlaces a CDN. Hasta entonces la cara real no se ve
-      en la vista previa.</span></span></li>
+    <li><span class="n">02</span><span><b>Vendorizar Gambetta.</b>
+      <span class="q">Instrument Sans y Fraunces ya están en el repo. Queda Gambetta,
+      cuya descarga está bloqueada por política de red aquí: hay que bajarla desde una
+      máquina con acceso a Fontshare y soltar los woff2 en
+      <code>assets/fuentes/</code>. Es el último CDN que queda.</span></span></li>
     <li><span class="n">03</span><span><b>La fotografía.</b>
       <span class="q">Producto sobre marfil y estilo de vida. Una sola sesión cuando
       llegue el pedido; las láminas vacías sostienen la página mientras tanto.</span></span></li>

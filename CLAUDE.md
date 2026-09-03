@@ -38,12 +38,17 @@ manual tiene que compilar**: los valores del manual SON los tokens de
 `capotte.html` (los valores) → `CLAUDE.md` (las razones) → `manual.html` (la
 vista). Si los tres dejan de coincidir, mandan los tokens.
 - Decisiones que el manual cierra y antes estaban abiertas:
-  - **Una cara en la página, dos en el sistema.** Gambetta titula, se lee y
-    rotula. **Instrument Sans se reserva** para donde el texto deja de ser voz
-    de marca y pasa a ser interfaz: campos del checkout, correos de pedido,
-    guía de envío, factura. La regla es «si se lee, Gambetta; si se rellena,
-    sans». En la página no aparece nunca — la sans era justo lo que volvía
-    cualquier casa de gafas un ecommerce.
+  - **Gambetta titula y firma; Instrument Sans se lee.** Dos caras y dos
+    papeles: la serif para lo que se mira —titulares, el logotipo, los nombres
+    de las piezas, la itálica de firma— y la sans para lo que se recorre:
+    párrafos, bajadas, rótulos, fichas, precios, barra, botones y formularios.
+    **Si dudas, es sans.**
+    ⚠ Se probó **Gambetta sola en toda la página** y se revirtió a petición de
+    Mateo, que la pidió tres veces. Lo que se aprendió y sigue valiendo: la
+    serif sola da un resultado más editorial y menos tienda, pero la página
+    además tiene que vender, y la sans en la barra, las fichas y los datos se
+    recorre mejor. La serif gana como excepción, no como norma — en cuanto baja
+    al párrafo deja de firmar.
   - **No se inventa un color de marca.** Negro y marfil son la identidad;
     arena, espresso y oliva son papel y tinta. El oliva es el único acento con
     color y **no ocupa nunca más que un filete, un punto o una palabra**. El
@@ -107,6 +112,17 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
 - **El comercio existe y no abre la página.** «shop» es una celda discreta de
   la barra y el carrito una lámina lateral. El precio no aparece en la
   colección: aparece en la ficha, que es cuando la pregunta tiene sentido.
+- **Las caras están vendorizadas en `assets/fuentes/`**: Instrument Sans y
+  Fraunces, solo los subconjuntos latin y latin-ext, 364 kB en total. Ningún
+  CDN de terceros para ellas.
+  ⚠ **Falta Gambetta**, cuya descarga está bloqueada por política de red en
+  este entorno (`api.fontshare.com` → 403). Hay que bajarla desde una máquina
+  con acceso y soltar los woff2 ahí. Es el último CDN que queda en la página.
+  ⚠ Las copias que se publican como artifact **no llevan el `@font-face`
+  vendorizado**: ahí no hay carpeta `assets`, así que el script de publicación
+  lo cambia por el enlace a Google Fonts, que es el único host de hojas que
+  admite la política del visor. El script vive en el directorio de trabajo de
+  la sesión, no en el repo.
 - Trampas ya pagadas en este archivo, todas de retícula y todas caras de
   encontrar:
   1. Un `margin:0 auto` en un ítem de grid **desactiva el estirado** y encoge la
