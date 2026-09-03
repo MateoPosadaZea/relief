@@ -17,14 +17,8 @@
 <meta name="theme-color" content="#F7F4EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
-<!-- Gambetta es la cara de la marca y viene de Fontshare, no de Google Fonts.
-     El entorno de desarrollo bloquea api.fontshare.com y el visor de vistas
-     previas solo admite hojas de fonts.googleapis.com, así que detrás va
-     Fraunces —serif de contraste alto con itálica de verdad— para que la
-     previa se vea deliberada y no caiga a Georgia. En producción manda
-     Gambetta. Vendorizar las dos es lo que hay que hacer antes de publicar. -->
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,401,500,501&display=swap">
+<!-- Todas las caras vienen del repo. Ningún CDN de tipografía: uno que se
+     cae deja la página sin voz, y este proyecto no lleva CDN. -->
 
 <script>
 /* El modo se aplica antes del primer paint: si se hace después, la página
@@ -51,40 +45,66 @@
    no hace falta traerse cirílico ni vietnamita. 364 kB en total.
    ⚠ Gambetta sigue en Fontshare porque su descarga está bloqueada por
    política de red aquí. Es lo último que queda por vendorizar. */
+  /* Gambetta va PRIMERA en la pila y sus archivos todavía no están en el
+     repo: la descarga de Fontshare está bloqueada por política de red en el
+     entorno de trabajo. Estas cuatro declaraciones están cableadas de
+     antemano — al soltar los .woff2 en assets/fuentes/ la cara entra sola,
+     sin tocar una línea. Mientras no estén, el navegador falla la petición
+     y cae a Newsreader, que es el respaldo. */
   @font-face{
-    font-family:"Fraunces";
+    font-family:"Gambetta";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("assets/fuentes/gambetta-400.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Gambetta";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("assets/fuentes/gambetta-400-italica.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Gambetta";
+    font-style:normal; font-weight:500; font-display:swap;
+    src:url("assets/fuentes/gambetta-500.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Gambetta";
+    font-style:italic; font-weight:500; font-display:swap;
+    src:url("assets/fuentes/gambetta-500-italica.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
     font-style:normal;
     font-weight:300 600;
-    font-variation-settings:"opsz" 24;
+    font-variation-settings:"opsz" 32;
     font-display:swap;
-    src:url("assets/fuentes/fraunces-normal-latin.woff2") format("woff2");
+    src:url("assets/fuentes/newsreader-normal-latin.woff2") format("woff2");
     unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
   @font-face{
-    font-family:"Fraunces";
+    font-family:"Newsreader";
     font-style:normal;
     font-weight:300 600;
-    font-variation-settings:"opsz" 24;
+    font-variation-settings:"opsz" 32;
     font-display:swap;
-    src:url("assets/fuentes/fraunces-normal-latin-ext.woff2") format("woff2");
+    src:url("assets/fuentes/newsreader-normal-latin-ext.woff2") format("woff2");
     unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
   }
   @font-face{
-    font-family:"Fraunces";
+    font-family:"Newsreader";
     font-style:italic;
     font-weight:300 600;
-    font-variation-settings:"opsz" 24;
+    font-variation-settings:"opsz" 32;
     font-display:swap;
-    src:url("assets/fuentes/fraunces-italica-latin.woff2") format("woff2");
+    src:url("assets/fuentes/newsreader-italica-latin.woff2") format("woff2");
     unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
   @font-face{
-    font-family:"Fraunces";
+    font-family:"Newsreader";
     font-style:italic;
     font-weight:300 600;
-    font-variation-settings:"opsz" 24;
+    font-variation-settings:"opsz" 32;
     font-display:swap;
-    src:url("assets/fuentes/fraunces-italica-latin-ext.woff2") format("woff2");
+    src:url("assets/fuentes/newsreader-italica-latin-ext.woff2") format("woff2");
     unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
   }
   @font-face{
@@ -143,7 +163,7 @@
      lee. La serif se guarda para lo que se mira y la sans para lo que se
      recorre — que es la convención editorial clásica y lo que pide una
      página que además tiene que vender. */
-  --display:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  --display:"Gambetta","Newsreader",Georgia,"Times New Roman",serif;
   --texto:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Medidas del papel */

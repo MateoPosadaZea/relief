@@ -112,17 +112,28 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
 - **El comercio existe y no abre la página.** «shop» es una celda discreta de
   la barra y el carrito una lámina lateral. El precio no aparece en la
   colección: aparece en la ficha, que es cuando la pregunta tiene sentido.
-- **Las caras están vendorizadas en `assets/fuentes/`**: Instrument Sans y
-  Fraunces, solo los subconjuntos latin y latin-ext, 364 kB en total. Ningún
-  CDN de terceros para ellas.
-  ⚠ **Falta Gambetta**, cuya descarga está bloqueada por política de red en
-  este entorno (`api.fontshare.com` → 403). Hay que bajarla desde una máquina
-  con acceso y soltar los woff2 ahí. Es el último CDN que queda en la página.
-  ⚠ Las copias que se publican como artifact **no llevan el `@font-face`
-  vendorizado**: ahí no hay carpeta `assets`, así que el script de publicación
-  lo cambia por el enlace a Google Fonts, que es el único host de hojas que
-  admite la política del visor. El script vive en el directorio de trabajo de
-  la sesión, no en el repo.
+- **Las caras están vendorizadas en `assets/fuentes/`** y no queda ningún CDN
+  de tipografía en la página: Newsreader e Instrument Sans, solo los
+  subconjuntos latin y latin-ext.
+  ⚠ **Faltan los archivos de Gambetta.** `api.fontshare.com` está bloqueado
+  por política de red desde aquí (403 en el CONNECT), no hay paquete en npm,
+  jsDelivr también está bloqueado y la búsqueda de GitHub está limitada a este
+  repo. **No se puede descargar desde una sesión**: los archivos tienen que
+  entrar desde fuera. Sus cuatro `@font-face` ya están cableados y Gambetta va
+  primera en la pila, así que basta con dejar en esa carpeta
+  `gambetta-400.woff2`, `gambetta-400-italica.woff2`, `gambetta-500.woff2` y
+  `gambetta-500-italica.woff2` — con esos nombres exactos— y entra sola.
+  ⚠ **El respaldo pasó de Fraunces a Newsreader.** Fraunces es demasiado
+  característica —contraste muy alto y una itálica con mucha personalidad— y
+  hacía juzgar el diseño sobre una cara que no es la nuestra. Newsreader es más
+  callada y está más cerca del registro de Gambetta. Sigue sin ser Gambetta: lo
+  que se ve en cualquier vista previa es un sustituto, y conviene decirlo cada
+  vez que se enseñe.
+  ⚠ Las copias que se publican como artifact llevan las caras **incrustadas en
+  base64**: ahí no hay carpeta `assets`. El script de publicación las mete y se
+  salta las declaraciones cuyo archivo no exista, así que el día que Gambetta
+  entre se incrusta sola. Vive en el directorio de trabajo de la sesión, no en
+  el repo.
 - Trampas ya pagadas en este archivo, todas de retícula y todas caras de
   encontrar:
   1. Un `margin:0 auto` en un ítem de grid **desactiva el estirado** y encoge la
