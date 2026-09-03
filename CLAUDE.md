@@ -31,6 +31,28 @@ Lo que **sigue valiendo para las dos** y no se toca: el capítulo del nombre y l
 SIC, la infraestructura (Cloudflare, Wompi, org de GitHub), las reglas duras de
 reseñas y claims, y el modo maqueta.
 
+## El manual (`manual.html`)
+El sistema de diseño vive en el repo, no en un PDF ni en un chat, **porque el
+manual tiene que compilar**: los valores del manual SON los tokens de
+`capotte.html`. Tres capas y un orden de mando claro:
+`capotte.html` (los valores) → `CLAUDE.md` (las razones) → `manual.html` (la
+vista). Si los tres dejan de coincidir, mandan los tokens.
+- Decisiones que el manual cierra y antes estaban abiertas:
+  - **Una cara en la página, dos en el sistema.** Gambetta titula, se lee y
+    rotula. **Instrument Sans se reserva** para donde el texto deja de ser voz
+    de marca y pasa a ser interfaz: campos del checkout, correos de pedido,
+    guía de envío, factura. La regla es «si se lee, Gambetta; si se rellena,
+    sans». En la página no aparece nunca — la sans era justo lo que volvía
+    cualquier casa de gafas un ecommerce.
+  - **No se inventa un color de marca.** Negro y marfil son la identidad;
+    arena, espresso y oliva son papel y tinta. El oliva es el único acento con
+    color y **no ocupa nunca más que un filete, un punto o una palabra**. El
+    color de verdad va a entrar por el acetato del primer lote: definirlo antes
+    es decidir dos veces.
+  - Contrastes **medidos**, no estimados. Dos consecuencias que hay que
+    respetar: el arena es superficie y no texto (1,37 sobre marfil), y el oliva
+    hay que aclararlo a `#8A9C7C` sobre negro (3,23 no pasa como texto).
+
 ## La casa de autor (`capotte.html`)
 - **La ilustración del leopardo ya está**: `assets/img/leopardo-{640,1120,2048}.webp`,
   tinta negra y pelaje blanco sobre transparente. Se **recortó a la tinta**, así
@@ -636,6 +658,11 @@ después de validar que antes.
       (`hero.webp`, `trabajo.webp`, `dormir.webp`, `og.png`). Los slots ya
       existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
       exige fotos recortadas o de fondo limpio.
+- [x] ~~Verificar el nombre en SIPI (clases 9 y 35)~~ — hecho en septiembre de
+      2026: `capotte` no aparece registrado. ⚠ **Buscar no es registrar**, y una
+      búsqueda de idénticos no es un análisis de confundibilidad: a RELIEF lo
+      tumbó una marca *parecida* (I-RELIEF), no una igual. Radicar la solicitud
+      es el paso que falta; hasta entonces no hay derecho que oponer.
 - [ ] Dominio: **capotte.com.co** (~$50.000 COP/año). Único gasto fijo aprobado.
       **Criterio: el dominio NO puede nombrar la categoría.** Nada de `lentes`,
       `gafas`, `optica` ni `glasses`. El nombre no nombra la categoría; el catálogo de mañana puede incluir antifaces, tapones

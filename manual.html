@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="Manual de marca de capotte: color, tipografía, la lámina del leopardo y la voz de la casa.">
+<title>Manual de capotte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,401,500,501&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap">
+
+<style>
+:root{
+  --negro:#000000; --marfil:#F7F4EF; --arena:#D8D2C4;
+  --espresso:#2B231D; --oliva:#55624A;
+  --cara:"Gambetta","Fraunces",Georgia,"Times New Roman",serif;
+  --caja:1180px; --margen:clamp(20px,5vw,60px);
+}
+:root, :root[data-plancha="marfil"]{
+  --fondo:var(--marfil); --tinta:var(--negro); --tinta-2:var(--espresso);
+  --tenue:#6E6459; --linea:var(--arena); --fina:#E7E2D8; --acento:var(--oliva);
+  --hoja:#FFFFFF;
+}
+:root[data-plancha="negra"]{
+  --fondo:var(--negro); --tinta:var(--marfil); --tinta-2:var(--arena);
+  --tenue:#8C8377; --linea:#2B231D; --fina:#171310; --acento:#8A9C7C;
+  --hoja:#101010;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-plancha="marfil"]){
+    --fondo:var(--negro); --tinta:var(--marfil); --tinta-2:var(--arena);
+    --tenue:#8C8377; --linea:#2B231D; --fina:#171310; --acento:#8A9C7C;
+    --hoja:#101010;
+  }
+}
+:root[data-theme="dark"]:not([data-plancha="marfil"]){
+  --fondo:var(--negro); --tinta:var(--marfil); --tinta-2:var(--arena);
+  --tenue:#8C8377; --linea:#2B231D; --fina:#171310; --acento:#8A9C7C;
+  --hoja:#101010;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--fondo); color:var(--tinta);
+  font-family:var(--cara); font-size:16.5px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.caja{ width:100%; max-width:var(--caja); margin:0 auto; padding:0 var(--margen); }
+h1,h2,h3{ font-weight:400; margin:0; letter-spacing:-.012em; }
+p{ margin:0 0 1.05em; } p:last-child{ margin-bottom:0; }
+em{ font-style:italic; }
+a{ color:inherit; }
+::selection{ background:var(--tinta); color:var(--fondo); }
+hr{ border:0; border-top:1px solid var(--linea); margin:0; }
+
+.rotulo{
+  font-size:.72rem; letter-spacing:.14em; color:var(--tenue); margin:0;
+  font-variant-numeric:tabular-nums;
+}
+.rotulo--tinta{ color:var(--tinta); }
+
+/* ── Barra ── */
+.barra{
+  position:sticky; top:0; z-index:20;
+  background:color-mix(in srgb, var(--fondo) 90%, transparent);
+  backdrop-filter:blur(6px); border-bottom:1px solid var(--linea);
+}
+.barra .caja{ height:58px; display:flex; align-items:center; gap:14px; }
+.barra b{ font-weight:400; font-size:1.14rem; }
+.barra .lugar{ font-size:.64rem; letter-spacing:.16em; color:var(--tenue); }
+.plancha{ margin-left:auto; display:inline-flex; align-items:stretch; }
+.plancha button{
+  font:inherit; font-size:.84rem; line-height:1; position:relative;
+  background:none; border:0; padding:6px 9px; cursor:pointer;
+  color:var(--tenue); transition:color .3s ease;
+}
+.plancha button+button{ border-left:1px solid var(--linea); }
+.plancha button[aria-pressed="true"]{ color:var(--tinta); }
+.plancha button[aria-pressed="true"]::after{
+  content:""; position:absolute; left:9px; right:9px; bottom:1px; height:1px; background:var(--tinta);
+}
+:focus-visible{ outline:1px solid var(--tinta); outline-offset:3px; }
+
+/* ── Portada ── */
+.tapa{ padding:clamp(56px,12vh,120px) 0 clamp(34px,6vh,60px); }
+.tapa h1{ font-size:clamp(2.8rem,8vw,6rem); line-height:.98; margin:0 0 .28em; }
+.tapa .sub{ font-size:clamp(1.1rem,2.2vw,1.5rem); color:var(--tinta-2); max-width:32ch; margin:0 0 26px; }
+.tapa .leo{ width:min(560px,88%); margin:clamp(24px,5vh,48px) 0 0; }
+:root[data-plancha="negra"] .tapa .leo{ filter:invert(1); }
+@media (prefers-color-scheme: dark){ :root:not([data-plancha="marfil"]) .tapa .leo{ filter:invert(1); } }
+:root[data-theme="dark"]:not([data-plancha="marfil"]) .tapa .leo{ filter:invert(1); }
+
+/* ── Secciones ── */
+.sec{ padding:clamp(44px,8vh,92px) 0 0; }
+.sec-cab{
+  display:grid; gap:12px; grid-template-columns:minmax(0,1fr);
+  border-top:2px solid var(--tinta); padding-top:16px; margin-bottom:clamp(24px,4vh,44px);
+}
+@media (min-width:860px){
+  .sec-cab{ grid-template-columns:92px minmax(0,1fr); gap:0 40px; }
+  .sec-cab .rotulo{ grid-row:1/span 2; }
+}
+.sec-cab h2{ font-size:clamp(1.6rem,3.4vw,2.5rem); }
+.sec-cab .bajada{ color:var(--tinta-2); max-width:58ch; margin:.5em 0 0; }
+
+.bloque{ padding:24px 0; border-top:1px solid var(--fina); }
+.bloque:first-of-type{ border-top:0; padding-top:0; }
+.bloque h3{ font-size:1.16rem; margin-bottom:.35em; }
+.bloque p{ max-width:66ch; color:var(--tinta-2); }
+.dos{ display:grid; gap:26px 44px; grid-template-columns:minmax(0,1fr); }
+@media (min-width:860px){ .dos{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+/* ── Sí / no ── */
+.reglas{ display:grid; gap:0; grid-template-columns:minmax(0,1fr); margin-top:8px; }
+@media (min-width:760px){ .reglas{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px; } }
+.reglas ul{ list-style:none; margin:0; padding:0; }
+.reglas li{
+  display:grid; grid-template-columns:1.5em 1fr; gap:8px;
+  padding:8px 0; border-top:1px solid var(--fina); font-size:.97rem;
+}
+.reglas .marca-si{ color:var(--acento); }
+.reglas .marca-no{ color:var(--tenue); }
+.reglas h4{ font-size:.72rem; letter-spacing:.14em; color:var(--tenue); margin:0 0 4px; font-weight:400; }
+
+/* ── Color ── */
+.paleta{ display:grid; gap:0; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); border:1px solid var(--linea); }
+.tono{ border-right:1px solid var(--linea); }
+.tono:last-child{ border-right:0; }
+/* Un filete dentro de cada muestra: sin él, el marfil sobre marfil (y el
+   negro sobre negro en la otra plancha) se lee como una celda vacía y no
+   como un tono de la paleta. */
+.tono .muestra{ height:104px; box-shadow:inset 0 0 0 1px var(--linea); }
+.tono .pie{ padding:12px 14px 16px; }
+.tono .nom{ font-size:1rem; }
+.tono .hex{ font-size:.8rem; color:var(--tenue); letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+.tono .uso{ font-size:.82rem; color:var(--tinta-2); margin-top:8px; line-height:1.45; }
+
+table{ width:100%; border-collapse:collapse; font-size:.92rem; margin-top:6px; }
+th,td{ text-align:left; padding:9px 12px 9px 0; border-top:1px solid var(--fina); vertical-align:top; }
+th{ font-weight:400; font-size:.72rem; letter-spacing:.13em; color:var(--tenue); border-top:0; }
+td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+.pasa{ color:var(--acento); } .falla{ color:var(--tenue); }
+.tabla-caja{ overflow-x:auto; }
+
+/* ── Tipografía ── */
+.espec{ border-top:1px solid var(--fina); padding:16px 0; display:grid; gap:6px; }
+.espec .dato{ font-size:.74rem; letter-spacing:.1em; color:var(--tenue); font-variant-numeric:tabular-nums; }
+.espec .muestra-t{ line-height:1.05; }
+.t-display{ font-size:clamp(2.2rem,5.6vw,4rem); }
+.t-titulo{ font-size:clamp(1.5rem,3vw,2.1rem); }
+.t-cuerpo{ font-size:1.06rem; line-height:1.6; max-width:60ch; }
+.t-rotulo{ font-size:.72rem; letter-spacing:.14em; }
+
+/* ── Voz ── */
+.voz{ display:grid; gap:0; grid-template-columns:minmax(0,1fr); }
+@media (min-width:760px){ .voz{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px; } }
+.voz div{ padding:14px 0; border-top:1px solid var(--fina); }
+.voz .frase{ font-size:1.06rem; }
+.voz .porque{ font-size:.86rem; color:var(--tenue); margin-top:5px; }
+.voz .mal .frase{ color:var(--tenue); text-decoration:line-through; text-decoration-thickness:1px; }
+
+/* ── Aviso ── */
+.aviso{
+  border-left:2px solid var(--acento); padding:2px 0 2px 16px; margin:18px 0 0;
+  font-size:.95rem; color:var(--tinta-2); max-width:64ch;
+}
+.aviso b{ font-weight:400; color:var(--tinta); }
+
+/* ── Pendientes ── */
+.pend{ list-style:none; margin:0; padding:0; }
+.pend li{ display:grid; grid-template-columns:2.6em 1fr; gap:12px; padding:12px 0; border-top:1px solid var(--fina); }
+.pend .n{ font-size:.78rem; color:var(--tenue); font-variant-numeric:tabular-nums; padding-top:.3em; }
+.pend b{ font-weight:400; }
+.pend span.q{ color:var(--tinta-2); font-size:.94rem; }
+
+.pie-doc{ margin-top:clamp(50px,9vh,100px); border-top:2px solid var(--tinta); padding:20px 0 clamp(50px,9vh,90px); }
+.pie-doc p{ font-size:.82rem; color:var(--tenue); max-width:70ch; }
+</style>
+</head>
+<body>
+
+
+<header class="barra">
+  <div class="caja">
+    <b>capotte</b><span class="lugar">bogota</span>
+    <div class="plancha" role="group" aria-label="Modo claro u oscuro">
+      <button type="button" data-plancha-set="marfil" aria-pressed="true" title="Modo claro">marfil</button>
+      <button type="button" data-plancha-set="negra" aria-pressed="false" title="Modo oscuro">negra</button>
+    </div>
+  </div>
+</header>
+
+<div class="caja">
+
+<header class="tapa">
+  <p class="rotulo" style="margin-bottom:20px">manual de marca · v1 · septiembre 2026</p>
+  <h1>Manual de <em>capotte</em></h1>
+  <p class="sub">Las reglas de una casa de gafas de autor de Bogotá, y por qué son
+    estas y no otras.</p>
+  <img class="leo" alt="Leopardo caminando de perfil, la lámina de la casa" src="assets/img/leopardo-640.webp"
+    srcset="assets/img/leopardo-640.webp 640w, assets/img/leopardo-1120.webp 1120w"
+    sizes="min(560px, 88vw)" width="1447" height="825" decoding="async">
+</header>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">i · el documento</p>
+    <div>
+      <h2>Este manual <em>compila.</em></h2>
+      <p class="bajada">No es un PDF que alguien transcribe al código. Las reglas de
+        color, medida y cara viven como variables CSS en <code>capotte.html</code>, y
+        esta página las enseña. Cambiar la marca es cambiar un token, no repasar
+        cuarenta reglas.</p>
+    </div>
+  </div>
+
+  <div class="dos">
+    <div class="bloque">
+      <h3>Dónde vive cada cosa</h3>
+      <p><b>Los valores</b> — color, medidas, cara — están en el bloque <code>:root</code>
+        de <code>capotte.html</code>. Ninguna regla de estilo conoce un hex.<br>
+        <b>Las razones</b> están en <code>CLAUDE.md</code>, que es la memoria del
+        proyecto: qué se probó, qué se descartó y por qué.<br>
+        <b>Las láminas</b> están en <code>assets/img/</code>.</p>
+    </div>
+    <div class="bloque">
+      <h3>Cómo se cambia algo</h3>
+      <p>Se toca el token y se mira la página entera, no el bloque donde se notó el
+        problema. Si un cambio obliga a añadir una excepción, casi siempre el error
+        está en el token y no en el sitio donde se ve.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">ii · la marca</p>
+    <div>
+      <h2>capotte, <em>siempre en minúscula.</em></h2>
+      <p class="bajada">Una palabra y un lugar. El comportamiento natural de la
+        tipografía es parte de la identidad: a la palabra no se le añade tracking, no
+        se le abre el interletrado y no se le retoca ninguna letra.</p>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div style="display:flex;align-items:baseline;gap:.6em;flex-wrap:wrap">
+      <span style="font-size:clamp(2.4rem,6vw,4.4rem);line-height:1">capotte</span>
+      <span class="rotulo" style="font-size:.82rem;letter-spacing:.18em">bogota</span>
+    </div>
+    <p style="margin-top:18px">El bloqueo es ese: la palabra, y el lugar apoyado en su
+      línea base, en versalita chica. El aire mínimo alrededor del conjunto es la
+      altura de la <em>x</em> de la propia palabra — así el respiro crece con el
+      cuerpo y no hay que medirlo cada vez.</p>
+  </div>
+
+  <div class="bloque reglas">
+    <div>
+      <h4>sí</h4>
+      <ul>
+        <li><span class="marca-si">·</span> Minúscula, siempre, en cualquier tamaño.</li>
+        <li><span class="marca-si">·</span> Gambetta 400. El peso no cambia con el cuerpo.</li>
+        <li><span class="marca-si">·</span> Tinta plana: negro sobre marfil, o su negativo.</li>
+        <li><span class="marca-si">·</span> Sola. La marca aguanta sin acompañantes.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>no</h4>
+      <ul>
+        <li><span class="marca-no">·</span> Mayúsculas ni versalitas en el logotipo.</li>
+        <li><span class="marca-no">·</span> Tracking añadido, ni «para que respire».</li>
+        <li><span class="marca-no">·</span> Itálica, contorno, sombra o degradado.</li>
+        <li><span class="marca-no">·</span> Encerrarla en una caja o ponerle un icono al lado.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">iii · el leopardo</p>
+    <div>
+      <h2>Es una lámina, <em>no un logotipo.</em></h2>
+      <p class="bajada">Un grabado del XIX de un animal caminando de perfil. Se usa
+        entero, en su proporción, y no se convierte en icono. Su trabajo es dar
+        contexto —un libro de historia natural— no identificar la marca: de eso se
+        encarga la palabra.</p>
+    </div>
+  </div>
+
+  <div class="bloque reglas">
+    <div>
+      <h4>dónde va</h4>
+      <ul>
+        <li><span class="marca-si">·</span> La portada, atravesando la página bajo el titular.</li>
+        <li><span class="marca-si">·</span> Su propia sección, a todo el ancho de la caja.</li>
+        <li><span class="marca-si">·</span> El pie, tenue, de firma.</li>
+        <li><span class="marca-si">·</span> Grabado en la varilla y en seco sobre el estuche.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>dónde no</h4>
+      <ul>
+        <li><span class="marca-no">·</span> Dentro del logotipo ni al lado de la palabra.</li>
+        <li><span class="marca-no">·</span> Repetido como patrón o estampado.</li>
+        <li><span class="marca-no">·</span> Recortado, girado, reflejado o teñido.</li>
+        <li><span class="marca-no">·</span> Sobre la fotografía de producto.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <h3>En plancha negra se invierte</h3>
+    <p>No es un filtro de adorno: es la otra plancha del mismo grabado, y sale del
+      mismo archivo con <code>filter:invert(1)</code> en vez de duplicarlo. El pelaje
+      pasa a ser el fondo y la tinta, marfil.</p>
+    <p class="aviso"><b>Antes de montar una lámina nueva</b>, revisar el alfa bajo. La
+      que está en uso venía con el resplandor del fondo horneado en el RGB de píxeles
+      transparentes y 25 000 de ellos con alfa entre 1 y 40: invisible sobre negro y un
+      halo gris sobre marfil. Se pone a cero por debajo de 30; por encima es antialias
+      de verdad y se respeta. Después, recorte a la tinta.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">iv · el color</p>
+    <div>
+      <h2>Negro y marfil <em>son la identidad.</em></h2>
+      <p class="bajada">Lo demás no son colores de marca: son papel y tinta. La casa no
+        tiene un color propio todavía, y no le hace falta inventarlo — el color de
+        verdad va a entrar por el producto, cuando se sepa de qué acetatos es el primer
+        lote.</p>
+    </div>
+  </div>
+
+  <div class="paleta">
+    <div class="tono">
+      <div class="muestra" style="background:#000000"></div>
+      <div class="pie"><p class="nom">negro</p><p class="hex">#000000</p>
+        <p class="uso">Tinta. Fondo de la plancha negra.</p></div>
+    </div>
+    <div class="tono">
+      <div class="muestra" style="background:#F7F4EF"></div>
+      <div class="pie"><p class="nom">marfil</p><p class="hex">#F7F4EF</p>
+        <p class="uso">Papel. Fondo por defecto y tinta de la plancha negra.</p></div>
+    </div>
+    <div class="tono">
+      <div class="muestra" style="background:#D8D2C4"></div>
+      <div class="pie"><p class="nom">arena</p><p class="hex">#D8D2C4</p>
+        <p class="uso">El segundo papel. Filetes, marcos de lámina, superficies.
+          No es color de texto sobre marfil.</p></div>
+    </div>
+    <div class="tono">
+      <div class="muestra" style="background:#2B231D"></div>
+      <div class="pie"><p class="nom">espresso</p><p class="hex">#2B231D</p>
+        <p class="uso">La tinta cálida. Texto secundario sobre marfil.</p></div>
+    </div>
+    <div class="tono">
+      <div class="muestra" style="background:#55624A"></div>
+      <div class="pie"><p class="nom">oliva</p><p class="hex">#55624A</p>
+        <p class="uso">El único acento con color. Disponibilidad, un filete, una
+          palabra. Nunca un bloque.</p></div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <h3>La regla del gasto</h3>
+    <p>El oliva no ocupa nunca más que <b>un filete, un punto o una palabra</b>. En
+      cuanto llena un bloque, la página deja de ser un impreso y pasa a ser una
+      interfaz. El silencio es el activo; el color es la excepción que se nota
+      porque el resto calla.</p>
+  </div>
+
+  <div class="bloque">
+    <h3>Contraste, medido</h3>
+    <p style="margin-bottom:14px">Calculado sobre los hex reales, no estimado. AA pide
+      4,5 para texto corriente y 3 para texto grande.</p>
+    <div class="tabla-caja">
+      <table>
+        <thead><tr><th>texto</th><th>sobre</th><th>ratio</th><th>texto</th><th>grande</th></tr></thead>
+        <tbody>
+          <tr><td>negro</td><td>marfil</td><td class="n">19,14</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>espresso</td><td>marfil</td><td class="n">14,07</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>oliva</td><td>marfil</td><td class="n">5,92</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>tenue #6E6459</td><td>marfil</td><td class="n">5,27</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>arena</td><td>marfil</td><td class="n">1,37</td><td class="falla">no</td><td class="falla">no</td></tr>
+          <tr><td>marfil</td><td>negro</td><td class="n">19,14</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>arena</td><td>negro</td><td class="n">13,94</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>oliva claro #8A9C7C</td><td>negro</td><td class="n">7,13</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>tenue #8C8377</td><td>negro</td><td class="n">5,63</td><td class="pasa">pasa</td><td class="pasa">pasa</td></tr>
+          <tr><td>oliva #55624A</td><td>negro</td><td class="n">3,23</td><td class="falla">no</td><td class="pasa">pasa</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="aviso"><b>Dos consecuencias.</b> El arena es superficie, no texto: sobre
+      marfil no se lee y no debe usarse para letra. Y el oliva no vale igual en las dos
+      planchas — sobre negro hay que aclararlo a <span class="n">#8A9C7C</span>, que es
+      lo que hace el token.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">v · la tipografía</p>
+    <div>
+      <h2>Una cara en la página, <em>dos en el sistema.</em></h2>
+      <p class="bajada">Gambetta lo hace todo en el sitio: titula, se lee y rotula. Que
+        no haya ninguna sans en la página es la decisión que separa esto de una tienda
+        — era justo la sans lo que volvía cualquier casa de gafas un ecommerce.</p>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <h3>La regla: si se lee, Gambetta; si se rellena, sans</h3>
+    <p><b>Instrument Sans no desaparece del sistema</b>, se reserva. Va donde el texto
+      deja de ser voz de marca y pasa a ser interfaz: campos del checkout, correos de
+      confirmación de pedido, guías de envío, factura. Un formulario en serif de
+      contraste alto se lee peor y se escribe peor, y ahí la marca no gana nada.
+      En la página —portada, colección, ficha, journal, pie— no aparece nunca.</p>
+  </div>
+
+  <div class="bloque">
+    <h3>La escala</h3>
+    <div class="espec">
+      <p class="dato">display · clamp(3,4rem — 6,4rem) · 400 · interlineado 1,0 · tracking −0,012em</p>
+      <p class="muestra-t t-display">capotte</p>
+    </div>
+    <div class="espec">
+      <p class="dato">titular de sección · clamp(1,9rem — 3,5rem) · 400 · la itálica es la firma</p>
+      <p class="muestra-t t-titulo">de qué <em>están hechas.</em></p>
+    </div>
+    <div class="espec">
+      <p class="dato">texto · 16,5px · 400 · interlineado 1,62 · medida 60–66 caracteres</p>
+      <p class="t-cuerpo">Acetato de bloque, metal templado y bisagra de tornillo. Nada
+        que no se pueda reparar.</p>
+    </div>
+    <div class="espec">
+      <p class="dato">rótulo · 0,72rem · 400 · tracking 0,14em · minúscula</p>
+      <p class="t-rotulo">iv · el color</p>
+    </div>
+  </div>
+
+  <div class="bloque reglas">
+    <div>
+      <h4>sí</h4>
+      <ul>
+        <li><span class="marca-si">·</span> Titulares en tipo oración, no en mayúscula.</li>
+        <li><span class="marca-si">·</span> Rótulos en minúscula con tracking corto.</li>
+        <li><span class="marca-si">·</span> La itálica, con cuentagotas: el énfasis de un titular y poco más.</li>
+        <li><span class="marca-si">·</span> Cifras tabulares en precios, medidas y tablas.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>no</h4>
+      <ul>
+        <li><span class="marca-no">·</span> Sans en la página.</li>
+        <li><span class="marca-no">·</span> Negritas para enfatizar dentro de un párrafo.</li>
+        <li><span class="marca-no">·</span> Versalitas fingidas con mayúsculas reducidas.</li>
+        <li><span class="marca-no">·</span> Más de dos tamaños de texto en un mismo bloque.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="aviso"><b>Gambetta viene de Fontshare, no de Google Fonts.</b> Hoy va por
+    CDN y detrás lleva Fraunces, que es lo que se ve donde Fontshare está bloqueado.
+    Antes de publicar hay que vendorizar las dos caras en el repo y quitar los enlaces:
+    el proyecto no lleva CDN, y mientras tanto la vista previa no enseña la cara real.</p>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">vi · la página</p>
+    <div>
+      <h2>El aire <em>no es sobra.</em></h2>
+      <p class="bajada">La composición es de impreso: una caja estrecha, filetes de un
+        píxel y bloques planos. Ni sombras, ni degradados, ni esquinas redondeadas
+        grandes.</p>
+    </div>
+  </div>
+
+  <div class="dos">
+    <div class="bloque">
+      <h3>Medidas</h3>
+      <p>Caja de 1320 px. Margen lateral <code>clamp(20px, 5vw, 64px)</code>. Hueco
+        entre secciones <code>clamp(72px, 12vh, 152px)</code>. Los filetes son de 1 px
+        y de color arena; nunca hay dos grosores de filete en la misma página.</p>
+    </div>
+    <div class="bloque">
+      <h3>La lámina</h3>
+      <p>Toda fotografía va en una lámina: marco de borde irregular, número y pie. La
+        ilustración va <b>sin marco</b> — un grabado encerrado en un recuadro se
+        convierte en stock. Mientras una foto no exista, su placa se enseña vacía: así
+        se anuncia una lámina que no se ha tirado, y la página se juzga entera sin
+        inventarse imágenes.</p>
+    </div>
+    <div class="bloque">
+      <h3>Movimiento</h3>
+      <p>Fundido y catorce píxeles de desplazamiento. Nada rebota, nada viaja, nada
+        gira. Lo que se ve en la primera pantalla no espera a ningún observador, y con
+        «reducir movimiento» activado todo aparece de una vez.</p>
+    </div>
+    <div class="bloque">
+      <h3>Las formas orgánicas</h3>
+      <p>Sellos y marcos no son círculos ni rectángulos perfectos: el radio ondula. La
+        semilla del generador es fija, porque un sello que cambia en cada visita no es
+        un sello. Nada de laurel, corona, guilloché ni festón.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">vii · la voz</p>
+    <div>
+      <h2>Dato antes que <em>adjetivo.</em></h2>
+      <p class="bajada">La casa escribe como un catálogo, no como una campaña: frases
+        cortas, minúscula, y hechos verificables en lugar de promesas. Cuando algo no se
+        sabe, se dice que no se sabe.</p>
+    </div>
+  </div>
+
+  <div class="voz">
+    <div>
+      <p class="frase">hechas para usarse. pensadas para permanecer.</p>
+      <p class="porque">Dice qué es el producto sin prometer nada sobre quien lo usa.</p>
+    </div>
+    <div class="mal">
+      <p class="frase">gafas que transforman tu manera de vivir</p>
+      <p class="porque">Promete sobre la persona, no sobre el objeto. Y no se puede probar.</p>
+    </div>
+    <div>
+      <p class="frase">Una montura inyectada que se raya se queda rayada. Una de bloque se pule y vuelve.</p>
+      <p class="porque">Un hecho comprobable, contado como se cuenta un oficio.</p>
+    </div>
+    <div class="mal">
+      <p class="frase">materiales premium de la más alta calidad</p>
+      <p class="porque">Cuatro adjetivos y cero información. Cualquiera puede escribirlo.</p>
+    </div>
+    <div>
+      <p class="frase">Cada par sale de Bogotá con su número de serie escrito a mano.</p>
+      <p class="porque">Concreto, verificable y dice de dónde viene sin ponerse bandera.</p>
+    </div>
+    <div class="mal">
+      <p class="frase">quedan 3 · 12 personas viendo esto</p>
+      <p class="porque">Urgencia inventada. Es publicidad engañosa igual que una reseña falsa.</p>
+    </div>
+  </div>
+
+  <div class="bloque" style="margin-top:26px">
+    <h3>Lo que no se dice nunca</h3>
+    <p>Estas cinco no son cuestión de gusto: son las que costarían una sanción bajo el
+      Estatuto del Consumidor o un problema con el INVIMA.</p>
+    <div class="reglas" style="margin-top:10px">
+      <div>
+        <ul>
+          <li><span class="marca-no">·</span> Promesas de salud o de sueño.</li>
+          <li><span class="marca-no">·</span> Porcentajes de filtrado sin ensayo del lote.</li>
+          <li><span class="marca-no">·</span> «Grado médico» y familia — ni citando al fabricante.</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><span class="marca-no">·</span> Reseñas o testimonios inventados.</li>
+          <li><span class="marca-no">·</span> Contadores, escasez y urgencia fabricada.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-cab">
+    <p class="rotulo">viii · pendientes</p>
+    <div>
+      <h2>Lo que este manual <em>todavía no puede cerrar.</em></h2>
+      <p class="bajada">Está aquí y no en una lista aparte a propósito: un manual que
+        esconde sus huecos se usa una vez.</p>
+    </div>
+  </div>
+
+  <ol class="pend">
+    <li><span class="n">01</span><span><b>Registrar la marca, no solo buscarla.</b>
+      <span class="q">La búsqueda en SIPI salió limpia. Registrar es el paso siguiente, y
+      hasta que la solicitud esté radicada no hay derecho que oponer.</span></span></li>
+    <li><span class="n">02</span><span><b>Vendorizar Gambetta e Instrument Sans.</b>
+      <span class="q">Quitar los dos enlaces a CDN. Hasta entonces la cara real no se ve
+      en la vista previa.</span></span></li>
+    <li><span class="n">03</span><span><b>La fotografía.</b>
+      <span class="q">Producto sobre marfil y estilo de vida. Una sola sesión cuando
+      llegue el pedido; las láminas vacías sostienen la página mientras tanto.</span></span></li>
+    <li><span class="n">04</span><span><b>El color entra por el acetato.</b>
+      <span class="q">Definir un color de marca antes de saber de qué color es el primer
+      lote es decidir dos veces.</span></span></li>
+    <li><span class="n">05</span><span><b>El eslogan.</b>
+      <span class="q">«Cuidarte con estilo» describe bien al público, pero «cuidar»
+      junto a unas gafas se lee como cuidado ocular —frontera INVIMA— y suena a
+      bienestar donde la casa habla como un catálogo. Si se queda, que viva en la
+      sección de la casa y no bajo la marca.</span></span></li>
+    <li><span class="n">06</span><span><b>Los precios.</b>
+      <span class="q">Los del sitio son de maqueta y están marcados como tales. Salen de
+      cero costo real.</span></span></li>
+  </ol>
+</section>
+
+<footer class="pie-doc">
+  <p>capotte · bogotá · colombia — Manual v1, septiembre de 2026. Los valores de este
+    documento son los tokens de <code>capotte.html</code>; las razones detrás de cada
+    decisión están en <code>CLAUDE.md</code>. Si los tres dejan de coincidir, mandan
+    los tokens.</p>
+</footer>
+
+</div>
+
+<script>
+function sincronizarPlancha(){
+  const n = document.documentElement.dataset.plancha;
+  document.querySelectorAll('[data-plancha-set]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.planchaSet === n)));
+}
+(function(){
+  const r = document.documentElement;
+  let m; try { m = localStorage.getItem('capotte.plancha'); } catch(e){}
+  if (m === 'negra' || m === 'marfil') { r.dataset.plancha = m; }
+  else {
+    const t = r.dataset.theme;
+    if (t === 'dark' || t === 'light') r.dataset.plancha = t === 'dark' ? 'negra' : 'marfil';
+    else {
+      let osc = false; try { osc = matchMedia('(prefers-color-scheme: dark)').matches; } catch(e){}
+      r.dataset.plancha = osc ? 'negra' : 'marfil';
+    }
+  }
+})();
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-plancha-set]');
+  if (!b) return;
+  document.documentElement.dataset.plancha = b.dataset.planchaSet;
+  try { localStorage.setItem('capotte.plancha', b.dataset.planchaSet); } catch(e){}
+  sincronizarPlancha();
+});
+sincronizarPlancha();
+</script>
+
+</body>
+</html>
