@@ -34,6 +34,14 @@ es el sitio, porque mantener las dos cuesta el doble.
   que el borde de la imagen es el borde del animal y colocarla no es adivinar.
   WebP con pérdida a q90: sin pérdida pesaba 1 MB y a q90 la trama del grabado
   aguanta el 100 % — verificado sobre la cabeza, que es lo más fino.
+  Es la **segunda lámina**: la primera tenía la cabeza vuelta a cámara y esta va
+  de perfil hacia adelante, que es lo que pedía el brief. La primera está en el
+  commit `3e57fb3` si alguna vez hace falta una mirada de frente.
+  ⚠ **Ojo con el alfa bajo.** Esta venía con el resplandor del fondo horneado
+  en el RGB de píxeles transparentes, y 25 000 de ellos tenían alfa 1–40:
+  invisible sobre negro y un halo gris sobre marfil. Se pone a cero por debajo
+  de 30; por encima es antialias de verdad. Revisar esto en cualquier lámina
+  nueva antes de darla por buena.
   ⚠ **No sustituirla por otra, no redibujarla y no usar imágenes de animales
   genéricas.** Va en la portada, en la sección del leopardo y como firma tenue
   del pie. En la ficha de producto no va: ahí manda la pieza.
