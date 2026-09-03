@@ -6,6 +6,68 @@ Proyecto de Mateo + socio. Proveedor: Alibaba.
 Referentes: ROKA (roka.com) para diseño/producto, Warblue (thewarblue.com) para
 arquitectura de catálogo — y como advertencia (ver Posicionamiento).
 
+## ⚠ Dos direcciones vivas — leer esto antes de tocar nada
+En septiembre de 2026 llegó un brief nuevo que **redefine la marca**: capotte
+deja de ser «lentes filtrantes para trabajar de noche» y pasa a ser **una casa
+de gafas de autor de Bogotá**, con un leopardo grabado del XIX como firma,
+paleta negro + marfil y tono de libro de exploración. Vive en `capotte.html`.
+
+**Las dos direcciones conviven en el repo a propósito**, porque la vieja tiene
+trabajo que la nueva no invalida:
+
+| | Dirección «noche» | Dirección «casa de autor» |
+|---|---|---|
+| Archivo | `propuesta.html` | `capotte.html` |
+| Producto | Dos lentes filtrantes, ámbar y carmín | Series cortas numeradas, sin fórmula |
+| Paleta | Noche/día/trabajo/descanso, rojo y ámbar | Negro + marfil, arena/espresso/oliva de acento |
+| Cara | Gambetta + Instrument Sans | Gambetta sola, sin ninguna sans |
+| Firma | Isotipo «las manos» | El leopardo |
+
+Lo que **sigue valiendo para las dos** y no se toca: el capítulo del nombre y la
+SIC, la infraestructura (Cloudflare, Wompi, org de GitHub), las reglas duras de
+reseñas y claims, y el modo maqueta. Lo que **hay que decidir**: cuál de las dos
+es el sitio, porque mantener las dos cuesta el doble.
+
+## La casa de autor (`capotte.html`)
+- **La ilustración del leopardo NO está en el repo.** El brief la da por adjunta
+  y no llegó. El sitio la trata como una **lámina**: `assets/img/leopardo.svg`,
+  y `HAY_LEOPARDO` a `true` cuando el archivo esté. Mientras tanto cada sitio
+  donde va se ve como una plancha pendiente, con su número y su pie — que es
+  como un libro de historia natural enseña una lámina que no se ha tirado.
+  ⚠ **No sustituirla por otro animal ni por una ilustración de stock.**
+- Hay una **silueta paramétrica provisional** detrás de un interruptor en el
+  pie, apagada por defecto y rotulada como provisional. Sirve para juzgar
+  escala y encuadre, **nunca para hacer de marca**: la técnica de grabado
+  —trama, rosetas de anillo roto, negativo— funciona, pero la cabeza lee a
+  cánido. Tres intentos; se dejó ahí a propósito en vez de seguir fabricando
+  lo que el brief pide no fabricar.
+- **El hueco de un activo que falta es parte de la dirección de arte.** Todas
+  las fotos son láminas con marco de borde irregular y trama tenue. Al soltar
+  el `.webp` en `assets/img/` la lámina se monta sola y el hueco desaparece.
+  Por eso la página se puede juzgar entera sin inventarse fotografía.
+- **Ni una tipografía sans en el documento.** Era justo lo que volvía cualquier
+  casa de gafas una tienda. Gambetta hace de display, de texto y de rótulo; los
+  rótulos van en minúscula con tracking corto, nunca en versalita.
+- **Nada se escribe en mayúscula**, ni el logotipo ni los titulares, y a
+  `capotte` no se le añade tracking: el comportamiento natural de la cara es
+  parte de la identidad.
+- **Los sellos y los marcos no son formas geométricas perfectas.** Se generan
+  con un radio (o un perímetro) que ondula, con semilla fija: un sello que
+  cambia en cada visita no es un sello. El marco de lámina tuvo que rehacerse
+  como **rectángulo** que tiembla — una circunferencia estirada por
+  `preserveAspectRatio="none"` salía convertida en burbuja.
+- **Dos planchas, no cuatro modos**: marfil con tinta negra y su negativo. El
+  negativo no es «modo oscuro», es la otra plancha del mismo grabado.
+- **El comercio existe y no abre la página.** «shop» es una celda discreta de
+  la barra y el carrito una lámina lateral. El precio no aparece en la
+  colección: aparece en la ficha, que es cuando la pregunta tiene sentido.
+- Trampas ya pagadas en este archivo: un `margin:0 auto` en un ítem de grid
+  **desactiva el estirado** y encoge la caja (el hero salía centrado); un `id`
+  repetido entre la sección y su lista hace que `getElementById` devuelva la
+  sección y le borre el encabezado al escribirle dentro; y la lámina del menú
+  móvil tiene que ir **por debajo** de la barra o tapa su propio botón de
+  cierre.
+
 ## Catálogo (DEFINIDO)
 Público objetivo: gente que trabaja de noche frente a pantallas (teletrabajo, turnos,
 gamers, estudiantes). El ángulo de venta es la rutina nocturna completa.
