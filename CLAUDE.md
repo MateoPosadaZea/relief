@@ -104,16 +104,33 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
   `preserveAspectRatio="none"` salía convertida en burbuja.
 - **Dos planchas, no cuatro modos**: marfil con tinta negra y su negativo. El
   negativo no es «modo oscuro», es la otra plancha del mismo grabado.
-- **El sello está CONGELADO en `assets/img/sello.svg`.** Antes lo dibujaba
-  `organico()` en cada carga. Un logotipo no se genera: se guarda. Si la curva
-  puede cambiar entre visitas, no es una marca. Salió de ese mismo generador,
-  se ejecutó una vez y ese trazado es la forma definitiva — el mismo `d` vive
-  en el SVG y en las constantes `SELLO_FUERA`/`SELLO_DENTRO` del sitio, así que
-  hay una sola fuente.
-  ⚠ Las dos palabras siguen como **texto vivo**: para el archivo que se le
-  entrega a un impresor o al fabricante hay que **convertirlas a curvas**, y
-  eso no se puede hacer sin los archivos de Gambetta. El bloqueo de la fuente
-  no es solo estético: **impide cerrar el logotipo.**
+- **El sello está CONGELADO**, en dos escalas ópticas:
+  `assets/img/sello.svg` (con la lámina dentro) y
+  `assets/img/sello-reducido.svg` (sin ella, filete más grueso).
+  Un logotipo no se genera en cada carga: se guarda. Si la curva puede cambiar
+  entre visitas, no es una marca. El mismo trazado vive en los SVG y en las
+  constantes `SELLO_FUERA`/`SELLO_DENTRO` del sitio: una sola fuente.
+- **El festón es ritmo, no ruido.** Trece lóbulos —`R + A·cos(13θ)`— más un
+  temblor mínimo. ⚠ La primera versión usaba solo ruido y salía un círculo mal
+  dibujado, no un sello: **el ritmo es lo que lo hace un sello, y el temblor lo
+  que evita que parezca troquelado a máquina.** Las dos cosas hacen falta.
+- **Umbrales medidos, no estimados** (renderizados a 300/150/92/54/32 px en las
+  dos planchas):
+  - **de 120 px arriba** → sello completo, con la lámina dentro;
+  - **de 54 a 120 px** → sello reducido, sin lámina;
+  - **por debajo de 54 px no sirve ninguno de los dos.** Ahí hace falta una
+    tercera pieza que todavía no existe — el favicon y el avatar caen en ese
+    rango. Candidatos: la silueta del leopardo sola, el rombo, o la palabra.
+  El sello de la portada subió de 92 a 120 px por esto.
+  ⚠ **Faltan dos cosas para que el sello sea un archivo de imprenta:** el
+  leopardo va **incrustado como imagen** y tiene que ser vectorial, y las dos
+  palabras van como **texto vivo** y tienen que ir convertidas a curvas — lo
+  segundo no se puede hacer sin los archivos de Gambetta. El bloqueo de la
+  fuente no es solo estético: **impide cerrar el logotipo.**
+  ⚠ **Y falta un leopardo de segunda escala óptica**: el de la lámina tiene
+  rosetas finas que a 92 px se empastan. El sello pide el mismo animal con
+  menos manchas y más macizas, dibujado para ese tamaño. Es trabajo de
+  ilustración, no de código.
 - **Las dos planchas se cambian a mano, y el mando se ve.** Es texto —`marfil`
   y `negra`— en la barra y en la lámina del menú móvil, porque en un sitio sin
   una sola tipografía sans un sol y una luna serían los dos únicos dibujos de
