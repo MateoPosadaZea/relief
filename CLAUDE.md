@@ -1,4 +1,4 @@
-# malcolm — Ecommerce de gafas protectoras
+# capote — Ecommerce de gafas protectoras
 
 ## Qué es esto
 Tienda online de gafas con lente protector (sin fórmula) para el mercado colombiano.
@@ -69,7 +69,7 @@ arco visual *es* el arco del catálogo.
 |---|---|
 | Hero | Wordmark + "Trabajas de noche. Tus ojos también." |
 | 11:47 PM | El problema, sin prometer nada: llevas seis horas y te faltan dos. |
-| Somos malcolm | Dos lentes, uno para trabajar, uno para parar. Nada más. |
+| Somos capote | Dos lentes, uno para trabajar, uno para parar. Nada más. |
 | 12:30 AM | El ámbar: el del turno. |
 | 2:10 AM | El rojo: el del final. |
 | Mañana, 9:00 AM | Sale de Bogotá, no de Shenzhen. La tesis del negocio. |
@@ -149,7 +149,11 @@ compra el aro se pone rojo.
   rojo. Teñir la pantalla entera pesaba más de lo que decía. Después van los
   enlaces en una línea baja y al final la letra pequeña. El cuerpo de la
   palabra lo mide el JS para que llene el ancho exacto, porque depende de la
-  cara, del peso y del tracking.
+  cara, del peso y del tracking. **También mide el descendente**: con
+  `line-height:.76` la caja se recorta por debajo de la línea base, y la `p` de
+  «capote» se montaba sobre los enlaces. Un valor fijo no servía —`relief`,
+  `recreo` y `malcolm` no tienen ninguno—, así que el hueco sale de la tinta de
+  la palabra que esté puesta.
 - En el hueco del medio del pie va **«Volver arriba»**: es donde termina de
   leerse la página y donde ya no queda nada abajo. Va en una retícula de tres
   columnas y no en `space-between`, porque con flex se centraba en el hueco
@@ -161,7 +165,7 @@ compra el aro se pone rojo.
   con su interruptor en el banco de pruebas, para poder comparar las dos sobre
   el sitio real antes de decidir.
 
-## ⚠ El nombre: RELIEF → recreo → malcolm (provisional)
+## ⚠ El nombre: RELIEF → recreo → malcolm → capote
 La marca se llamó **RELIEF** hasta agosto de 2026. Se cambió por una razón
 concreta, no por gusto: la consulta de antecedentes marcarios en la SIC
 encontró **I-RELIEF, de Essilor International, registrada y vigente hasta 2033
@@ -177,22 +181,25 @@ guion: riesgo alto de negación y de oposición del titular.
 - `recreo` se eligió contra cinco criterios y **duró poco**: Mateo objetó que un
   recreo es dejar de trabajar, y el lente ámbar es justo para seguir. El nombre
   describía media catálogo y contradecía la otra media.
-- **Hoy la marca es `malcolm`, y es PROVISIONAL** — puesta para verla funcionando,
-  no decidida. Ganó junto a `capote` y `wayne` en una exploración de apellidos:
-  después de rechazar seis nombres-concepto quedó claro que el equipo no quiere
-  un nombre que explique el producto, sino uno con pátina, que es además la
-  convención del sector (Persol, Moscot, Oakley).
-- ⚠ **La reserva sobre `malcolm`, anotada para que no se pierda**: si la
+- `malcolm` se probó puesto y **duró un día**. La reserva que lo tumbó: si la
   referencia se lee, es Malcolm X, y sus gafas son icónicas por lo que él fue —
-  una marca nueva usándolas se expone a una crítica difícil de responder. Si la
-  referencia no se lee, es un nombre de pila sin significado. Legalmente sí está
-  limpio: nadie posee un nombre de pila común. La decisión es del equipo y está
-  tomada a conciencia.
-- La alternativa con mejor argumento era `capote`: única que funciona en español
-  y única que significa algo útil —lo que te echas encima—. Su riesgo es la
-  asociación taurina.
+  una marca nueva usándolas se expone a una crítica difícil de responder; si no
+  se lee, es un nombre de pila sin significado. Legalmente estaba limpio.
+- **Hoy la marca es `capote`.** Salió de una exploración de apellidos: después
+  de rechazar seis nombres-concepto quedó claro que el equipo no quiere un
+  nombre que explique el producto, sino uno con pátina — que es además la
+  convención del sector (Persol, Moscot, Oakley).
+- **Por qué gana `capote`**: es el único finalista que funciona **en español**,
+  y el único que significa algo útil — un capote es **lo que te echas encima**.
+  Palabra de prenda, que le sirve a un lente hoy y a un antifaz mañana. Frente a
+  `wayne`, que está limpio pero vacío y suena importado justo en la marca cuyo
+  argumento es «sale de Bogotá, no de Shenzhen».
+- ⚠ **El riesgo de `capote` es la asociación taurina**, cargada en Colombia por
+  la prohibición reciente. Para el público de 20 a 35 pesa poco y nada en el
+  sitio la invoca, pero está anotado. El Truman Capote Literary Trust tiene
+  marca sobre el nombre completo, no sobre el apellido solo.
 - ⚠ **El quinto criterio sigue PENDIENTE**: falta verificar el nombre en SIPI,
-  clases 9 y 35 — y lo mismo para `malcolm`, `capote` y `wayne`. Hasta que eso
+  clases 9 y 35 — empezando por `capote`, que es el nombre puesto. Hasta que eso
   pase, no se compra dominio ni se abren cuentas.
   Verificar antes de enamorarse es justo la lección que costó el cambio.
 - Descartados por el camino y por qué: **guiño** (la ñ no sirve para dominio, y
@@ -207,7 +214,7 @@ Warblue vende el mismo producto genérico con pauta pagada, y su Trustpilot est�
 esperas de hasta 2 meses, envíos desde China, soporte que no responde. **La categoría entera
 pierde por logística y servicio, no por producto.**
 
-malcolm gana ahí: stock propio en Bogotá, entrega en 2-3 días por Interrapidísimo/Servientrega,
+capote gana ahí: stock propio en Bogotá, entrega en 2-3 días por Interrapidísimo/Servientrega,
 soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 → Implica **inventario propio, NO dropshipping.** Pedido inicial 50-100 unidades.
 Es el único riesgo de capital aprobado del proyecto.
@@ -232,7 +239,7 @@ varillas planas que adelgazan.
      escala del visor o queda nadando en la caja.
 
 ## Marca
-- Nombre: **malcolm** · Wordmark en **minúscula**: `malcolm`
+- Nombre: **capote** · Wordmark en **minúscula**: `capote`
 - **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
   Vocabulario de la marca: **punto, arco y línea recta**. Nada más.
   - Archivos: `assets/img/isotipo.svg` (principal, de 40 px en adelante)
@@ -247,7 +254,7 @@ varillas planas que adelgazan.
     Comparte el átomo —el punto del centro de las manos— así que se lee de la
     misma familia. No se usa como logo: junto a WhatsApp lee a «escribiendo…»
     y en una barra lee a menú de tres puntos.
-  - **La sigla malcolm murió con el nombre viejo.** Los productos son «Ámbar» y
+  - **La sigla RLF murió con el nombre viejo.** Los productos son «Ámbar» y
     «Rojo» a secas: la sección ya se llama «Los dos lentes» y una sigla nueva
     («RCR Ámbar») sería inventar un problema que no teníamos.
 - **La palabra del recorrido no se queda como logotipo.** Al llegar a la barra
@@ -256,7 +263,7 @@ varillas planas que adelgazan.
   a un tamaño y se muestra en otro: se veía pastoso al lado del resto de la
   barra. La estática es texto de 26 px de verdad.
 - **La barra lleva el conjunto: isotipo + palabra.** En móvil se queda solo el
-  isotipo, porque a 26 px con el menú y el carrito a los lados `malcolm` compite
+  isotipo, porque a 26 px con el menú y el carrito a los lados `capote` compite
   por un ancho que no tiene. El isotipo va **en línea** en el HTML, no como
   `<img>`, para que herede el color del modo, y a ese tamaño usa el dibujo de
   la **versión reducida** —trazo grueso, punto grande—, que es la regla de los
@@ -293,7 +300,7 @@ varillas planas que adelgazan.
     parecieran de otra tipografía era el peso, no la cara: los números de
     Epilogue son geométricos y anchos, y a 600 junto a un párrafo de 400 leen
     como otra cosa. Ahora la diferencia es deliberada.
-  - El **logotipo** va en Epilogue, minúscula: `malcolm`.
+  - El **logotipo** va en Epilogue, minúscula: `capote`.
   - **Solo el wordmark va en minúscula.** Los titulares de sección van en tipo
     oración. Todo en minúscula leía a manifiesto y le quitaba jerarquía a la
     única palabra que de verdad se escribe así. El texto del recorrido sí
@@ -302,7 +309,7 @@ varillas planas que adelgazan.
   con la escena 3D encima, dos caras eran ruido de más), Archivo + Instrument
   Sans, Sora, y Geist. **Supply Mono** es de pago para uso comercial: NO usar.
 - Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
-- Favicon / app icon: isotipo malcolm rojo.
+- Favicon / app icon: isotipo capote rojo.
 
 ### Modos de visualización
 El catálogo son dos lentes; el sitio son los mismos dos modos. **El producto se
@@ -348,7 +355,7 @@ demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
 
 ## Arquitectura Fase 1
 ```
-malcolm/
+capote/
 ├── index.html      # landing + historia + producto + carrito (todo en uno)
 ├── assets/
 │   ├── img/        # fotos de producto y de marca (webp)
@@ -533,6 +540,6 @@ que aún no existen.
 - Publicar porcentajes de bloqueo sin certificado propio.
 
 ## División de trabajo
-- Diseño, UI/UX, branding y copy: chat de Claude (proyecto malcolm).
+- Diseño, UI/UX, branding y copy: chat de Claude (proyecto capote).
 - Código, git, deploy: Claude Code en la máquina de Mateo.
 - Secretos y llaves: nunca en el chat.
