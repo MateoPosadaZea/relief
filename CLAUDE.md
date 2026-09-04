@@ -122,15 +122,40 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
     tercera pieza que todavía no existe — el favicon y el avatar caen en ese
     rango. Candidatos: la silueta del leopardo sola, el rombo, o la palabra.
   El sello de la portada subió de 92 a 120 px por esto.
-  ⚠ **Faltan dos cosas para que el sello sea un archivo de imprenta:** el
-  leopardo va **incrustado como imagen** y tiene que ser vectorial, y las dos
-  palabras van como **texto vivo** y tienen que ir convertidas a curvas — lo
-  segundo no se puede hacer sin los archivos de Gambetta. El bloqueo de la
-  fuente no es solo estético: **impide cerrar el logotipo.**
-  ⚠ **Y falta un leopardo de segunda escala óptica**: el de la lámina tiene
-  rosetas finas que a 92 px se empastan. El sello pide el mismo animal con
-  menos manchas y más macizas, dibujado para ese tamaño. Es trabajo de
-  ilustración, no de código.
+  ⚠ **Falta una cosa para que el sello sea un archivo de imprenta:** las dos
+  palabras van como **texto vivo** y tienen que ir convertidas a curvas, y eso
+  no se puede hacer sin los archivos de Gambetta. El bloqueo de la fuente no es
+  solo estético: **impide cerrar el logotipo.** El leopardo ya es vectorial.
+
+## El leopardo, vectorizado (`assets/img/leopardo-*.svg`)
+Tres escalas ópticas del **mismo** animal, sacadas de la lámina con potrace.
+No son tres dibujos: son un dibujo y dos reducciones, que era justo el problema
+que había que cerrar.
+- `leopardo-maestro.svg` — el grabado completo. 2497 subpaths, 724 kB. Es el
+  archivo del que salen los otros dos; para web sigue siendo mejor el `.webp`.
+- `leopardo-logotipo.svg` — 28 subpaths, 22 manchas, 120 kB.
+- `leopardo-sello.svg` — 13 subpaths, 8 manchas, 109 kB.
+- **Receta del trazado**, para poder repetirla: aplanar sobre blanco (el PNG es
+  de fondo transparente, no blanco), gris, autocontraste, binarizar a **umbral
+  150**, y `potrace -t 2 -a 1.0 -O 0.2`. Medido: `turdsize` 5 y 12 ya se comen
+  el punteado fino del vientre; `alphamax` es indiferente porque el grabado es
+  de manchas y no de esquinas.
+- ⚠ **El grabado se traza como UNA malla conectada**: un contorno exterior con
+  miles de huecos, y las manchas son islas dentro de esos huecos. Por eso el
+  filtro de simplificación **no puede ser «quédate con las manchas grandes»** —
+  tirar un hueco pequeño RELLENA de negro en vez de aclarar. Hay que ordenar
+  por área absoluta.
+- ⚠ **Y el orden por área global reparte mal.** Amontona las manchas en el
+  flanco, que es donde el grabado las dibujó más grandes, y deja la paletilla
+  desnuda. La derivación buena conserva la estructura por área y elige **una
+  mancha por celda** de una retícula sobre el cuerpo.
+- ⚠ **Dentro del sello va la versión de LOGOTIPO, no la de sello.** Medido a
+  300/150/120/92 px: la de 8 manchas queda demasiado ligera dentro del filete y
+  lee a contorno. El sello no es una pieza pequeña —va de 120 px arriba—, así
+  que le toca la escala media. El nombre del archivo engaña; el uso manda.
+- ⚠ **A 24 px no funciona ninguna de las tres.** Confirma por otro camino el
+  umbral del sello: por debajo de ~32 px hace falta una pieza distinta, no un
+  leopardo más simple.
 - **Las dos planchas se cambian a mano, y el mando se ve.** Es texto —`marfil`
   y `negra`— en la barra y en la lámina del menú móvil, porque en un sitio sin
   una sola tipografía sans un sol y una luna serían los dos únicos dibujos de
