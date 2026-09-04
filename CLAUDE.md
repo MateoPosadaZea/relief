@@ -157,6 +157,21 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
     tercera pieza que todavía no existe — el favicon y el avatar caen en ese
     rango. Candidatos: la silueta del leopardo sola, el rombo, o la palabra.
   El sello de la portada subió de 92 a 120 px por esto.
+  ⚠ **Descartada por medición: la «C» dentro de un anillo** (septiembre de 2026,
+  glifo extraído con fonttools, tres grosores de anillo, control a 64/32/16 px).
+  A 32 y a 64 px lee bien; **a 16 px no sirve ninguna variante** y engrosar el
+  anillo lo empeora, porque le come radio a la letra: la más gruesa es la que
+  menos aporta. A 16 px hay 8 px de radio y el dibujo gasta ~0,6 en el anillo
+  grueso, ~0,5 en el hueco, ~0,2 en el fino y ~0,4 de aire — al asta de la C le
+  quedan 1,5 px y nunca llega a negro. Medido: **la C aporta entre el 5,9 % y el
+  7,3 % de la tinta** sobre el anillo solo; lo que se ve es un anillo con una
+  mancha. Confirma por tercera vía el umbral de los 32 px, y de paso vuelve a
+  cerrar la exploración de la C. **La pieza chica sigue pendiente.**
+  De paso, dos cosas que sí sirven y valen para cualquier glifo en un sello:
+  el centrado óptico se **mide** —centroide de la tinta contra centro de la
+  caja: la C pesaba 5,0 px a la izquierda—, y la corrección completa **se pasa**,
+  porque en una letra abierta la contraforma cuenta como territorio de la letra;
+  la mitad lee mejor.
   ⚠ **Falta una cosa para que el sello sea un archivo de imprenta:** las dos
   palabras van como **texto vivo** y tienen que ir convertidas a curvas, y eso
   no se puede hacer sin los archivos de Gambetta. El bloqueo de la fuente no es
