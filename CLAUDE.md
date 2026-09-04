@@ -6,6 +6,41 @@ Proyecto de Mateo + socio. Proveedor: Alibaba.
 Referentes: ROKA (roka.com) para diseño/producto, Warblue (thewarblue.com) para
 arquitectura de catálogo — y como advertencia (ver Posicionamiento).
 
+## ⚠ El manual de marca manda (`MANUAL-DE-MARCA.md`)
+Desde septiembre de 2026 la fuente de verdad de paleta, tipografía, tono,
+nombres de producto y prohibiciones es **`MANUAL-DE-MARCA.md`**, no este
+archivo ni el criterio de nadie. `CLAUDE.md` guarda las razones y lo medido;
+si los dos se contradicen, manda el manual.
+
+**Definición de marca (manual §1.1):** capotte es una **casa de objetos
+personales que envejecen bien**. No es una marca de gafas, ni de la noche, ni
+de bienestar — las tres la encierran. Frase de nivel marca: *objetos para las
+horas que uno no le debe a nadie.*
+- **La regla de los dos niveles.** Nivel **marca** (sello, pie, «la casa»,
+  papelería) nunca nombra la categoría. Nivel **producto** (hero, fichas,
+  anuncios) es todo lo específico que haga falta, porque es lo que vende.
+
+## El sitio de Fase 1 (`index.html`)
+Un solo archivo, vanilla, sin build, abre con `file://` — verificado.
+- **La base es crema, no oscura.** El manual §4.2 dice «modo oscuro único»
+  pero §3.5 lo deroga: crema para la casa y el recorrido, tinta solo para el
+  bloque de El par. §3.5 es lo vigente.
+- **Ninguna regla de CSS escribe un hex**: todo sale de una variable, y el
+  bloque oscuro solo redefine los roles. Auditado.
+- ⚠ **Dos colores del manual no pasan AA sobre crema y hubo que derivarlos.**
+  La paleta de §3.5 está escrita para fondo tinta:
+  - `--tenue #8C8579` da **3,02** sobre crema (sobre tinta da 5,16 y ahí sí
+    sirve). Los eyebrows sobre crema usan `--texto2 #5C564C` = **6,01**.
+  - El ámbar de marca da **1,79** sobre crema: no se puede usar como texto.
+    `#B07A1F` da **3,07**, tampoco llega. Mismo tono (36°) y saturación con
+    luminosidad al 32 % → **`#935E10` = 4,51**, que es el `--ambar-texto`.
+- ⚠ **Fontshare está bloqueado desde este entorno** y por eso **no se ha
+  podido confirmar nunca que Gambetta cargue**. Medido: `Gambetta` y `Georgia`
+  dan el mismo ancho, o sea que se está pintando el respaldo. Hay que
+  verificarlo desde una máquina con acceso.
+- Trampa pagada: `.hero h1 span{display:block}` alcanzaba también al punto
+  final y lo mandaba a su propia línea. Hijos **directos**.
+
 ## ⚠ Dos direcciones vivas — leer esto antes de tocar nada
 En septiembre de 2026 llegó un brief nuevo que **redefine la marca**: capotte
 deja de ser «lentes filtrantes para trabajar de noche» y pasa a ser **una casa
