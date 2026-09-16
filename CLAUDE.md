@@ -34,10 +34,21 @@ Un solo archivo, vanilla, sin build, abre con `file://` — verificado.
   - El ámbar de marca da **1,79** sobre crema: no se puede usar como texto.
     `#B07A1F` da **3,07**, tampoco llega. Mismo tono (36°) y saturación con
     luminosidad al 32 % → **`#935E10` = 4,51**, que es el `--ambar-texto`.
-- ⚠ **Fontshare está bloqueado desde este entorno** y por eso **no se ha
-  podido confirmar nunca que Gambetta cargue**. Medido: `Gambetta` y `Georgia`
-  dan el mismo ancho, o sea que se está pintando el respaldo. Hay que
-  verificarlo desde una máquina con acceso.
+- ✅ **Gambetta está y carga — verificado el 16 de septiembre de 2026.** Mateo
+  mandó los diez `.otf` desde fuera (Fontshare sigue bloqueado desde aquí) y se
+  convirtieron a `woff2`. Medido con `document.fonts.load()` y `measureText`
+  sobre `capotte Hamburgefonstiv` a 100 px: redonda **1115**, itálica **1015**,
+  500 **1128**, 500 itálica **1035**, contra **1012** de Georgia y de
+  Newsreader. Las cuatro caras cargan y las cuatro son distintas.
+  ⚠ **`measureText` no dispara la carga de una cara que la página aún no usó**:
+  medido a secas, el 500 daba exactamente el ancho de Georgia y parecía no
+  cargar. Hay que pedir cada cara con `document.fonts.load()` antes de medir.
+  Es la segunda trampa de medición de fuentes que paga este proyecto, después
+  de `document.fonts.check()`.
+- **Ya no queda ningún CDN de tipografía en `index.html`.** Los dos `<link>`
+  —Fontshare y Google Fonts— se reemplazaron por las ocho `@font-face`
+  vendorizadas. Verificado que **`file://` sigue funcionando** con los `.woff2`
+  locales, que era el riesgo real de vendorizar.
 - Trampa pagada: `.hero h1 span{display:block}` alcanzaba también al punto
   final y lo mandaba a su propia línea. Hijos **directos**.
 
@@ -173,9 +184,10 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
   porque en una letra abierta la contraforma cuenta como territorio de la letra;
   la mitad lee mejor.
   ⚠ **Falta una cosa para que el sello sea un archivo de imprenta:** las dos
-  palabras van como **texto vivo** y tienen que ir convertidas a curvas, y eso
-  no se puede hacer sin los archivos de Gambetta. El bloqueo de la fuente no es
-  solo estético: **impide cerrar el logotipo.** El leopardo ya es vectorial.
+  palabras van como **texto vivo** y tienen que ir convertidas a curvas. El
+  leopardo ya es vectorial. **Desde el 16 de septiembre de 2026 esto ya no está
+  bloqueado**: Gambetta está en el repo, así que el trazado se puede sacar con
+  fonttools igual que se sacó el de la «C». Es trabajo pendiente, no un muro.
 
 ## El leopardo, vectorizado (`assets/img/leopardo-*.svg`)
 Tres escalas ópticas del **mismo** animal, sacadas de la lámina con potrace.
@@ -217,14 +229,26 @@ que había que cerrar.
 - **Las caras están vendorizadas en `assets/fuentes/`** y no queda ningún CDN
   de tipografía en la página: Newsreader e Instrument Sans, solo los
   subconjuntos latin y latin-ext.
-  ⚠ **Faltan los archivos de Gambetta.** `api.fontshare.com` está bloqueado
-  por política de red desde aquí (403 en el CONNECT), no hay paquete en npm,
-  jsDelivr también está bloqueado y la búsqueda de GitHub está limitada a este
-  repo. **No se puede descargar desde una sesión**: los archivos tienen que
-  entrar desde fuera. Sus cuatro `@font-face` ya están cableados y Gambetta va
-  primera en la pila, así que basta con dejar en esa carpeta
-  `gambetta-400.woff2`, `gambetta-400-italica.woff2`, `gambetta-500.woff2` y
-  `gambetta-500-italica.woff2` — con esos nombres exactos— y entra sola.
+  ✅ **Gambetta ya está vendorizada**: `gambetta-400.woff2`,
+  `gambetta-400-italica.woff2`, `gambetta-500.woff2` y
+  `gambetta-500-italica.woff2` (22–25 kB cada una, 93 kB los cuatro). Entraron
+  desde fuera porque `api.fontshare.com` está bloqueado por política de red
+  desde aquí, no hay paquete en npm y jsDelivr también está bloqueado — eso no
+  cambió, y si algún día hacen falta más pesos tienen que volver a entrar a
+  mano. Cableado y entrada fueron automáticos: las `@font-face` ya la
+  esperaban con esos nombres exactos.
+  ⚠ **Gambetta trae 300, 400, 500, 600 y 700, cada uno con itálica real** —
+  diez archivos, no dos. Lo que decía antes este archivo («solo trae 400 y
+  500») era falso y de ahí salía la regla de que `--peso-display` arrancara en
+  500 para no sintetizar el 600. **Se puede pedir 600 y 700 de verdad**; lo que
+  falta es convertirlos y cablearlos, porque hoy solo están vendorizados los
+  cuatro que el sitio usa. Todos son `unitsPerEm` 1000 y ~354 codepoints.
+  ⚠ **El rombo `◆` (U+25C6) no existe en Gambetta** — ni en Newsreader ni en
+  Instrument Sans. O sea que el único signo del sistema lo está dibujando una
+  cara del sistema operativo, distinta en cada máquina. Es el `<span
+  class="rombo">&#9670;</span>` del bloqueo y del pie. Hay que sustituirlo por
+  una forma propia (un `<svg>` diminuto o un cuadrado rotado por CSS): un signo
+  de marca no puede depender de lo que tenga instalado el visitante.
   ⚠ **El respaldo pasó de Fraunces a Newsreader.** Fraunces es demasiado
   característica —contraste muy alto y una itálica con mucha personalidad— y
   hacía juzgar el diseño sobre una cara que no es la nuestra. Newsreader es más
@@ -619,20 +643,17 @@ varillas planas que adelgazan.
   - **Display y titulares: Gambetta** (Indian Type Foundry), desde **Fontshare**,
     no desde Google Fonts. Pesos 400 y 500 más la itálica.
   - **Texto, rótulos y formularios: Instrument Sans** (Google Fonts).
-  - ⚠ **Gambetta no carga en la vista previa publicada**: la política de
-    contenido del visor de artifacts solo admite hojas de estilo de
-    `fonts.googleapis.com`, y el entorno de desarrollo bloquea
-    `api.fontshare.com` por política de red. Por eso la pila lleva **Fraunces**
-    (Google Fonts) detrás: serif de contraste alto con itálica de verdad, para
-    que la vista previa se vea deliberada y no caiga a Georgia. En el sitio
-    real (Cloudflare Pages) Gambetta sí carga y manda. **Al vendorizar las
-    fuentes —que es lo que pide el principio de «sin CDN»— el problema
-    desaparece**, y es lo que hay que hacer antes de publicar.
+  - ✅ **Resuelto vendorizando.** Gambetta ya carga también en la vista previa
+    publicada: las copias que se publican como artifact llevan las caras
+    incrustadas en base64, así que la política de contenido del visor —que solo
+    admite hojas de estilo de `fonts.googleapis.com`— deja de importar. Fraunces
+    y Newsreader dejaron de hacer falta como respaldo visible.
   - **La itálica es la firma** y se usa con cuentagotas: solo el énfasis del
     título de sección y la frase de marca del hero. Gambetta en itálica es
     caligráfica; repartida por la página se vuelve decoración.
-  - Gambetta solo trae 400 y 500: pedirle 600 lo sintetiza y sale sucio, así
-    que `--peso-display` arranca en 500.
+  - ⚠ **Corregido:** Gambetta **no** trae solo 400 y 500 — trae 300 a 700 con
+    itálica real en cada peso. La regla de que `--peso-display` arrancara en
+    500 «para no sintetizar el 600» partía de un dato falso.
   - Se implementa en cuatro tokens por **rol** —`--display`, `--titulo`,
     `--etiqueta`, `--texto`— aunque hoy los cuatro apunten a la misma cara: eso
     deja cambiar de idea sin tocar una sola regla de CSS.
@@ -843,8 +864,15 @@ después de validar que antes.
 - [ ] Definir si la marca es masculina o unisex — afecta copy y fotografía.
 - [ ] Shooting propio: sillón, libro, luz de tarde. No usar imágenes de
       celebridades ni de series.
-- [ ] Vendorizar Gambetta e Instrument Sans en el repo, y quitar los dos
-      enlaces a CDN. Hasta que eso pase, Gambetta no se ve en la vista previa.
+- [x] ~~Vendorizar Gambetta e Instrument Sans en el repo, y quitar los dos
+      enlaces a CDN~~ — hecho el 16 de septiembre de 2026. Cero CDN de
+      tipografía en las dos páginas, y `file://` verificado.
+- [ ] Sustituir el rombo `◆` por una forma propia: no está en ninguna de las
+      tres caras vendorizadas y hoy lo dibuja el sistema operativo.
+- [ ] Convertir las palabras del sello a curvas. **Ya no está bloqueado**:
+      Gambetta está en el repo.
+- [ ] Si se quieren 300, 600 o 700 de Gambetta, convertir esos `.otf` a
+      `woff2` y cablearlos. Hoy solo están los cuatro que el sitio usa.
 
 ## Reseñas y estudios (reglas duras)
 - **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
