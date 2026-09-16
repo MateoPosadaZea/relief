@@ -83,6 +83,24 @@ manual tiene que compilar**: los valores del manual SON los tokens de
 `capotte.html`. Tres capas y un orden de mando claro:
 `capotte.html` (los valores) → `CLAUDE.md` (las razones) → `manual.html` (la
 vista). Si los tres dejan de coincidir, mandan los tokens.
+- **Tiene una sección del sello (`iv · el sello`), que es donde se define el
+  logotipo.** Antes no había ninguna, y el sello *es* la marca. Lo que aporta y
+  que no estaba escrito en ningún otro sitio: el aire mínimo alrededor del
+  sello es **la altura de un lóbulo del festón**, de valle a cresta — igual que
+  con la palabra, el respiro sale de la propia pieza y crece con ella, así que
+  no hay un número que se quede viejo.
+  **La escalera de tamaños va a tamaño real**, no a escala relativa: los cinco
+  peldaños miden 300, 120, 92, 54 y 32 px de verdad. El umbral hay que poder
+  verlo, no leerlo — a 32 px el sello es un borrón y eso es justo la regla.
+  Los dos sellos se incrustan **una vez** como `<symbol>` y se usan con `<use>`
+  a cada cuerpo: repetir `sello.svg` cinco veces eran 635 kB.
+- ⚠ **Trampa pagada en `manual.html`: `.reglas li` era un grid de dos
+  columnas.** Cualquier elemento inline dentro del `<li>` —un `<em>`, un
+  `<code>`— se convertía en un **tercer ítem de grid** y caía en la columna de
+  1,5 em, encima del punto. Se veía como dos palabras montadas. Arreglado con
+  sangría francesa (`text-indent` negativo), que deja el `<li>` como texto
+  corrido y da igual lo que lleve dentro. Vale para cualquier lista con marcador
+  propio: **si el marcador es un elemento, no uses grid en el contenedor.**
 - Decisiones que el manual cierra y antes estaban abiertas:
   - **Gambetta titula y firma; Instrument Sans se lee.** Dos caras y dos
     papeles: la serif para lo que se mira —titulares, el logotipo, los nombres
