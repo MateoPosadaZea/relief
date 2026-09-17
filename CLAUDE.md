@@ -201,11 +201,28 @@ vista). Si los tres dejan de coincidir, mandan los tokens.
   caja: la C pesaba 5,0 px a la izquierda—, y la corrección completa **se pasa**,
   porque en una letra abierta la contraforma cuenta como territorio de la letra;
   la mitad lee mejor.
-  ⚠ **Falta una cosa para que el sello sea un archivo de imprenta:** las dos
-  palabras van como **texto vivo** y tienen que ir convertidas a curvas. El
-  leopardo ya es vectorial. **Desde el 16 de septiembre de 2026 esto ya no está
-  bloqueado**: Gambetta está en el repo, así que el trazado se puede sacar con
-  fonttools igual que se sacó el de la «C». Es trabajo pendiente, no un muro.
+  ✅ **El sello ya es un archivo de imprenta** (17 de septiembre de 2026).
+  `assets/img/sello-curvas.svg` y `assets/img/sello-reducido-curvas.svg` llevan
+  las dos palabras **en curvas**, sacadas con fonttools de Gambetta Regular e
+  Instrument Sans: no dependen de que el taller tenga la fuente. Los maestros de
+  **pantalla** (`sello.svg`, `sello-reducido.svg`) se quedan con texto vivo,
+  porque ahí heredar la cara y poder editar la palabra sí sirve. **Para cambiar
+  una palabra se edita el maestro de pantalla y se vuelve a convertir** — en el
+  de curvas ya no se puede.
+  La disposición se reprodujo a mano (avances, tracking y `text-anchor`) y se
+  **cotejó contra el render del maestro**: misma caja de tinta en los cuatro
+  lados y misma masa dentro del 1 % en las dos palabras y en los dos sellos.
+  ⚠ **Trampa de medición que costó un diagnóstico:** el primer cotejo dio 9,86 %
+  de desvío y parecía un fallo de conversión. No lo era — el CSS con el que se
+  renderizó la **referencia** se había construido antes de que llegara Gambetta,
+  así que el «original» pintó `capotte` en Newsreader y se estaba comparando
+  contra curvas de Gambetta. `bogota` calzaba perfecto porque Instrument Sans sí
+  estaba en ese CSS, y esa asimetría fue la pista. **Un render de referencia
+  solo es referencia si está pintando la cara correcta**: verificarlo antes de
+  creerse el número.
+  ⚠ El sello mezcla dos caras: `capotte` va en Gambetta y `bogota` en Instrument
+  Sans. Está así desde que se congeló y la conversión lo respeta, pero para un
+  logotipo es una decisión que conviene tomar a propósito, no heredar.
 
 ## El leopardo, vectorizado (`assets/img/leopardo-*.svg`)
 Tres escalas ópticas del **mismo** animal, sacadas de la lámina con potrace.
@@ -887,8 +904,11 @@ después de validar que antes.
       tipografía en las dos páginas, y `file://` verificado.
 - [ ] Sustituir el rombo `◆` por una forma propia: no está en ninguna de las
       tres caras vendorizadas y hoy lo dibuja el sistema operativo.
-- [ ] Convertir las palabras del sello a curvas. **Ya no está bloqueado**:
-      Gambetta está en el repo.
+- [x] ~~Convertir las palabras del sello a curvas~~ — hecho el 17 de septiembre
+      de 2026: `sello-curvas.svg` y `sello-reducido-curvas.svg`, cotejados
+      contra el maestro de pantalla.
+- [ ] Decidir si el sello debe mezclar dos caras (`capotte` en Gambetta,
+      `bogota` en Instrument Sans) o ir todo en Gambetta.
 - [ ] Si se quieren 300, 600 o 700 de Gambetta, convertir esos `.otf` a
       `woff2` y cablearlos. Hoy solo están los cuatro que el sitio usa.
 
