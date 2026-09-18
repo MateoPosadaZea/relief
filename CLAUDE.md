@@ -1,10 +1,16 @@
-# capotte — Ecommerce de gafas protectoras
+# capotte — casa de gafas de autor, Bogotá
 
 ## Qué es esto
-Tienda online de gafas con lente protector (sin fórmula) para el mercado colombiano.
-Proyecto de Mateo + socio. Proveedor: Alibaba.
-Referentes: ROKA (roka.com) para diseño/producto, Warblue (thewarblue.com) para
-arquitectura de catálogo — y como advertencia (ver Posicionamiento).
+Una casa de objetos personales que envejecen bien. Hoy vende **gafas con lente
+protector, sin fórmula**, en Colombia. Proyecto de Mateo + socio.
+Proveedor: Alibaba. Referente de advertencia: Warblue (ver Posicionamiento).
+
+⚠ **Este archivo se podó el 18 de septiembre de 2026.** Todo lo que describía la
+dirección «noche» —el recorrido de la home, el modelo 3D, el cursor, los cuatro
+modos, el router por hash y el checkout de cuatro pasos— salió de aquí. Ese
+trabajo no se borró: vive en `propuesta.html` y en el historial de git. Si
+alguien lo necesita, se lee ahí; **no se documenta aquí porque ya no es el
+sitio.**
 
 ## ⚠ El manual de marca manda (`MANUAL-DE-MARCA.md`)
 Desde septiembre de 2026 la fuente de verdad de paleta, tipografía, tono,
@@ -23,8 +29,8 @@ horas que uno no le debe a nadie.*
 ## El sitio de Fase 1 (`index.html`)
 Un solo archivo, vanilla, sin build, abre con `file://` — verificado.
 - **La base es crema, no oscura.** El manual §4.2 dice «modo oscuro único»
-  pero §3.5 lo deroga: crema para la casa y el recorrido, tinta solo para el
-  bloque de El par. §3.5 es lo vigente.
+  pero §3.5 lo deroga: crema para toda la página, tinta solo para el bloque de
+  El par. §3.5 es lo vigente.
 - **Ninguna regla de CSS escribe un hex**: todo sale de una variable, y el
   bloque oscuro solo redefine los roles. Auditado.
 - ⚠ **Dos colores del manual no pasan AA sobre crema y hubo que derivarlos.**
@@ -52,30 +58,17 @@ Un solo archivo, vanilla, sin build, abre con `file://` — verificado.
 - Trampa pagada: `.hero h1 span{display:block}` alcanzaba también al punto
   final y lo mandaba a su propia línea. Hijos **directos**.
 
-## ⚠ Dos direcciones vivas — leer esto antes de tocar nada
-En septiembre de 2026 llegó un brief nuevo que **redefine la marca**: capotte
-deja de ser «lentes filtrantes para trabajar de noche» y pasa a ser **una casa
-de gafas de autor de Bogotá**, con un leopardo grabado del XIX como firma,
-paleta negro + marfil y tono de libro de exploración. Vive en `capotte.html`.
-
-**DECIDIDO (septiembre 2026): el sitio es `capotte.html`.** Mateo lo vio montado
-y la dirección de casa de autor gana. `propuesta.html` se queda como archivo: no
-se sigue desarrollando, pero tampoco se borra todavía, porque guarda el trabajo
-de los cuatro modos, el checkout de cuatro pasos y el visor 3D.
-
-Las dos siguen en el repo por eso:
-
-| | Dirección «noche» | Dirección «casa de autor» |
+## Qué archivo es qué
+| Archivo | Qué es | Estado |
 |---|---|---|
-| Archivo | `propuesta.html` | `capotte.html` |
-| Producto | Dos lentes filtrantes, ámbar y carmín | Series cortas numeradas, sin fórmula |
-| Paleta | Noche/día/trabajo/descanso, rojo y ámbar | Negro + marfil, arena/espresso/oliva de acento |
-| Cara | Gambetta + Instrument Sans | Gambetta sola, sin ninguna sans |
-| Firma | Isotipo «las manos» | El leopardo |
+| `capotte.html` | **El sitio.** Casa de autor: leopardo, sello, dos planchas. | vivo |
+| `index.html` | La Fase 1: catálogo, bolsa y pago por enlace de Wompi. | vivo |
+| `manual.html` | El manual de marca, compilado desde los mismos valores. | vivo |
+| `propuesta.html` | La dirección «noche». Cuatro modos, checkout de cuatro pasos, visor 3D. | **archivo** |
 
-Lo que **sigue valiendo para las dos** y no se toca: el capítulo del nombre y la
-SIC, la infraestructura (Cloudflare, Wompi, org de GitHub), las reglas duras de
-reseñas y claims, y el modo maqueta.
+`propuesta.html` y `assets/js/` (three.js, `gafas.js`, `propuesta.js`) **no se
+desarrollan y no se documentan aquí**. Se quedan por si alguna vez hace falta
+volver a mirarlos.
 
 ## El manual (`manual.html`)
 El sistema de diseño vive en el repo, no en un PDF ni en un chat, **porque el
@@ -273,11 +266,10 @@ que había que cerrar.
   mano. Cableado y entrada fueron automáticos: las `@font-face` ya la
   esperaban con esos nombres exactos.
   ⚠ **Gambetta trae 300, 400, 500, 600 y 700, cada uno con itálica real** —
-  diez archivos, no dos. Lo que decía antes este archivo («solo trae 400 y
-  500») era falso y de ahí salía la regla de que `--peso-display` arrancara en
-  500 para no sintetizar el 600. **Se puede pedir 600 y 700 de verdad**; lo que
-  falta es convertirlos y cablearlos, porque hoy solo están vendorizados los
-  cuatro que el sitio usa. Todos son `unitsPerEm` 1000 y ~354 codepoints.
+  diez archivos, no dos. Este archivo decía «solo trae 400 y 500», y era falso.
+  **Se puede pedir 600 y 700 de verdad**; lo que falta es convertirlos y
+  cablearlos, porque hoy solo están vendorizados los cuatro que el sitio usa.
+  Todos son `unitsPerEm` 1000 y ~354 codepoints.
   ⚠ **El rombo `◆` (U+25C6) no existe en Gambetta** — ni en Newsreader ni en
   Instrument Sans. O sea que el único signo del sistema lo está dibujando una
   cara del sistema operativo, distinta en cada máquina. Es el `<span
@@ -316,182 +308,46 @@ que había que cerrar.
      propio botón de cierre.
 
 ## Catálogo (DEFINIDO)
-Público objetivo: gente que trabaja de noche frente a pantallas (teletrabajo, turnos,
-gamers, estudiantes). El ángulo de venta es la rutina nocturna completa.
+Los nombres salen de `MANUAL-DE-MARCA.md` §2.3 y son los que usa `index.html`:
 
-1. **Lectura** (variante Ámbar) — lente ámbar. Para las horas de trabajo nocturno frente
-   a pantalla. Filtra parte de la luz azul manteniendo visibilidad y color utilizable.
-2. **Sobremesa** (variante Carmín) — lente carmín. Para la última hora antes de dormir. Filtra azul y verde
-   (rango corto del espectro). No es para trabajar ni conducir.
-3. **Combo Rutina Nocturna** — Ámbar + Rojo con descuento. **Producto héroe del sitio.**
-   El combo sube el ticket promedio (el fee fijo de Wompi y el envío pesan menos) y
-   cuenta la historia completa: "trabaja → transición → duerme".
+1. **Lectura** (Ámbar) — para leer, para la pantalla, para las horas largas.
+2. **Sobremesa** (Carmín) — para la última hora, cuando ya no se trabaja.
+   No es para conducir.
+3. **El par** — los dos, más barato que por separado. Sube el ticket promedio,
+   que es lo que hace que el fee fijo de Wompi y el envío pesen menos.
 
-Cada producto = 1 link de pago de Wompi en Fase 1 (3 links en total).
+Cada producto = 1 enlace de pago de Wompi en Fase 1 (3 enlaces en total).
+
+⚠ El público **ya no es** «gente que trabaja de noche frente a pantallas». Eso
+era la dirección vieja. El de ahora está en «El público de la casa de autor».
+«Una hora antes de dormir» sigue permitido como descripción de uso; la rutina
+nocturna como *ángulo de venta*, no.
 
 ## Principios (no negociables)
-- **Costo fijo cero.** GitHub Pages + Wompi. Nada de Shopify, nada de mensualidades.
-- **Radical simplicidad.** Un producto, pocas variantes. Nada de features especulativos.
+- **Costo fijo cero.** Cloudflare Pages + Wompi. Nada de Shopify, nada de
+  mensualidades.
+- **Radical simplicidad.** Pocas piezas, pocas variantes. Nada de features
+  especulativos.
 - **Vanilla HTML/CSS/JS.** Sin frameworks, sin build step. El HTML, el CSS y la
-  lógica viven en `index.html`; three.js y el modelo 3D son módulos aparte porque
-  se cargan en diferido. Sin CDN: todo vendorizado en el repo.
-- **Sin backend en Fase 1.** Catálogo = objeto JS en el propio archivo. Carrito = localStorage.
-- **Claims de producto conservadoras.** Lenguaje de confort ("reduce fatiga visual", "filtra
-  luz azul"). NUNCA promesas de salud o sueño (riesgo regulatorio, no somos ROKA/Huberman).
-- **Cero porcentajes sin certificado.** No publicar "bloquea 97%" salvo que tengamos el
-  reporte de transmitancia espectral del lote exacto que vendemos. Warblue publica
-  84/97/99% — no copiar esos números.
-- **La marca vive de noche, pero el sitio abre de día.** El modo día es el
-  defecto: el visitante llega a cualquier hora y un fondo negro de entrada le
-  pide una decisión que no ha tomado. Noche queda a un clic, y es donde el
-  producto se ve mejor.
-- **El modelo se va con el recorrido.** La escena es fija, así que en cuanto
-  el final del bloque sube por encima de la banda del modelo, la escena se
-  desplaza hacia arriba lo mismo que él: el pie del modelo queda atado al
-  borde de la sección y nunca lo cruza. Es esto y no un recorte —un corte duro
-  partiría las gafas justo en la línea de la sección, que se ve peor.
-- **El modelo va por encima del texto del recorrido**, no detrás: cuando el
-  texto le pasaba por encima tapaba la pieza justo mientras el panel hablaba
-  de ella. Sigue por debajo de la barra, del wordmark y de las láminas de menú
-  y carrito. Como la escena es fija y ocupa la ventana, se **retira** al salir
-  del recorrido: si no, se quedaba flotando sobre las secciones de abajo.
-- **En el recorrido no se atenúa ninguna pieza.** Se probó bajar la opacidad de
-  todo lo que no fuera la pieza del panel y no se lee como «mira esta»: se lee
-  como un modelo a medio cargar —un aro gris y translúcido junto a uno negro y
-  sólido es un defecto, no un énfasis—, y el cambio de opacidad entre pasos
-  hacía que las piezas se acoplaran de golpe. La pieza la señalan el encuadre y
-  el zoom, que es como lo hace una cámara: acercándose, no borrando el resto.
-- **Todo lo inmersivo es una capa encima, nunca un requisito.** El 3D se carga solo
-  si el navegador puede; sin WebGL, sin JS o con el módulo caído, la página vende
-  igual. Nada de la compra depende de la escena.
-- **Lo inmersivo se apuesta donde decide la compra, no como adorno.** En la home el
-  modelo es ambiente; en la ficha de producto es un visor girable con el lente de
-  ESE producto. La miniatura «3D» es una opción más de la galería, nunca la primera:
-  la foto real va de primera porque es la que da confianza. El checkout no se toca.
-
-## La historia (estructura de la home)
-La home es un recorrido de una noche, con el modelo 3D fijo detrás y los paneles
-pasando por encima. El lente del modelo va de ámbar a rojo según el scroll: el
-arco visual *es* el arco del catálogo.
-
-| Panel | Qué dice |
-|---|---|
-| Hero | Titular escalonado de tres líneas: «LA ÚLTIMA / HORA / DEL DÍA.» |
-| 11:47 PM | El problema, sin prometer nada: llevas seis horas y te faltan dos. |
-| Somos capotte | Dos lentes, uno para trabajar, uno para parar. Nada más. |
-| 12:30 AM | El ámbar: el del turno. |
-| 2:10 AM | El rojo: el del final. |
-| Mañana, 9:00 AM | Sale de Bogotá, no de Shenzhen. La tesis del negocio. |
-
-- El reloj no es decoración: encierra la noche del cliente y aterriza en la entrega,
-  que es la única ventaja competitiva real.
-- **El hero es tipografía y nada más.** Tres líneas escalonadas en MAYÚSCULAS
-  —la única mayúscula de la página—, el punto final en rojo, el párrafo
-  arrancando en la mitad del ancho y el CTA en dos celdas separadas por un
-  filete. Sin botón rojo: el rojo es del botón de compra. El sello de entrega
-  se va a la esquina de abajo. Mide una pantalla justa **menos la barra**: la
-  barra es `sticky` y sigue ocupando su alto en el flujo, así que con `100svh`
-  a secas el sello caía por debajo del pliegue.
-- **El modelo no comparte pantalla con el titular.** Entra al irse el hero, no
-  con la página. Ese avance lo publica el mismo contrato de antes
-  —`window.__morfo`, que la escena lee para pasar del encuadre de entrada al
-  del recorrido—; lo que cambió es quién lo escribe.
-- ⚠ **Se retiró el wordmark que se volvía logotipo**, junto con el indicio
-  «Desliza» y la primera pantalla de 190vh que le servía de escenario. Duró
-  hasta septiembre de 2026. Lo que se aprendió y sigue valiendo: un texto que
-  llega a su tamaño final por `transform: scale()` se rasteriza a un cuerpo y
-  se muestra en otro, y se ve pastoso al lado de texto dibujado a su tamaño;
-  y para apoyar una palabra sobre una línea hay que medir su **tinta**
-  (`actualBoundingBox…`), no su caja.
-- **El copy describe el problema, nunca promete la cura.** "Llevas seis horas frente
-  a la pantalla" es seguro y pega más fuerte que cualquier claim de salud.
-
-## Los dos lentes (donde se decide la compra)
-Una sola sección en dos columnas: a la izquierda los datos, a la derecha el
-modelo 3D pegado, girable, con el lente del producto.
-
-- Cada lente es una **fila, no una tarjeta con foto**: la imagen de esa sección
-  es el modelo de al lado, y repetirla en la columna la volvía redundante.
-  Pulsar una fila cambia el lente del visor y marca la fila — es la misma
-  decisión mirada desde los dos lados.
-- **«Las medidas» dejó de tener sección propia** y vive en un acordeón de esa
-  columna. Es el dato que se consulta al decidir, no un capítulo del recorrido:
-  como sección aparte cortaba la historia justo después del scroll inmersivo.
-  La ficha completa sigue estando en la página de producto.
-- El recuadro tiene **dos vistas y dos lentes**: ámbar/rojo cambian el color
-  del modelo y marcan la fila; 3D/Puestas alterna entre el modelo y la foto
-  puesta de ESE lente. Así la sección tiene las dos cosas —el objeto girable y
-  la prueba social de verlas puestas— sin duplicar tarjetas. Si a algún lente
-  le falta la foto, el par de botones de vista desaparece entero: media opción
-  no sirve de nada.
-- Es el **segundo visor de la home**. No compite con la escena del recorrido:
-  los dos se paran solos al salir de pantalla, así que solo hay uno dibujando.
-  Se monta al acercarse la sección, no en la primera pantalla. Sin WebGL el
-  bloque se retira y la columna de datos se queda con la sección entera.
-
-## La ficha de producto (donde se convierte)
-- La **columna de la imagen es pegajosa**: la foto sostiene la decisión y
-  desaparecía en cuanto abrías un par de acordeones.
-- Debajo de los botones van las **cuatro dudas** que frenan una compra en una
-  tienda que nadie conoce —cuándo llega, si el pago es seguro, qué pasa si no
-  me gustan, si hay alguien del otro lado—, en una línea cada una y **antes**
-  de los acordeones: un acordeón cerrado no responde nada.
-- ⚠ **Nada de urgencia inventada**: ni contadores, ni «quedan 3», ni «12
-  personas viendo esto». Es publicidad engañosa igual que una reseña falsa, y
-  además no hace falta: lo que da confianza en esta categoría son hechos
-  verificables, que es justo donde ganamos.
-- Las **reseñas van al final y a lo ancho**, no en la columna: quien llega ahí
-  ya leyó el producto y lo que le falta es que otro se lo confirme.
-
-## El cursor
-El punto del centro del isotipo haciendo de puntero: punto lleno, y aro al
-acercarse a algo pulsable —el mismo gesto de los arcos—. Sobre el botón de
-compra el aro se pone rojo.
-- **El punto persigue al ratón, no va pegado a él.** Va detrás y llega: es lo
-  que lo hace sentir un objeto con peso y no un dibujo clavado al puntero. El
-  seguimiento es por tiempo (`1 - k^dt`), no por cuadro, para que el retardo se
-  sienta igual a 60 y a 120 Hz. Con «reducir movimiento» el retardo se apaga.
-- **La flecha del sistema desaparece entera**, con `!important`: había una
-  docena de `cursor:pointer` con selectores algo más específicos que la traían
-  de vuelta justo sobre botones y enlaces, que es donde más se nota.
-- Solo con **ratón fino**: en táctil no hay puntero que sustituir.
-- El atributo que apaga el cursor del sistema **lo pone el JS**, así que si el
-  script falla nadie se queda sin cursor. Los campos de formulario conservan
-  el del sistema: ahí el cursor dice dónde va a caer lo que escribes.
-- Interruptor en el banco para volver al del sistema.
-
-## El cierre y el pie
-- **«Elige el tuyo»** cierra el recorrido: los tres productos en fila, sin
-  descripción —esa la da la sección de los lentes—, solo foto, momento y precio.
-  Al pasar el cursor cruza la foto puesta y aparecen la píldora del momento y la
-  flecha. En táctil, donde no hay cursor, las dos quedan puestas siempre: si no,
-  el dedo nunca ve que la tarjeta lleva a alguna parte.
-- **La cinta de reseñas va a sangre, pero su titular no**: se sale de la caja
-  hasta el borde de la ventana solo la fila de tarjetas; el encabezado se queda
-  alineado con el resto de la página. Sin difuminado en los extremos —cortaba
-  la primera y la última tarjeta y parecía un fallo de carga—. La tarjeta usa
-  `--tarjeta` y el borde se pone rojo al pasar el cursor.
-- **El pie firma en rojo, no se pinta de rojo.** El bloque conserva el fondo de
-  la página y el color lo lleva la palabra: el wordmark a tamaño de cartel, en
-  rojo. Teñir la pantalla entera pesaba más de lo que decía. Después van los
-  enlaces en una línea baja y al final la letra pequeña. El cuerpo de la
-  palabra lo mide el JS para que llene el ancho exacto, porque depende de la
-  cara, del peso y del tracking. **También mide el descendente**: con
-  `line-height:.76` la caja se recorta por debajo de la línea base, y la `p` de
-  «capotte» se montaba sobre los enlaces. Un valor fijo no servía —`relief`,
-  `recreo` y `malcolm` no tienen ninguno—, así que el hueco sale de la tinta de
-  la palabra que esté puesta.
-- En el hueco del medio del pie va **«Volver arriba»**: es donde termina de
-  leerse la página y donde ya no queda nada abajo. Va en una retícula de tres
-  columnas y no en `space-between`, porque con flex se centraba en el hueco
-  que dejaran los otros dos grupos y no en la página.
-- Como ahora el rojo es **texto** y no fondo, usa el token `--rojo-marca` y sí
-  participa de los modos: verificado que los cuatro pasan 3:1 de texto grande,
-  y día pasa incluso 4.5:1. El hex fijo se queda solo en el botón de compra.
-- La versión de **bloque rojo entero** sigue viva en `.footer[data-pie="rojo"]`,
-  con su interruptor en el banco de pruebas, para poder comparar las dos sobre
-  el sitio real antes de decidir.
-
+  lógica viven en el propio archivo. **Sin CDN**: todo vendorizado en el repo,
+  tipografías incluidas. Verificado que abre con `file://`.
+- **Sin backend en Fase 1.** Catálogo = objeto JS en el propio archivo.
+  Bolsa = `localStorage`.
+- **Claims de producto conservadoras.** Lenguaje de confort. **NUNCA** promesas
+  de salud, sueño, cuidado ocular o concentración: es la frontera INVIMA/SIC que
+  este proyecto lleva desde agosto esquivando a propósito. «Una hora antes de
+  dormir» es descripción de uso y sí se permite.
+- **Cero porcentajes sin certificado.** No publicar «bloquea 97 %» salvo que
+  tengamos el reporte de transmitancia espectral del lote exacto que vendemos.
+  Warblue publica 84/97/99 % — no copiar esos números.
+- **Nada de urgencia inventada**: ni contadores, ni «quedan 3», ni «12 personas
+  viendo esto». Es publicidad engañosa igual que una reseña falsa, y además no
+  hace falta: lo que da confianza en esta categoría son hechos verificables, que
+  es justo donde ganamos.
+- **El hueco de un activo que falta es parte de la dirección de arte.** La
+  fotografía que no existe son láminas pendientes con marco irregular; los
+  precios que no existen son `$ 000.000`, no un cero. Así la página se puede
+  juzgar entera sin inventarse nada.
 ## ⚠ El nombre: RELIEF → recreo → malcolm → capote → Capotte
 La marca se llamó **RELIEF** hasta agosto de 2026. Se cambió por una razón
 concreta, no por gusto: la consulta de antecedentes marcarios en la SIC
@@ -600,171 +456,78 @@ soporte por WhatsApp en español el mismo día. Eso va literal en el hero.
 → Implica **inventario propio, NO dropshipping.** Pedido inicial 50-100 unidades.
 Es el único riesgo de capital aprobado del proyecto.
 
-## El modelo 3D
-Paramétrico, construido en código; no hay `.glb` que cargar. Es la **montura
-rectangular de acetato oscuro**, que es la que coincide con las fotos de
-producto: aro de esquinas redondeadas con la ceja gruesa y el bajo fino, canto
-claro laminado sobre el borde superior, puente ancho a la altura de la ceja, y
-varillas planas que adelgazan.
-
-- ⚠ **Se probó rehacerlo como panto redondo de acetato traslúcido** —contra una
-  referencia del proveedor, en agosto de 2026— y **se revirtió**: el aro
-  circular y el acetato transparente no se veían bien en la escena. Si alguien
-  vuelve a intentarlo, dos cosas aprendidas que sirven igual:
-  1. La traslucidez **no puede ir por `transmission`**. La transmisión de
-     three.js refracta lo que hay en la escena, y aquí la escena está vacía
-     porque el lienzo va en `alpha:true` para que se vea la página detrás; con
-     transmisión sola el acetato sale gris plano. Va por **alfa**, y entonces
-     lo que se ve a través del aro es la página.
-  2. El aro redondo es más angosto que el rectangular, así que hay que subir la
-     escala del visor o queda nadando en la caja.
-
 ## Marca
 - Nombre: **capotte** · Wordmark en **minúscula**: `capotte`
-- **Isotipo: «las manos»** — dos arcos que sostienen un punto sin tocarlo.
-  Vocabulario de la marca: **punto, arco y línea recta**. Nada más.
-  - Archivos: `assets/img/isotipo.svg` (principal, de 40 px en adelante)
-    y `assets/img/isotipo-reducido.svg` (trazo grueso, de 40 px hacia
-    abajo: favicon, bordado, grabado). Son el mismo dibujo en dos tamaños ópticos.
-  - **El isotipo no dibuja la categoría**, por la misma razón que el dominio: nada
-    de gafas, ojos, pantallas, lunas ni zzz. El catálogo de mañana puede incluir
-    antifaces o tapones, y una marca con el producto adentro lo contradice. La luna
-    y las zzz además son una promesa de sueño de contrabando.
-  - «El punto que baja» (tres puntos decrecientes) queda como **elemento del
-    sistema, no como marca**: viñeta, separador, patrón del papel de la caja.
-    Comparte el átomo —el punto del centro de las manos— así que se lee de la
-    misma familia. No se usa como logo: junto a WhatsApp lee a «escribiendo…»
-    y en una barra lee a menú de tres puntos.
-  - **La sigla RLF murió con el nombre viejo.** Los productos son «Ámbar» y
-    «Rojo» a secas: la sección ya se llama «Los dos lentes» y una sigla nueva
-    («RCR Ámbar») sería inventar un problema que no teníamos.
-- **La marca vive en la barra y solo en la barra.** El hero es un titular, no
-  una presentación de logotipo: la palabra a pantalla completa y la marca en la
-  barra eran la misma palabra dos veces. Va centrada y en todas las vistas
-  —antes se ganaba el sitio cuando el wordmark aterrizaba; ahora lo tiene—, en
-  versalita chica y muy trackeada (`CAPOTTE`, 13 px, `.18em`), que es una firma
-  y no compite con el titular. A ese cuerpo cabe también en un teléfono, que
-  era lo que antes obligaba a dejar solo el isotipo.
-- **La barra son tres celdas de texto del mismo peso**: `Lentes` · `Capotte` ·
-  `Carrito (n)`. El carrito dejó de ser una bolsa dibujada con una píldora
-  encima: entre dos palabras, un icono rompía la línea, y el número cabe en la
-  propia etiqueta. Abierto, la celda dice `Cerrar`.
-  ⚠ El coste: en escritorio la barra ya no lleva `Materiales` ni `Envíos`. Se
-  llega por scroll y por el pie; en móvil el menú completo sigue en la lámina.
-- El isotipo va **en línea** en el HTML, no como `<img>`, para que herede el
-  color del modo, y usa el dibujo de la **versión reducida** —trazo grueso,
-  punto grande—, que es la regla de los dos tamaños ópticos. Hay interruptor en
-  el banco para dejar solo la palabra.
-- **Tono: editorial mid-century.** Referencias: Truman Capote, Don Draper de
-  vacaciones, Esquire de los 60. Elegancia sin esfuerzo. Menos «protección»,
-  más «ritual». El público no es el trabajador de turno: es la persona de 30 a
-  45 con gusto, que lee de noche y descansa bien.
-- **Los lentes SON la paleta.** No hay colores de marca aparte del producto.
-  Ámbar = trabajo. Rojo = dormir. Nada más.
+- **La marca es el sello.** No es una letra ni un isotipo: doble filete ondulado,
+  `capotte` arriba, el leopardo, `bogota` abajo. La definición completa —las dos
+  escalas ópticas, los umbrales medidos, el aire y los usos— está en
+  `manual.html` §iv y en «La casa de autor», arriba.
+- **La marca no dibuja la categoría**, por la misma razón que el dominio: nada de
+  gafas, ojos, pantallas, lunas ni zzz. El catálogo de mañana puede incluir
+  antifaces o tapones, y una marca con el producto adentro lo contradice.
+  ⚠ Murieron por esta regla dos exploraciones: la **«C»** —descartada además por
+  medición, ver arriba— y el **isotipo «las manos»**, dos arcos sosteniendo un
+  punto, que era la firma de la dirección vieja. Sus archivos siguen en
+  `assets/img/` (`isotipo.svg`, `isotipo-reducido.svg`, `isotipo-*.png`) **sin
+  usarse**: son candidatos a borrar, no a reutilizar.
+- **Nada se escribe en mayúscula**, ni el logotipo ni los titulares, y a
+  `capotte` no se le añade tracking: el comportamiento natural de la cara es
+  parte de la identidad. La única excepción declarada es el texto curvo o muy
+  pequeño del sello.
+- **Tono: editorial mid-century.** Truman Capote, Don Draper de vacaciones,
+  Esquire de los 60. Elegancia sin esfuerzo. Menos «protección», más «ritual».
+- **Sin gradientes, sin sombras, sin bordes redondeados grandes.** Hairlines y
+  bloques planos.
 
-| Token | Hex | Uso |
+### Paleta
+Negro y marfil **son** la identidad. Arena, espresso y oliva son papel y tinta,
+no colores de marca.
+
+| Token | Hex | Papel |
 |---|---|---|
-| Noche | `#0B0B0C` | Fondo del sitio |
-| Superficie | `#16161A` | Tarjetas, secciones |
-| Hueso | `#EDEBE6` | Texto principal en oscuro (NO blanco puro) |
-| Ámbar | `#F2A93B` | Lente de trabajo, acentos diurnos |
-| Rojo marca | `#D91F26` | Logo, lente nocturno, botón comprar |
-| Línea | `#26262B` | Divisores hairline |
-| Texto tenue | `#8A8A90` | Secundario |
+| `--negro` | `#000000` | tinta, y fondo de la plancha negra |
+| `--marfil` | `#F7F4EF` | papel, y fondo de la plancha marfil |
+| `--arena` | `#D8D2C4` | superficie — **nunca texto** (1,37 sobre marfil) |
+| `--espresso` | `#2B231D` | texto secundario |
+| `--oliva` | `#55624A` | el único acento con color |
 
-- ⚠ El rojo `#D91F26` es aproximado del JPEG. **Confirmar el hex exacto del SVG/AI del logo.**
-- **Tipografía**: **dos caras y dos papeles.** La serif firma y titula; la sans
-  se lee. Sustituyó a Epilogue en solitario cuando el tono pasó a editorial.
-  - **Display y titulares: Gambetta** (Indian Type Foundry), desde **Fontshare**,
-    no desde Google Fonts. Pesos 400 y 500 más la itálica.
-  - **Texto, rótulos y formularios: Instrument Sans** (Google Fonts).
-  - ✅ **Resuelto vendorizando.** Gambetta ya carga también en la vista previa
-    publicada: las copias que se publican como artifact llevan las caras
-    incrustadas en base64, así que la política de contenido del visor —que solo
-    admite hojas de estilo de `fonts.googleapis.com`— deja de importar. Fraunces
-    y Newsreader dejaron de hacer falta como respaldo visible.
-  - **La itálica es la firma** y se usa con cuentagotas: solo el énfasis del
-    título de sección y la frase de marca del hero. Gambetta en itálica es
-    caligráfica; repartida por la página se vuelve decoración.
-  - ⚠ **Corregido:** Gambetta **no** trae solo 400 y 500 — trae 300 a 700 con
-    itálica real en cada peso. La regla de que `--peso-display` arrancara en
-    500 «para no sintetizar el 600» partía de un dato falso.
-  - Se implementa en cuatro tokens por **rol** —`--display`, `--titulo`,
-    `--etiqueta`, `--texto`— aunque hoy los cuatro apunten a la misma cara: eso
-    deja cambiar de idea sin tocar una sola regla de CSS.
-  - `--peso-display` calibra el grosor de los titulares grandes (300–700).
-  - Los precios llevan `font-variant-numeric: tabular-nums` y son **la única
-    excepción de peso**: van en 700 fijo, no en `--peso-display`, porque
-    calibrar los titulares no debe adelgazar el precio. Lo que hacía que
-    parecieran de otra tipografía era el peso, no la cara: los números de
-    Epilogue son geométricos y anchos, y a 600 junto a un párrafo de 400 leen
-    como otra cosa. Ahora la diferencia es deliberada.
-  - El **logotipo** va en Epilogue, minúscula: `capotte`.
-  - **Solo el wordmark va en minúscula.** Los titulares de sección van en tipo
-    oración. Todo en minúscula leía a manifiesto y le quitaba jerarquía a la
-    única palabra que de verdad se escribe así. El texto del recorrido sí
-    conserva la minúscula: ahí es voz, no rótulo.
-  ⚠ Descartadas por el camino: **Lora** (serif, se probó para los supergrandes —
-  con la escena 3D encima, dos caras eran ruido de más), Archivo + Instrument
-  Sans, Sora, y Geist. **Supply Mono** es de pago para uso comercial: NO usar.
-- Sin gradientes, sin sombras, sin bordes redondeados grandes. Hairlines y bloques planos.
-- Favicon / app icon: isotipo capotte rojo.
+- **No se inventa un color de marca.** El oliva no ocupa nunca más que un filete,
+  un punto o una palabra. El color de verdad va a entrar por el acetato del
+  primer lote: **definirlo antes es decidir dos veces.** Si alguien pregunta «qué
+  paleta usamos», la respuesta no es «no sabemos» — es esta, y el aplazamiento
+  del color es la decisión.
+- Contrastes **medidos**, no estimados. El oliva hay que aclararlo a `#8A9C7C`
+  sobre negro (3,23 no pasa como texto).
+- ⚠ Hay **tres marfiles distintos** circulando entre el sistema y las láminas
+  generadas; ver «Lo que trajo la tanda de imágenes».
+- **Dos planchas, no modos.** Marfil con tinta negra, y su negativo. El negativo
+  no es «modo oscuro»: es la otra plancha del mismo grabado.
 
-### Modos de visualización
-El catálogo son dos lentes; el sitio son los mismos dos modos. **El producto se
-demuestra a sí mismo** — no es un toggle de preferencias, es una vitrina.
-
-| Modo | Qué es | Fondo |
-|---|---|---|
-| **Noche** | Tokens exactos de la tabla de arriba. | `#0B0B0C` |
-| **Día** | **Por defecto.** Fondo blanco. | `#FFFFFF` |
-| **Trabajo** | Aproximación del lente ámbar: azules fuera, todo cálido. | `#100C07` |
-| **Descanso** | Aproximación del lente rojo: la página baja de intensidad. | `#0D0708` |
-
-- Se implementan como `:root[data-modo="..."]` redefiniendo los mismos ocho
-  tokens. Ninguna regla CSS conoce un hex. Las caras y las medidas van en
-  `:root` a secas: un `data-modo` desconocido no puede dejar la página sin
-  tipografía. La paleta de día va también ahí, porque es el defecto.
-- `--tarjeta` es el octavo: el fondo de una tarjeta que tiene que despegarse
-  del fondo de página. En los tres modos oscuros es idéntico a `--superficie`.
-- ⚠ **El modo día pasó a fondo blanco** (`#FFFFFF`). La regla vieja decía
-  «fondo hueso, nunca blanco puro»; se cambió a pedido, y con el fondo blanco
-  la que se hunde un punto es `--superficie` en vez de la tarjeta. La versión
-  hueso sigue viva en `:root[data-modo="dia"][data-claro="hueso"]` con su
-  interruptor en el banco. **«Nunca blanco puro» sigue vigente para el
-  texto**: `--hueso` es `#16161A` en día y `#EDEBE6` en noche.
-  Contraste reverificado sobre blanco: texto 18.0, tenue 6.3, ámbar 5.9,
-  rojo 6.0 — los cuatro pasan AA.
-- Los nombres de token describen el **rol**, no el color literal: en modo día,
-  `--noche` guarda el color de fondo claro y `--hueso` el texto oscuro.
-- `--ambar-texto` es un token derivado: el ámbar de la tabla no alcanza 4.5:1
-  como texto sobre fondo claro, así que en modo día se oscurece conservando el
-  tono. En los tres modos oscuros es idéntico a `--ambar`.
-- El rojo del botón de compra **no cambia** entre modos: el CTA tiene que seguir
-  siendo reconocible.
-- Toda combinación texto/fondo verificada contra WCAG AA (4.5:1) en los 4 modos.
-- El modo se guarda en `localStorage` y se aplica en un script inline del
-  `<head>`, antes del primer paint. Es el único JS que no vive al final.
-- **El defecto respeta `prefers-color-scheme`.** Día es el defecto, pero no por
-  encima del sistema: si el visitante ya puso su equipo en oscuro, esa decisión
-  YA está tomada y la página la sigue. El orden es: lo que eligió aquí > lo que
-  dice su sistema > día.
-- ⚠ El copy de los modos es **descriptivo, nunca clínico**. "Aproximación visual
-  de cada lente", jamás "reduce la fatiga" ni "te ayuda a dormir".
-
-## Arquitectura Fase 1
-```
-capotte/
-├── index.html      # landing + historia + producto + carrito (todo en uno)
-├── assets/
-│   ├── img/        # fotos de producto y de marca (webp)
-│   └── js/
-│       ├── gafas.js            # modelo 3D paramétrico, carga diferida
-│       └── vendor/three.*.js   # three.js vendorizado, sin CDN
-├── CLAUDE.md
-└── deploy.sh       # git add . && git commit && git push (Pages publica solo)
-```
-
+### Tipografía
+**Dos caras y dos papeles.** La serif firma y titula; la sans se lee.
+- **Display y titulares: Gambetta** (Indian Type Foundry, Fontshare). Vendorizada
+  en `assets/fuentes/`, pesos 400 y 500 con sus itálicas.
+- **Texto, rótulos y formularios: Instrument Sans.** También vendorizada.
+- **Si dudas, es sans.** La serif para lo que se mira —titulares, el logotipo,
+  los nombres de las piezas, la itálica de firma—; la sans para lo que se
+  recorre: párrafos, bajadas, rótulos, fichas, precios, barra, botones y
+  formularios.
+  ⚠ Se probó **Gambetta sola en toda la página** y se revirtió a petición de
+  Mateo, que la pidió tres veces. Lo aprendido: la serif sola da un resultado más
+  editorial y menos tienda, pero la página además tiene que vender, y la sans en
+  la barra, las fichas y los datos se recorre mejor. **La serif gana como
+  excepción, no como norma** — en cuanto baja al párrafo deja de firmar.
+- **La itálica es la firma** y se usa con cuentagotas: el énfasis del título de
+  sección y poco más. Gambetta en itálica es caligráfica; repartida por la página
+  se vuelve decoración.
+- Los precios llevan `font-variant-numeric: tabular-nums`.
+- **Solo el wordmark va en minúscula forzada.** Los titulares de sección van en
+  tipo oración.
+⚠ Descartadas por el camino: **Lora**, **Fraunces** (demasiado característica:
+hacía juzgar el diseño sobre una cara que no es la nuestra), Archivo, Sora y
+Geist. **Newsreader** se queda solo como respaldo de Gambetta, y desde que
+Gambetta entró ya no se ve. **Supply Mono** es de pago para uso comercial: NO
+usar.
 ## Infraestructura (DECIDIDO)
 | Qué | Dónde | Costo |
 |---|---|---|
@@ -800,36 +563,31 @@ capotte/
 - La llave pública de Wompi SÍ puede ir en el front. Llaves privadas/secretos: JAMÁS
   en este repo ni en este chat.
 
-## Pedidos (Fase 1) — DECIDIDO
-- Sin base de datos. **WhatsApp, no Google Form**: menos fricción y es como compra
-  Colombia. El checkout arma el mensaje con `wa.me` desde el carrito y los datos.
-- Los datos de envío viven en `localStorage`, nunca salen a un servidor. Eso hay que
-  decirlo en el formulario, y ya está dicho.
+## Pedidos (Fase 1) — decidido, **no implementado todavía**
+- Sin base de datos. **WhatsApp, no Google Form**: menos fricción y es como
+  compra Colombia. La idea es que el pedido se arme con `wa.me` desde la bolsa.
+- Si se implementa, los datos de envío viven en `localStorage` y **nunca salen a
+  un servidor** — y eso hay que decirlo en el propio formulario.
 - Confirmación y seguimiento por WhatsApp. Envíos: Servientrega / Interrapidísimo.
+- ⚠ **Estado real hoy**: `index.html` no tiene `wa.me` ni checkout. La bolsa vive
+  en `localStorage` y cada producto abre su enlace de pago de Wompi. El flujo de
+  cuatro pasos que existió era de `propuesta.html`, el archivo.
 
-## Vistas (router por hash)
-Tres vistas sobre el mismo `index.html`, sin build step ni configuración de rutas
-—el hash funciona en GitHub Pages tal cual:
-
-| Ruta | Vista |
-|---|---|
-| *(sin hash)* | La home: historia, catálogo, envíos, FAQ |
-| `#/producto/<id>` | Ficha completa: galería con visor 3D, precio, cantidad, acordeones |
-| `#/checkout` | Compra en 4 pasos |
-
-- Una ruta inválida cae a la home, no a una pantalla en blanco.
-- Cambiar de vista cierra el panel del carrito y sube el scroll a cero.
-
-## Checkout (4 pasos)
-1. **Carrito** — líneas con cantidad editable y total.
-2. **Envío** — nombre, WhatsApp, cédula, ciudad, dirección, indicaciones.
-   Validación propia; los datos persisten en `localStorage`.
-3. **Pago** — resumen + dirección + botón que abre el link de Wompi.
-4. **Listo** — botón de WhatsApp con el pedido ya armado.
-
-⚠ Sin link de Wompi el paso 3 avisa y deja seguir, en vez de romperse. Sin número
-de WhatsApp el paso 4 lo marca `[TBD]`.
-
+## Arquitectura
+```
+capotte/
+├── capotte.html          # el sitio: casa de autor
+├── index.html            # Fase 1: catálogo, bolsa y pago por enlace
+├── manual.html           # el manual, compilado
+├── MANUAL-DE-MARCA.md    # la fuente de verdad
+├── CLAUDE.md             # las razones y lo medido
+├── deploy.sh
+├── propuesta.html        # ARCHIVO — dirección «noche», no se toca
+└── assets/
+    ├── fuentes/          # Gambetta e Instrument Sans en woff2, sin CDN
+    ├── img/              # el leopardo, el sello, las fotos
+    └── js/               # ARCHIVO — solo lo usa propuesta.html
+```
 ## Proveedor — lo que ofrece (de sus fichas, sin cotizar todavía)
 - **Montura**: PC, TR90, CP, acetato, **bambú, madera**, metal, paja de trigo, RPCTG.
 - **Lente**: PC, vidrio, nylon, resina, acrílico, TAC, CR-39.
@@ -860,58 +618,53 @@ pieza a pieza, así que la foto de producto deja de coincidir con lo que llega.
 venda, con precio más alto. Diferenciarse por material es más fácil de pagar
 después de validar que antes.
 
-## PENDIENTE (no bloquea el scaffold — usar placeholders)
-- [ ] Hex exacto del rojo, desde el SVG/AI del logo.
-- [ ] Nombres finales de los dos lentes (propuesta: Turno / Apagado, o dejar Ámbar / Rojo).
+## PENDIENTE
+**Bloquean dinero o riesgo legal:**
 - [ ] Cotización del proveedor: precio unitario por volumen y MOQ.
 - [ ] Precio de venta y costo landed (producto + flete + arancel + IVA).
-      ⚠ Hay precios **provisionales** puestos para probar el flujo
-      (129.000 / 129.000 / 199.000 desde 258.000). NO salen de ningún costo real.
-      Al ponerlos de verdad, bajar `PRECIOS_PROVISIONALES` a `false`: eso apaga
-      el aviso que hoy corona el sitio.
-- [ ] Reporte de transmitancia espectral del proveedor (habilita o no las claims técnicas).
-- [ ] Fotos extra para la galería de cada producto (`*-frente`, `*-lateral`,
-      `*-detalle`). La galería ya tiene los slots y cae al `[TBD]` sin ellas.
-- [ ] Foto del combo puesto (`combo-puesta.webp`). Las de ámbar y rojo ya están:
-      aparecen al pasar el cursor sobre la tarjeta, cruzándose con la foto de
-      producto. El slot del combo existe y espera el archivo.
-      ⚠ Las dos actuales son generadas: la montura no es la real. Sirven de
-      ambiente, no de foto de producto. Rehacerlas con las gafas reales cuando
-      llegue el pedido.
-- [ ] Fotos de producto (`ambar.webp`, `rojo.webp`, `combo.webp`) y de marca
-      (`hero.webp`, `trabajo.webp`, `dormir.webp`, `og.png`). Los slots ya
-      existen: soltar el archivo en `assets/img/` lo activa. Ojo: fondo negro
-      exige fotos recortadas o de fondo limpio.
-- [x] ~~Verificar el nombre en SIPI (clases 9 y 35)~~ — hecho en septiembre de
-      2026: `capotte` no aparece registrado. ⚠ **Buscar no es registrar**, y una
-      búsqueda de idénticos no es un análisis de confundibilidad: a RELIEF lo
-      tumbó una marca *parecida* (I-RELIEF), no una igual. Radicar la solicitud
-      es el paso que falta; hasta entonces no hay derecho que oponer.
-- [ ] Dominio: **capotte.com.co** (~$50.000 COP/año). Único gasto fijo aprobado.
-      **Criterio: el dominio NO puede nombrar la categoría.** Nada de `lentes`,
-      `gafas`, `optica` ni `glasses`. El nombre no nombra la categoría; el catálogo de mañana puede incluir antifaces, tapones
-      o luz de escritorio, y un dominio con la categoría adentro lo contradice.
-      Solo la marca, o la marca con una palabra de voz (`soy`, `hola`) que
-      tampoco nombre producto.
-      ⚠ Verificar el nombre en SIPI (clases 9 y 35) ANTES de comprar dominio.
+      Hoy **no hay ningún precio puesto**: `index.html` muestra `$ 000.000`, que
+      es el hueco, no un cero.
+- [ ] Reporte de transmitancia espectral del proveedor. Habilita o no las claims
+      técnicas — y sin él no se publica ningún porcentaje.
 - [ ] Nombre legal / quién factura (persona natural sirve para arrancar con Wompi).
+- [ ] **Radicar la marca en la SIC**, clases 9 y 35. La búsqueda en SIPI ya se
+      hizo y `capotte` no aparece registrado, pero ⚠ **buscar no es registrar**:
+      a RELIEF lo tumbó una marca *parecida* (I-RELIEF), no una igual. Hasta
+      radicar no hay derecho que oponer.
+- [ ] Dominio: **capotte.com.co** (~$50.000 COP/año). Único gasto fijo aprobado.
+      **Criterio: el dominio NO puede nombrar la categoría** — nada de `lentes`,
+      `gafas`, `optica` ni `glasses`. Solo la marca, o la marca con una palabra
+      de voz (`soy`, `hola`). ⚠ Crear la cuenta de Cloudflare correcta **antes**
+      de comprar: después hay bloqueo de transferencia de 60 días.
 
+**Identidad, lo que falta:**
+- [ ] **El rombo `◆`**: no existe en Gambetta, ni en Newsreader, ni en Instrument
+      Sans, así que hoy lo dibuja el sistema operativo del visitante. Hay que
+      sustituirlo por una forma propia.
+- [ ] **La pieza por debajo de 32 px** (favicon, avatar). Descartada por medición
+      la «C» dentro de un anillo. Hay una propuesta de monograma en evaluación,
+      pendiente de medir a 16 px.
+- [ ] Decidir si el sello mezcla dos caras (`capotte` en Gambetta, `bogota` en
+      Instrument Sans) o va todo en Gambetta.
+- [ ] Quedarse con **un** leopardo: circulan tres (la lámina vendorizada, el del
+      brand book, el del sello) y hay que redibujar los otros dos a partir de él.
 - [ ] Definir si la marca es masculina o unisex — afecta copy y fotografía.
-- [ ] Shooting propio: sillón, libro, luz de tarde. No usar imágenes de
-      celebridades ni de series.
-- [x] ~~Vendorizar Gambetta e Instrument Sans en el repo, y quitar los dos
-      enlaces a CDN~~ — hecho el 16 de septiembre de 2026. Cero CDN de
-      tipografía en las dos páginas, y `file://` verificado.
-- [ ] Sustituir el rombo `◆` por una forma propia: no está en ninguna de las
-      tres caras vendorizadas y hoy lo dibuja el sistema operativo.
-- [x] ~~Convertir las palabras del sello a curvas~~ — hecho el 17 de septiembre
-      de 2026: `sello-curvas.svg` y `sello-reducido-curvas.svg`, cotejados
-      contra el maestro de pantalla.
-- [ ] Decidir si el sello debe mezclar dos caras (`capotte` en Gambetta,
-      `bogota` en Instrument Sans) o ir todo en Gambetta.
-- [ ] Si se quieren 300, 600 o 700 de Gambetta, convertir esos `.otf` a
-      `woff2` y cablearlos. Hoy solo están los cuatro que el sitio usa.
+- [ ] Si se quieren 300, 600 o 700 de Gambetta, convertir esos `.otf` a `woff2`
+      y cablearlos. Hoy solo están los cuatro que el sitio usa.
 
+**Fotografía (toda bloqueada por el shooting):**
+- [ ] `index.html` pide `lectura.webp`, `sobremesa.webp` y `par.webp`. Los tres
+      slots existen y hoy muestran una lámina pendiente.
+- [ ] `capotte.html` pide `og.png` (1200×630).
+- [ ] Shooting propio: sillón, libro, luz de tarde. **No** usar imágenes de
+      celebridades ni de series, ni publicar imagen generada como foto de
+      producto.
+
+**Limpieza pendiente en `assets/img/`:** quedaron huérfanos `ambar.webp`,
+`rojo.webp`, `combo.webp`, `ambar-puesta.webp`, `rojo-puesta.webp`,
+`isotipo.svg`, `isotipo-reducido.svg` e `isotipo-*.png`. **Ningún archivo vivo
+los referencia** — son de la dirección vieja. Borrarlos cuando alguien confirme
+que no hacen falta.
 ## Reseñas y estudios (reglas duras)
 - **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
   Estatuto del Consumidor (Ley 1480). La sección existe vacía y dice que estamos
@@ -927,7 +680,7 @@ después de validar que antes.
   posicionamiento: Warblue publica 84/97/99% sin respaldo; nosotros decimos por qué
   no publicamos nada todavía. La honestidad es el diferenciador, no un costo.
 
-## Modo maqueta (`MAQUETA`)
+## Modo maqueta (`MAQUETA`, solo en `capotte.html`)
 El prototipo tiene que **verse terminado** para poder juzgarlo: una página
 sembrada de `[TBD]` no deja ver si el diseño funciona. Así que todo lo que
 todavía no sabemos está inventado en un solo sitio —el bloque `MAQUETA` /
