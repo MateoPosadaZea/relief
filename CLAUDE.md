@@ -660,11 +660,17 @@ después de validar que antes.
       celebridades ni de series, ni publicar imagen generada como foto de
       producto.
 
-**Limpieza pendiente en `assets/img/`:** quedaron huérfanos `ambar.webp`,
-`rojo.webp`, `combo.webp`, `ambar-puesta.webp`, `rojo-puesta.webp`,
-`isotipo.svg`, `isotipo-reducido.svg` e `isotipo-*.png`. **Ningún archivo vivo
-los referencia** — son de la dirección vieja. Borrarlos cuando alguien confirme
-que no hacen falta.
+**Limpieza de `assets/img/` (18 de septiembre de 2026).** Se borraron los cinco
+archivos del isotipo muerto —`isotipo.svg`, `isotipo-reducido.svg`,
+`isotipo-negro.png`, `isotipo-hueso.png`, `isotipo-rojo.png`, 320 kB— porque no
+los referenciaba **nada**. Siguen en el historial de git.
+⚠ **Y una corrección al método:** la lista anterior de «huérfanos» también metía
+`ambar.webp`, `rojo.webp`, `combo.webp` y las dos «puestas», y **estaba mal**.
+Salió de grepear solo `capotte.html` e `index.html`; al grepear el repo entero
+aparecieron catorce referencias en `propuesta.html`. **Un archivo no es huérfano
+por no estar en las páginas vivas: hay que buscarlo en todo el repo**, archivo
+incluido. Esos cinco `.webp` se quedan — borrarlos dejaría el archivo con las
+imágenes rotas, que es justo lo que un archivo no debe tener.
 ## Reseñas y estudios (reglas duras)
 - **Cero reseñas inventadas.** Testimonios falsos son sanción directa bajo el
   Estatuto del Consumidor (Ley 1480). La sección existe vacía y dice que estamos
